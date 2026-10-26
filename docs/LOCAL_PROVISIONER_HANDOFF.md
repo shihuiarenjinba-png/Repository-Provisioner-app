@@ -74,7 +74,7 @@ No OpenAI API key, paid Codex API, fabricated Store ID, main/release direct writ
 
 ## テスト情報
 
-- 自動テスト: 60件 / PASS 59 / FAIL 0 / SKIP 1（Windows sandboxでsymlink作成不可の1件）
+- 自動テスト: 61件 / PASS 60 / FAIL 0 / SKIP 1（Windows sandboxでsymlink作成不可の1件）
 - Python compile: PASS
 - DRY_RUN: PASS。build、Partner Center、GitHub writeは0回。
 - 実Factory Identity書込: 未実施。Factory側commit SHAなし。

@@ -64,8 +64,10 @@ No OpenAI API key, paid Codex API, fabricated Store ID, main/release direct writ
 - 基準: `main` / `9ba2a574740d94247dcd3149429c1b933187e867`
 - 作業ブランチ: `codex/provisioner-bootstrap-20261026`
 - 作業開始時HEAD: `ec8d79f1d4db2457d73e4c24887d91ffa9de7092`
+- 資料生成時の実装HEAD: `5e5de96fcc5c88ed32c4176b22a485e71c8f87d8`
+- コミット: `ec8d79f docs: redirect...`、`5e5de96 feat: implement package identity round-trip provisioner`
 - Draft PR: https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/pull/1
-- 差分: Package+Identity CLI、共通Schema、SHA固定取得、Windows build adapter、MSIX/署名/PFN/SID解析、型別台帳・排他、公式Identity照合、GitHub CAS返却、CI、テスト。
+- 差分: Package+Identity CLI、共通Schema、SHA固定取得、Windows build adapter、MSIX/署名/PFN/SID解析、型別台帳・排他、公式Identity照合、GitHub CAS返却、CI、テスト。資料更新commit自体のSHAはDraft PRの最新HEADを正とする。
 
 ## テスト情報
 

@@ -67,6 +67,9 @@ No OpenAI API key, paid Codex API, fabricated Store ID, main/release direct writ
 - 資料生成時の実装HEAD: `91ecdf4`（リモート先行9コミットを保持してrebase後）
 - コミット: `830f643 docs(app): document authenticated HEAD check...`、`91ecdf4 feat: implement package identity round-trip provisioner`
 - Draft PR: https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/pull/1
+- CI検証済みHEAD: `573bef37bf2e476c7bd43493bd90cc449b467dfb`
+- GitHub Actions: SUCCESS — https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40382366650
+- Provisioner作業ブランチpush: 成功（非force）。
 - 差分: Package+Identity CLI、共通Schema、SHA固定取得、Windows build adapter、MSIX/署名/PFN/SID解析、型別台帳・排他、公式Identity照合、GitHub CAS返却、CI、テスト。資料更新commit自体のSHAはDraft PRの最新HEADを正とする。
 
 ## テスト情報
@@ -74,7 +77,7 @@ No OpenAI API key, paid Codex API, fabricated Store ID, main/release direct writ
 - 自動テスト: 58件 / PASS 57 / FAIL 0 / SKIP 1（Windows sandboxでsymlink作成不可の1件）
 - Python compile: PASS
 - DRY_RUN: PASS。build、Partner Center、GitHub writeは0回。
-- 実GitHub書込: 未実施。commit SHAなし。
+- 実Factory Identity書込: 未実施。Factory側commit SHAなし。
 - 実Windows build/MSIX: 未実施。モックMSIX解析のみPASS。
 - Partner Center公式ID: 未取得。Store ID推測機能はない。
 - 作成・削除したテストリポジトリ: なし。
@@ -109,7 +112,7 @@ python provisioner.py --input job.json --output result.json `
 
 ## HOLD項目
 
-1. `gh auth status`で保存済みGitHub token失効を確認。push/実返却未確認。
+1. Git credentialによるProvisioner pushは成功したが、`gh auth status`のtokenは失効中。Factory Identity API書込権限は未確認。
 2. 承認済み実Factory job、実Windows build、実MSIXが未提供。
 3. 認証済みPartner Centerでの公式Identity確認が未実施。
 4. Factory→Provisioner→Windows-all-autoのE2EはChatGPT側の別工程。

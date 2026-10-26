@@ -223,7 +223,7 @@ class IntakeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify_github_head(data, token="", opener=lambda req, timeout: None)
         with self.assertRaises(ValueError):
-            verify_github_head(data, token="bad\\nheader", opener=lambda req, timeout: None)
+            verify_github_head(data, token="bad" + chr(10) + "header", opener=lambda req, timeout: None)
         changed = sample()
         changed["source_repository"] = "other/repo"
         with self.assertRaises(ValueError):

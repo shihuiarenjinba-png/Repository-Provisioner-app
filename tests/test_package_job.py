@@ -56,6 +56,26 @@ class IntakeTests(unittest.TestCase):
         self.assertNotEqual(validate_job(a)["idempotency_key"],
                             validate_job(b)["idempotency_key"])
 
+    def test_idempotency_key_binds_all_validated_job_content(self):
+        original = sample()
+        baseline = validate_job(original)["idempotency_key"]
+        for field, value in (
+            ("display_name", "Renamed Desktop App"),
+            ("request_id", "app-20261026-002"),
+            ("slug", "different-desktop-app"),
+            ("source_sha", "b" * 40),
+        ):
+            with self.subTest(field=field):
+                changed = copy.deepcopy(original)
+                changed[field] = value
+                self.assertNotEqual(
+                    baseline, validate_job(changed)["idempotency_key"])
+        # The actions are a set: reordering must not create a new job.
+        reordered = copy.deepcopy(original)
+        reordered["requested_actions"].reverse()
+        self.assertEqual(
+            baseline, validate_job(reordered)["idempotency_key"])
+
     def test_reject_malformed_and_cross_lane(self):
         changes = [
             ("schema_version", 1),

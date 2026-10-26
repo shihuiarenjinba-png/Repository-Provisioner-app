@@ -60,6 +60,8 @@ def make_msix(path: Path, name="Sample.Product", publisher="CN=Test Publisher", 
     </Package>'''
     with zipfile.ZipFile(path, "w") as archive:
         archive.writestr("AppxManifest.xml", manifest)
+        archive.writestr("AppxBlockMap.xml", '<BlockMap xmlns="http://schemas.microsoft.com/appx/2010/blockmap" />')
+        archive.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types" />')
         archive.writestr("payload.txt", "payload")
     return path
 

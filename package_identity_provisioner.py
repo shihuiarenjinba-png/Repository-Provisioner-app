@@ -415,11 +415,35 @@ def inspect_package(path: Path) -> dict[str, Any]:
         return result
     try:
         with zipfile.ZipFile(path) as archive:
-            manifest_name = next((n for n in archive.namelist() if n.lower() == "appxmanifest.xml"), None)
-            if manifest_name is None:
-                raise HoldError("MSIX is missing AppxManifest.xml")
-            raw = archive.read(manifest_name)
+            entries = archive.infolist()
+            if not 1 <= len(entries) <= 2000:
+                raise HoldError("Unsafe MSIX entry count")
+            # A ZIP with an AppxManifest is not necessarily a Windows package.
+            # Reject ambiguous case-insensitive names and require MakeAppx metadata.
+            names = [entry.filename.replace("\\", "/").lower() for entry in entries]
+            if len(set(names)) != len(names):
+                raise HoldError("Duplicate MSIX ZIP member names")
+            if any(
+                name.startswith("/") or ".." in name.split("/")
+                or entry.file_size > 300 * 1024 * 1024
+                for name, entry in zip(names, entries)
+            ):
+                raise HoldError("Unsafe MSIX ZIP member")
+            required = {"appxmanifest.xml", "appxblockmap.xml", "[content_types].xml"}
+            by_name = dict(zip(names, entries))
+            if not required.issubset(by_name):
+                raise HoldError("Required MSIX package metadata is missing")
+            for member in required:
+                if not 0 < by_name[member].file_size <= 2 * 1024 * 1024:
+                    raise HoldError("Invalid MSIX metadata size")
+            raw = archive.read(by_name["appxmanifest.xml"])
+            blockmap = ET.fromstring(archive.read(by_name["appxblockmap.xml"]))
+            content_types = ET.fromstring(archive.read(by_name["[content_types].xml"]))
         root = ET.fromstring(raw)
+        if (root.tag.rsplit("}", 1)[-1] != "Package"
+                or blockmap.tag.rsplit("}", 1)[-1] != "BlockMap"
+                or content_types.tag.rsplit("}", 1)[-1] != "Types"):
+            raise HoldError("Invalid MSIX metadata XML roots")
         identity = next((element for element in root.iter() if element.tag.rsplit("}", 1)[-1] == "Identity"), None)
         if identity is None:
             raise HoldError("MSIX manifest has no Identity element")

@@ -495,7 +495,9 @@ class GitHubReturnClient:
         existing = self.api(base + "contents/" + target_path + "?ref=" + quote(config.source_branch, safe=""), allow_missing=True)
         if existing is not None:
             if self._existing_matches(existing, official):
-                return {**proposal, "status": "EXISTING_VERIFIED", "commit_sha": existing.get("sha")}
+                return {**proposal, "status": "EXISTING_VERIFIED",
+                        "commit_sha": job.source_sha,
+                        "commit_url": f"https://github.com/{config.source_repository}/commit/{job.source_sha}"}
             raise ConflictError("approved-identity.json already exists and will not be overwritten")
         approved = {"reviewed": True, "source": "partner_center", "store_id": official["store_id"],
                     "name": official["name"], "publisher": official["publisher"], "version": official["version"],
@@ -545,13 +547,34 @@ class GitHubReturnClient:
 
     @staticmethod
     def _existing_matches(existing: dict[str, Any], official: dict[str, Any]) -> bool:
-        if existing.get("encoding") != "base64":
+        """Replay is safe only for the *same attested* Partner Center record.
+
+        Matching the four MSIX fields alone is insufficient: an unreviewed or
+        unrelated JSON file must never become an approved Store Identity.
+        """
+        if not isinstance(existing, dict) or existing.get("encoding") != "base64":
             return False
         try:
-            content = json.loads(base64.b64decode(existing["content"], validate=True))
-        except Exception:
+            raw = base64.b64decode(existing["content"], validate=True)
+            if len(raw) > 32_768:
+                return False
+            content = json.loads(raw)
+        except (ValueError, TypeError, KeyError, UnicodeDecodeError):
             return False
-        return all(content.get(key) == official.get(key) for key in ("store_id", "name", "publisher", "version"))
+        if not isinstance(content, dict):
+            return False
+        required = {
+            "reviewed": True,
+            "source": "partner_center",
+            "store_id": official["store_id"],
+            "name": official["name"],
+            "publisher": official["publisher"],
+            "version": official["version"],
+            "verified_by": official["authenticated_account"],
+            "evidence_url": official["official_evidence_url"],
+        }
+        return all(type(content.get(key)) is type(value) and content.get(key) == value
+                   for key, value in required.items())
 
     @staticmethod
     def _gh_api(endpoint: str, body: dict[str, Any] | None = None, allow_missing: bool = False) -> Any:

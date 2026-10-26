@@ -272,15 +272,24 @@ class PackageBuilder:
 
     def build(self, job: Job, source: Path, output_dir: Path, config: ProductConfig) -> Path:
         output_dir.mkdir(parents=True, exist_ok=True)
-        before = {p.resolve(): (p.stat().st_mtime_ns, p.stat().st_size)
-                  for p in self._candidates(source, config) if p.is_file()}
+        # Retries reuse the artifact directory. Snapshot both output locations so
+        # a successful no-op build cannot accidentally reuse an earlier MSIX.
+        before = {
+            p.resolve(): (p.stat().st_mtime_ns, p.stat().st_size)
+            for root in (source, output_dir)
+            for p in self._candidates(root, config)
+            if p.is_file()
+        }
         if config.build_kind == "GODOT_WINDOWS":
             self._build_godot(source, output_dir)
         else:
             self._build_windows(source)
-        candidates = [p for p in self._candidates(source, config) if p.is_file() and
-                      before.get(p.resolve()) != (p.stat().st_mtime_ns, p.stat().st_size)]
-        candidates.extend(self._candidates(output_dir, config))
+        candidates = [
+            p for root in (source, output_dir)
+            for p in self._candidates(root, config)
+            if p.is_file()
+            and before.get(p.resolve()) != (p.stat().st_mtime_ns, p.stat().st_size)
+        ]
         unique = sorted({p.resolve() for p in candidates if p.is_file()}, key=lambda p: p.stat().st_mtime)
         if not unique:
             raise HoldError("Build completed without a configured EXE/MSIX candidate")

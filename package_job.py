@@ -8,6 +8,9 @@ from __future__ import annotations
 import argparse
 from hashlib import sha256
 import json
+import os
+from urllib.parse import quote
+from urllib.request import Request, HTTPRedirectHandler, build_opener
 from pathlib import Path
 import re
 import sys
@@ -96,6 +99,7 @@ def validate_job(record: dict) -> dict:
         "source_branch": BRANCH,
         "source_sha": sha,
         "expected_head_sha": None,
+        "source_head_verification": "NOT_CHECKED",
         "package": {
             "status": "NOT_BUILT", "sha256": None,
             "artifact_url": None, "package_identity": None,
@@ -120,10 +124,66 @@ def validate_job(record: dict) -> dict:
     }
 
 
+
+class _NoRedirect(HTTPRedirectHandler):
+    """Never forward a bearer token to a redirected URL."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def verify_github_head(record: dict, *, token=None, opener=None) -> str:
+    """Authenticated, read-only exact branch HEAD check; never trust job SHA alone.
+
+    This check does not authorize package execution or Identity writes. A later
+    mutating step must check HEAD again immediately before its own operation.
+    """
+    if (record.get("source_repository") != REPOSITORY
+            or record.get("source_branch") != BRANCH
+            or not isinstance(record.get("source_sha"), str)
+            or not SHA40.fullmatch(record["source_sha"])):
+        raise ValueError("untrusted source for GitHub HEAD verification")
+    if token is None:
+        token = os.environ.get("GITHUB_TOKEN")
+    if (not isinstance(token, str) or not token or token != token.strip()
+            or "\r" in token or "\n" in token):
+        raise ValueError("authenticated GitHub token required")
+    url = ("https://api.github.com/repos/" + REPOSITORY
+           + "/branches/" + quote(BRANCH, safe=""))
+    req = Request(url, headers={
+        "Accept": "application/vnd.github+json",
+        "Authorization": "Bearer " + token,
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "app-provisioner-head-check/1.0",
+    })
+    if opener is None:
+        opener = build_opener(_NoRedirect()).open
+    with opener(req, timeout=10) as response:
+        if response.status != 200 or response.geturl() != url:
+            raise ValueError("unexpected GitHub response or redirect")
+        payload = response.read(65537)
+    if len(payload) > 65536:
+        raise ValueError("GitHub response exceeds limit")
+    try:
+        body = json.loads(payload.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as exc:
+        raise ValueError("invalid GitHub HEAD response") from exc
+    if not isinstance(body, dict) or not isinstance(body.get("commit"), dict):
+        raise ValueError("missing GitHub branch commit")
+    head = body["commit"].get("sha")
+    if not isinstance(head, str) or not SHA40.fullmatch(head):
+        raise ValueError("invalid GitHub branch SHA")
+    if head != record["source_sha"]:
+        raise ValueError("source SHA differs from current GitHub branch HEAD")
+    return head
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--verify-head", action="store_true",
+                        help="Require authenticated read-only GitHub branch HEAD match")
     args = parser.parse_args(argv)
     try:
         if args.input.stat().st_size > 32768:
@@ -131,6 +191,13 @@ def main(argv=None) -> int:
         data = json.loads(args.input.read_text(encoding="utf-8"),
                           object_pairs_hook=_reject_duplicates)
         receipt = validate_job(data)
+        if args.verify_head:
+            receipt["expected_head_sha"] = verify_github_head(data)
+            receipt["source_head_verification"] = "VERIFIED"
+            receipt["next_stage"] = "LOCAL_WINDOWS_BUILD_NOT_IMPLEMENTED"
+            receipt["note"] = ("GitHub branch HEAD verified at read time only. "
+                               "Recheck before mutation. Windows build, Partner Center "
+                               "lookup, durable ledger, and Identity return NOT performed.")
         encoded = json.dumps(receipt, ensure_ascii=False, indent=2) + "\n"
         if args.output:
             if args.output.is_symlink():

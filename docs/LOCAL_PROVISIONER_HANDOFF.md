@@ -23,6 +23,16 @@ A valid input produces a `DRY_RUN` receipt with a deterministic request/source k
 
 The previous `provisioner.py` repository-name proposal is retained for compatibility; it is not a package implementation and `create_allowed=false`.
 
+## Authenticated GitHub HEAD verification (read-only, optional)
+
+A new fail-closed CLI mode is available:
+
+`GITHUB_TOKEN=<read-only token> python package_job.py --input app-job.json --output receipt.json --verify-head`
+
+The token must be provided through an environment variable (never committed or printed). This mode requests the **current branch HEAD** from GitHub's REST API using an authenticated read, forbids redirects and oversized responses, and rejects a stale `source_sha`. A successful check fills `expected_head_sha`, sets `source_head_verification: VERIFIED`, and **still returns DRY_RUN**. It does not build an MSIX, fetch Store Identity, or write to GitHub. If no token, invalid response, or mismatched SHA, the CLI exits HOLD without writing a receipt. The source HEAD must be rechecked immediately before any future write; this is not an authorization or durable lease.
+
+Tests mock the GitHub API; **no authenticated live GitHub REST request was made** in this change. The previous dry-run command without `--verify-head` remains unchanged and returns `NOT_CHECKED`. Exact code/CI evidence must be taken from the latest branch HEAD rather than this historical handoff's earlier 13-test snapshot.
+
 ## Remaining implementation blockers (local code owner)
 
 1. The Factory stacked PR #3 `handoff_request.py` still emits the **old repository-creation request**. A new compatible Factory job producer is required before actual dispatch. Do not treat the two JSON formats as interchangeable.

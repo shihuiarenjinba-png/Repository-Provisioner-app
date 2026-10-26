@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 
-from package_job import validate_job
+from package_job import validate_job, verify_github_head
 
 SHA = "a" * 40
 
@@ -164,6 +164,87 @@ class IntakeTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 2)
             self.assertEqual(target.read_text(), "protected")
+
+
+    def test_authenticated_github_head_exact_match(self):
+        data = sample()
+        seen = []
+        class Response:
+            status = 200
+            def __init__(self, url):
+                self.url = url
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                return False
+            def geturl(self):
+                return self.url
+            def read(self, size):
+                self_size = json.dumps({"commit": {"sha": SHA}}).encode()
+                return self_size[:size]
+        def open_mock(req, timeout):
+            seen.append((req, timeout))
+            return Response(req.full_url)
+        self.assertEqual(verify_github_head(data, token="test-secret", opener=open_mock), SHA)
+        self.assertEqual(len(seen), 1)
+        self.assertEqual(seen[0][1], 10)
+        self.assertIn("/branches/codex%2Ffactory-autoloop-20261026",
+                      seen[0][0].full_url)
+        self.assertEqual(seen[0][0].get_header("Authorization"), "Bearer test-secret")
+
+    def test_authenticated_github_head_fail_closed(self):
+        data = sample()
+        class Response:
+            status = 200
+            def __init__(self, url, body, redirect=False):
+                self.url = url + ("/redirect" if redirect else "")
+                self.body = body
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                return False
+            def geturl(self):
+                return self.url
+            def read(self, size):
+                return self.body[:size]
+        for body, redirect in [
+            (json.dumps({"commit": {"sha": "b" * 40}}).encode(), False),
+            (b"not json", False),
+            (b'{"commit":{}}', False),
+            (b"x" * 65537, False),
+            (json.dumps({"commit": {"sha": SHA}}).encode(), True),
+        ]:
+            with self.subTest(body=body[:20], redirect=redirect):
+                with self.assertRaises(ValueError):
+                    verify_github_head(
+                        data, token="test-secret",
+                        opener=lambda req, timeout: Response(req.full_url, body, redirect),
+                    )
+        with self.assertRaises(ValueError):
+            verify_github_head(data, token="", opener=lambda req, timeout: None)
+        with self.assertRaises(ValueError):
+            verify_github_head(data, token="bad\\nheader", opener=lambda req, timeout: None)
+        changed = sample()
+        changed["source_repository"] = "other/repo"
+        with self.assertRaises(ValueError):
+            verify_github_head(changed, token="test-secret", opener=lambda req, timeout: None)
+
+    def test_cli_verify_head_requires_auth_without_network(self):
+        with tempfile.TemporaryDirectory() as temp:
+            inp = Path(temp) / "job.json"
+            out = Path(temp) / "receipt.json"
+            inp.write_text(json.dumps(sample()), encoding="utf-8")
+            import os
+            env = dict(os.environ)
+            env.pop("GITHUB_TOKEN", None)
+            result = subprocess.run(
+                [sys.executable, "package_job.py", "--input", str(inp),
+                 "--output", str(out), "--verify-head"],
+                capture_output=True, text=True, timeout=15, env=env,
+            )
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("PACKAGE_INTAKE_HOLD", result.stderr)
+            self.assertFalse(out.exists())
 
 
 if __name__ == "__main__":

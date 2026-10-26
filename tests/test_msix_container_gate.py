@@ -53,6 +53,26 @@ class MSIXContainerGateTests(unittest.TestCase):
             with self.assertRaisesRegex(HoldError, "Duplicate"):
                 inspect_package(path)
 
+    def test_corrupted_executable_payload_crc_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            payload = b"MZ-unique-executable-payload-for-crc-regression"
+            path = write_archive(Path(directory) / "candidate.msix", [
+                ("AppxManifest.xml", MANIFEST),
+                ("AppxBlockMap.xml", BLOCKMAP),
+                ("[Content_Types].xml", CONTENT_TYPES),
+                ("bin/app.exe", payload),
+            ])
+            # ZIP_STORED leaves payload bytes verbatim in the archive. Change
+            # one byte without updating its recorded CRC or outer checksum.
+            archive_bytes = bytearray(path.read_bytes())
+            offset = archive_bytes.find(payload)
+            self.assertGreaterEqual(offset, 0)
+            archive_bytes[offset + 8] ^= 1
+            path.write_bytes(archive_bytes)
+            with patch("package_identity_provisioner.signature_status", return_value="INSPECTION_SKIPPED"):
+                with self.assertRaisesRegex(HoldError, "CRC integrity"):
+                    inspect_package(path)
+
     def test_complete_metadata_passes_structural_inspection(self):
         with tempfile.TemporaryDirectory() as directory:
             path = write_archive(Path(directory) / "candidate.msix", [

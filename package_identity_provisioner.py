@@ -436,6 +436,11 @@ def inspect_package(path: Path) -> dict[str, Any]:
             for member in required:
                 if not 0 < by_name[member].file_size <= 2 * 1024 * 1024:
                     raise HoldError("Invalid MSIX metadata size")
+            # SHA-256 only authenticates the bytes we received. A corrupt
+            # executable inside that ZIP can still have a matching outer hash.
+            # testzip streams all members and verifies their stored CRCs.
+            if archive.testzip() is not None:
+                raise HoldError("MSIX ZIP member failed CRC integrity check")
             raw = archive.read(by_name["appxmanifest.xml"])
             blockmap = ET.fromstring(archive.read(by_name["appxblockmap.xml"]))
             content_types = ET.fromstring(archive.read(by_name["[content_types].xml"]))

@@ -31,6 +31,40 @@ class PreIdentityExeBridgeTests(unittest.TestCase):
             self.assertEqual(identity.calls, 0)
             self.assertEqual(github.calls, 0)
 
+    def test_operator_verified_identity_returns_after_exe_without_claiming_msix(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            identity, github = FakeIdentity(), FakeGitHub()
+            identity.evidence_path = Path(tmp) / "operator-export.json"
+            provisioner = Provisioner(
+                config(), Path(tmp) / "state", Path(tmp) / "work",
+                source=FakeSource(), builder=FakeBuilder(artifact_kind="exe"),
+                identity=identity, github=github,
+            )
+            result = provisioner.run(job(), apply=True)
+            self.assertEqual(result["status"], "HOLD")
+            self.assertEqual(result["package"]["kind"], "exe")
+            self.assertEqual(result["github_return"]["status"], "APPLIED")
+            self.assertEqual(result["official_identity"]["status"], "VERIFIED_OPERATOR_EXPORT")
+            self.assertEqual(result["next_stage"], "GITHUB_PACKAGE_PINNED_EXE_AS_MSIX")
+            self.assertEqual(result["source_factory"], "AI-App-Factory")
+            self.assertEqual(result["display_name"], "Sample Product")
+            self.assertEqual((identity.calls, github.calls), (1, 1))
+            self.assertIsNone(result["windows_all_auto_record"])
+
+    def test_operator_verified_identity_without_apply_stays_hold(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            identity, github = FakeIdentity(), FakeGitHub()
+            identity.evidence_path = Path(tmp) / "operator-export.json"
+            result = Provisioner(
+                config(), Path(tmp) / "state", Path(tmp) / "work",
+                source=FakeSource(), builder=FakeBuilder(artifact_kind="exe"),
+                identity=identity, github=github,
+            ).run(job(), apply=False)
+            self.assertEqual(result["status"], "HOLD")
+            self.assertEqual(result["github_return"]["status"], "NOT_APPLIED")
+            self.assertEqual(result["next_stage"], "APPLY_VERIFIED_GITHUB_RETURN")
+            self.assertEqual((identity.calls, github.calls), (1, 1))
+
     def test_factory_builder_receives_exact_slug_and_sha(self):
         with tempfile.TemporaryDirectory() as tmp:
             source = Path(tmp) / "source"

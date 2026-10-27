@@ -36,13 +36,25 @@ def official_record():
     }
 
 
+def package_record():
+    return {"kind": "msix", "sha256": "f" * 64, "size_bytes": 2048}
+
+
 def approved_record():
     official = official_record()
+    job = sample_job()
     return {
         "reviewed": True, "source": "partner_center",
         **{key: official[key] for key in ("store_id", "name", "publisher", "version")},
         "verified_by": official["authenticated_account"],
         "evidence_url": official["official_evidence_url"],
+        "request_id": job.request_id, "product_type": job.product_type,
+        "source_factory": job.source_factory, "source_repository": job.source_repository,
+        "source_branch": job.source_branch, "source_sha": job.source_sha,
+        "expected_head_sha": job.source_sha, "slug": job.slug,
+        "display_name": job.display_name, "package_kind": package_record()["kind"],
+        "package_sha256": package_record()["sha256"],
+        "package_bytes": package_record()["size_bytes"],
     }
 
 
@@ -63,7 +75,7 @@ class ExistingIdentityAttestationTests(unittest.TestCase):
 
     def test_complete_matching_attestation_is_verified_without_new_commit(self):
         result = self.client(approved_record()).return_identity(
-            sample_job(), CONFIG, official_record(), apply=True)
+            sample_job(), CONFIG, official_record(), apply=True, package=package_record())
         self.assertEqual(result["status"], "EXISTING_VERIFIED")
         # GitHub Contents API sha is a *blob*, not a commit SHA.
         self.assertEqual(result["commit_sha"], SHA)
@@ -73,25 +85,25 @@ class ExistingIdentityAttestationTests(unittest.TestCase):
         record = approved_record()
         record["reviewed"] = False
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True, package=package_record())
 
     def test_wrong_partner_center_evidence_is_conflict(self):
         record = approved_record()
         record["evidence_url"] = "https://partner.microsoft.com/dashboard/products/other"
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True, package=package_record())
 
     def test_different_operator_is_conflict(self):
         record = approved_record()
         record["verified_by"] = "different-operator"
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True, package=package_record())
 
     def test_missing_source_is_conflict(self):
         record = approved_record()
         record.pop("source")
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True, package=package_record())
 
 
 if __name__ == "__main__":

@@ -46,3 +46,36 @@ The current `config.json` still pins `codex/factory-autoloop-20261026`.
 That branch must contain a real committed product and the reviewed builder
 before the live pipeline can run. This Draft branch does not change that
 allowlisted source branch.
+
+
+## APP: verified Identity return after a pre-Identity EXE
+
+The APP Factory's SHA-pinned Windows EXE is a real build artifact, but has **no
+MSIX Identity**. The Provisioner now supports the next separate step: after
+an operator supplies the authenticated Partner Center evidence JSON via
+`--official-identity`, it can write `products/<slug>/store/approved-identity.json`
+to the allowlisted Factory work branch with `--apply`, using GitHub's
+`expectedHeadOid=source_sha` compare-and-swap guard.
+
+The returned JSON retains `request_id`, `product_type`, `source_factory`,
+`source_repository`, `source_branch`, `source_sha`, `expected_head_sha`,
+`slug`, `display_name`, official Store ID/Name/Publisher/Version, and
+the inspected EXE `package_sha256`, `package_kind=exe`, and byte count.
+**The EXE SHA is not an MSIX SHA**; the later Windows MSIX packaging step must
+independently hash the finished MSIX and verify that it contains exactly the
+pinned EXE bytes. Neither EXE inspection nor the returned JSON creates or
+guesses an official Store ID.
+
+Even when the Identity write succeeds, the overall result is **HOLD** with
+`next_stage=GITHUB_PACKAGE_PINNED_EXE_AS_MSIX`, not E2E PASS or Store-ready.
+No `windows_all_auto_record` is issued for an EXE-only build. Without
+operator evidence, the result remains HOLD at
+`OBTAIN_OFFICIAL_IDENTITY_AND_BUILD_MSIX`; without `--apply`, no GitHub
+write is attempted. The Factory source branch must match `config.json`
+exactly and must still be at the job's `source_sha` when applying the
+Identity return. Parallel branch changes produce CONFLICT, not silent retry.
+
+Do not run a second PyInstaller build during the subsequent MSIX stage:
+reuse and hash-check the already inspected EXE. MSIX generation, actual
+Factory handoff Artifact, Windows-all-auto intake, and local Windows QA
+remain separate unverified stages.

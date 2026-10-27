@@ -11,6 +11,7 @@
 - Repository: https://github.com/shihuiarenjinba-png/Repository-Provisioner-app
 - 統合元: `codex/app-exe-request-provenance-20261027-1300` / `cdf355e928e86ad8032cec40e3ca9567f68b8cae`
 - ローカル作業ブランチ: `codex/e2e-belt-connection-20261027`
+- 現行Draft PR: https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/pull/10
 - 作業HEAD: 本資料を含む最新`git rev-parse HEAD`を正とする（最終報告とDraft PRに記録）
 - 変更概要: Factory jobの動的で安全な`codex/*` branch、7項目相関、SHA固定取得、実EXE/MSIX検査、PFN/Package SID/署名/SHA-256、既存Identity完全照合、GraphQL CAS、秘密情報伏字、PowerShell 7優先。
 - main/release変更、Identity上書き、Store提出: なし。

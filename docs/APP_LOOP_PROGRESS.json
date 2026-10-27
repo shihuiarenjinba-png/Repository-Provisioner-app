@@ -3,11 +3,11 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "Offline Notes Canary unsaved-search GUI defect reproduced on exact PR14 candidate: new/edited note was absent from search before Save (0 hits expected 1). Fixed only .candidate/product/main.py and tests/test_smoke.py in atomic Factory commit e24ad9b3. Exact Git blobs d5c1dcd3/5e0aed0f; local Linux 14/14 unittest and compile PASS, Xvfb 1024x768 JP unsaved search, EN saved display, nonmatch, Save/readback PASS; both screenshots visually inspected. Factory CI 40573882452 SUCCESS (test and windows-contracts SUCCESS, windows-exe-smoke SKIPPED); no APP EXE Artifact. Lifecycle controller cleanup still HOLD.",
-  "next_action": "Factory owner/controller only: repair research->build stale .candidate/proposal.json cleanup preserving proposals/offline-notes-canary.json and regression tests that currently unlink it manually; ensure build plan does not require stale .runtime/market.json on clean checkout. AGENTS.md prohibits APP candidate agent editing factory.py/state/tests/workflows. Then native plan -> candidate 14 tests -> validate -> promote -> verify products/offline-notes-canary -> pin source_branch/source_sha/request_id/slug -> real Windows EXE Artifact -> 36-minute E2E handoff. No new APP.",
+  "last_completed_step": "Offline Notes Canary exact PR14 candidate duplicate JSON key data-loss defect reproduced: duplicate notes key silently yielded 0 notes. Patched main.py and tests/test_smoke.py in atomic Factory commit dbec7e3bb18de76ac6d6f8069430e64a8120e107; Git blobs 50a7afd2/e23d8d7d; 15/15 Linux headless tests and py_compile PASS. Linux Xvfb 1024x768 Japanese duplicate-JSON error screenshot inspected. Factory CI 40582657157 SUCCESS (test/windows-contracts PASS; windows-exe-smoke SKIPPED). Lifecycle remains HOLD.",
+  "next_action": "Factory owner/controller only: fix research->build .candidate/proposal.json stage cleanup preserving proposals/offline-notes-canary.json and remove build plan dependency on .runtime/market.json; add full-cycle regression without manual unlink. Then native plan -> 15 candidate tests -> validate -> promote -> verify products/offline-notes-canary -> pin source_branch/source_sha/request_id -> Windows EXE Artifact -> 36-minute E2E handoff. No new APP.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
-  "resume_head_before_progress_commit": "7bdc61baaef2b977bf4d6f32b75abda2509c55fc",
+  "resume_head_before_progress_commit": "22abdac5d8e396a2f305e1f100d2fe5e51d2ba57",
   "source_sha": null,
   "blocked_by": [
     "FACTORY_PROMOTION: candidate GUI committed under .candidate/product but products/offline-notes-canary not yet present",
@@ -77,7 +77,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
+  "resume_head_sha": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -95,9 +95,9 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T19:59:36Z",
+  "last_observed_at_utc": "2026-10-27T20:59:03.710Z",
   "request_id": null,
-  "factory_head_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
+  "factory_head_sha": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
@@ -113,18 +113,18 @@
       "https://github.com/usememos/memos/issues/6309"
     ],
     "factory_stage": "build",
-    "product_code_committed": false,
+    "product_code_committed": true,
     "windows_exe_built": false,
     "source_sha": null,
     "request_id": null,
-    "ui_evidence": "PRIOR_PREVIEW_DIFFERENT_REVISION_NOT_PASS",
+    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_DUPLICATE_JSON_ERROR_VISUALLY_INSPECTED_NOT_WINDOWS",
     "contract_pass": false,
     "real_e2e_pass": false,
     "ui_quality_pass": false,
     "commercial_quality_pass": false,
-    "factory_ci_run_id": 40546599736,
+    "factory_ci_run_id": 40582657157,
     "factory_ci_conclusion": "SUCCESS",
-    "factory_ci_head": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
+    "factory_ci_head": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
     "progress_ci_run_id": 40480473128,
     "progress_ci_conclusion": "SUCCESS",
     "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
@@ -138,7 +138,7 @@
       "https://github.com/usememos/memos/issues/6309"
     ],
     "candidate_code_committed": true,
-    "candidate_commit_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86"
+    "candidate_commit_sha": "dbec7e3bb18de76ac6d6f8069430e64a8120e107"
   },
   "safety_fix_20261027": {
     "classification": "CODE_FIX",
@@ -160,14 +160,14 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "Factory PR14 e24ad9b3 CI 40573882452 SUCCESS (Linux core, Windows contracts; EXE smoke skipped); Provisioner PR10 7bdc61ba CI 40556681352 SUCCESS; Windows-all-auto PR14 419021f8 CI 40572651775 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
+    "ci": "Factory PR14 dbec7e3b CI 40582657157 SUCCESS (test, windows-contracts PASS; windows-exe-smoke SKIPPED); Provisioner PR10 22abdac5 CI 40574079029 SUCCESS; Windows-all-auto PR14 2e4e33d7 CI 40580391439 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
     "ui": "PARTIAL_LINUX_XVFB_EXACT_GITHUB_BLOBS_SCREENSHOTS_INSPECTED_NOT_WINDOWS_GUI_PASS",
     "commercial": "NOT_TESTED",
     "app_lifecycle": "NOT_PASSED_CONTROLLER_FIX_REQUIRED",
     "exe": "NOT_PASSED_NO_PRODUCT_EXE",
-    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_JA_UNSAVED_SEARCH_EN_SAVED_REVIEWED_NOT_WINDOWS",
+    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_DUPLICATE_JSON_ERROR_SCREENSHOT_INSPECTED_NOT_WINDOWS",
     "e2e": "NOT_PASSED"
   },
   "research_promotion_gate": {
@@ -365,5 +365,25 @@
     "real_exe_artifact": null,
     "source_sha": null,
     "request_id": null
+  },
+  "candidate_duplicate_json_safety_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "Ambiguous duplicate JSON object keys could silently replace a nonempty notes array with an empty one during read_notes",
+    "reproduction": "{\"schema\":1,\"notes\":[<valid-note>],\"notes\":[]} returned zero notes",
+    "fix_commit": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
+    "changed_files": [
+      ".candidate/product/main.py",
+      ".candidate/product/tests/test_smoke.py"
+    ],
+    "git_blobs": {
+      "main": "50a7afd2d6dc5bcf432474482611d6cad088530e",
+      "tests": "e23d8d7dc7fc8813fb584c4d23832326f8129da2"
+    },
+    "local_unittest": "15/15 PASS",
+    "local_compile": "PASS",
+    "gui_evidence": "Linux Xvfb 1024x768 Japanese duplicate JSON error visually inspected; not Windows",
+    "factory_ci_run_id": 40582657157,
+    "factory_ci_conclusion": "SUCCESS",
+    "windows_exe_artifact": null
   }
 }

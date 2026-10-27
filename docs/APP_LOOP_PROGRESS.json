@@ -3,16 +3,18 @@
   "lane": "APP",
   "active_product": null,
   "phase": "PREIDENTITY_EXE_CODE_PATH__NO_ACTIVE_PRODUCT",
-  "last_completed_step": "Provisioner exact-EXE retry/CAS Identity code and regression tests committed; CI verification pending",
-  "next_action": "Verify CI for this branch; compare AI-App-Factory PR #12/#13 and resolve workflow/handoff divergence under Factory AGENTS.md review, without changing main/release. Await an explicitly approved active_product and pinned Factory source SHA before any real Windows EXE job.",
-  "resume_repository": "shihuiarenjinba-png/Repository-Provisioner-app",
-  "resume_branch": "codex/e2e-belt-connection-20261027",
+  "last_completed_step": "Provisioner APP exact-EXE/CAS integration CI SUCCESS (run 40459089032); compared Factory PR #12/#13 divergent branches and posted PR #13 owner review #5663348986; no real APP product or MSIX",
+  "next_action": "AUTHORIZED FACTORY OWNER REVIEW: inspect AI-App-Factory PR #13 review #5663348986 at e8e3ca613a114cd0e919cf2f3a4454fa8149510a; safely integrate PR #12 workflow/pinned EXE Artifact/handoff with PR #13 request-bound EXE builder on a dedicated codex/* branch, add approved-identity.json vs EXE receipt immutable field/EXE SHA+size checks, prohibit PyInstaller rebuild, retain original source_sha and separate factory_head_sha. Factory AGENTS.md forbids this agent from modifying workflows/tools. Do not generate APP until supervisor assigns active_product and allows it; then pin exact request/source SHA before Windows build.",
+  "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "resume_branch": "codex/app-msix-prebuilt-exe-20261027-1300",
   "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
   "source_sha": null,
   "blocked_by": [
     "Supervisor active_product for APP is null; new_product_allowed=false",
-    "AI-App-Factory PR #12 and PR #13 are diverged; PR #13 has no MSIX workflow/artifact wiring",
-    "AI-App-Factory AGENTS.md forbids direct workflow/state edits by factory agent; owner review required",
+    "Factory PR #12 and PR #13 diverged (merge base 58553ee3948b5ea5d8749803ff55384f05428dca; PR12 7 commits vs PR13 13 commits)",
+    "Factory PR #13 approved Identity vs EXE receipt lacks immutable request/branch/source SHA and approved EXE SHA/bytes correlation",
+    "Factory PR #13 MSIX export workflow still rebuilds EXE and handoff still replaces original source_sha with post-Identity HEAD",
+    "AI-App-Factory AGENTS.md prohibits factory agent workflow/tool/state edits; authorized owner integration required",
     "No real APP EXE Artifact, authenticated Partner Center Identity, approved-identity.json, real MSIX, intake or local QA"
   ],
   "new_product_allowed": false,
@@ -21,7 +23,14 @@
     "branch": "codex/app-msix-prebuilt-exe-20261027-1300",
     "head_observed": "e8e3ca613a114cd0e919cf2f3a4454fa8149510a",
     "draft_pr": 13,
-    "diverged_pr": 12
+    "diverged_pr": 12,
+    "diverged_head": "aff29e5e768f044cfa7cc2531d5af66023ff13fe",
+    "merge_base": "58553ee3948b5ea5d8749803ff55384f05428dca",
+    "review_id": 5663348986,
+    "review_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/13",
+    "ci_run_id": 40447411667,
+    "ci_conclusion": "SUCCESS",
+    "owner_review_required": true
   },
   "provisioner_integration": {
     "draft_pr": 10,
@@ -33,13 +42,23 @@
     ],
     "same_exe_retry_without_rebuild": true,
     "cas_expected_head": "job.source_sha",
-    "exe_identity_not_msix": true
+    "exe_identity_not_msix": true,
+    "head_observed": "71a5f4eec5c103e38bc55c5b04a9e9b21b190cf6",
+    "ci_run_id": 40459089032,
+    "ci_conclusion": "SUCCESS"
   },
   "transport": {
     "repository": "shihuiarenjinba-png/Windows-all-auto",
     "branch": "codex/e2e-belt-connection-20261027",
-    "head_observed": "cca585d07eaa1e7e1e5b82d63613f59667989184",
-    "draft_pr": 14
+    "head_observed": "e3d637cc659cc18d35764139af9175fcc11a01a1",
+    "draft_pr": 14,
+    "ci_run_id": 40463213981,
+    "ci_conclusion": "SUCCESS",
+    "stacked_backlog_pr": 15,
+    "stacked_backlog_branch": "codex/github-backlog-local-queue-20261027",
+    "stacked_backlog_head": "e175c7bed4dc8845e2be16f18009839cb8ae0b18",
+    "stacked_backlog_ci_run_id": 40464274411,
+    "stacked_backlog_ci_conclusion": "SUCCESS"
   },
   "real_app_exe_artifact": null,
   "real_app_msix_artifact": null,
@@ -50,5 +69,24 @@
     "store_submission": false,
     "identity_guessing": false,
     "openai_paid_api": false
-  }
+  },
+  "resume_head_sha": "e8e3ca613a114cd0e919cf2f3a4454fa8149510a",
+  "downstream": {
+    "windows_data": {
+      "branch": "codex/msix-auto-build-identity-20261025",
+      "head": "664b9afcbed63539b89f594892d831d97b9d4118",
+      "ci_run_id": 40259906737,
+      "ci_conclusion": "SUCCESS",
+      "artifact": "MSIXAutoBuildIdentity-Windows-QA",
+      "artifact_kind": "WINDOWS_DATA_UTILITY_QA_NOT_APP_PRODUCT_MSIX"
+    },
+    "windows_checker": {
+      "branch": "codex/e2e-belt-connection-20261027",
+      "head": "ff315c7a42bb2d70ff4350ab2f146fd80511116a",
+      "ci_run_id": 40453767674,
+      "ci_conclusion": "FAILURE",
+      "app_real_qa": false
+    }
+  },
+  "last_observed_at_utc": "2026-10-27T07:03:34.225Z"
 }

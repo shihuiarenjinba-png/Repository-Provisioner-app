@@ -92,5 +92,39 @@ class PreIdentityExeBridgeTests(unittest.TestCase):
                         source, Job.validate(job(), config()), output)
 
 
+    def test_mismatched_request_id_receipt_holds_before_identity(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "source"
+            (source / "tools").mkdir(parents=True)
+            (source / "tools/build_windows_exe.py").write_text("# committed builder")
+            output = Path(tmp) / "artifacts"
+            output.mkdir()
+
+            def fake_run(command, cwd, timeout):
+                if "--output" in command:
+                    dest = Path(command[command.index("--output") + 1])
+                    dest.mkdir()
+                    exe = dest / "sample-product.exe"
+                    exe.write_bytes(b"MZ" + b"x" * 2048)
+                    data = job()
+                    (dest / "exe-receipt.json").write_text(json.dumps({
+                        "schema_version": 1, "stage": "PRE_IDENTITY_WINDOWS_EXE",
+                        "status": "EXE_QA_UNSIGNED", "product_type": data["product_type"],
+                        "source_factory": data["source_factory"],
+                        "source_repository": data["source_repository"],
+                        "source_branch": data["source_branch"],
+                        "source_sha": data["source_sha"], "request_id": "wrong-request",
+                        "slug": data["slug"], "display_name": data["display_name"],
+                        "executable": exe.name, "executable_bytes": exe.stat().st_size,
+                        "executable_sha256": hashlib.sha256(exe.read_bytes()).hexdigest(),
+                        "official_identity_status": "NOT_COLLECTED",
+                        "store_id": None, "msix_status": "NOT_BUILT",
+                    }))
+            with patch.object(PackageBuilder, "_run", side_effect=fake_run):
+                with self.assertRaisesRegex(HoldError, "provenance"):
+                    PackageBuilder()._build_windows(
+                        source, Job.validate(job(), config()), output)
+
+
 if __name__ == "__main__":
     unittest.main()

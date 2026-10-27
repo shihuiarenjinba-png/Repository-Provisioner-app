@@ -321,8 +321,41 @@ class PackageBuilder:
                        "--request-id", job.request_id,
                        "--output", str(target)],
                       source, 1800)
-            if not (target / (job.slug + ".exe")).is_file() or not (target / "exe-receipt.json").is_file():
+            exe = target / (job.slug + ".exe")
+            receipt_path = target / "exe-receipt.json"
+            if (target.is_symlink() or exe.is_symlink() or receipt_path.is_symlink()
+                    or not exe.is_file() or not receipt_path.is_file()
+                    or {p.name for p in target.iterdir()} != {exe.name, receipt_path.name}):
                 raise HoldError("Factory pre-Identity EXE evidence is incomplete")
+            receipt = load_json(receipt_path, 32768)
+            required_receipt = {
+                "schema_version": 1, "stage": "PRE_IDENTITY_WINDOWS_EXE",
+                "status": "EXE_QA_UNSIGNED", "product_type": job.product_type,
+                "source_factory": job.source_factory,
+                "source_repository": job.source_repository,
+                "source_branch": job.source_branch, "source_sha": job.source_sha,
+                "request_id": job.request_id, "slug": job.slug,
+                "display_name": job.display_name, "executable": exe.name,
+                "official_identity_status": "NOT_COLLECTED",
+                "store_id": None, "msix_status": "NOT_BUILT",
+            }
+            if any(receipt.get(k) != value for k, value in required_receipt.items()):
+                raise HoldError("Factory EXE receipt provenance does not match APP job")
+            expected_hash = receipt.get("executable_sha256")
+            size = exe.stat().st_size
+            if (not isinstance(expected_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_hash)
+                    or type(receipt.get("executable_bytes")) is not int
+                    or receipt["executable_bytes"] != size or not 1024 < size <= 300 * 1024 * 1024):
+                raise HoldError("Factory EXE receipt hash or size is invalid")
+            digest = hashlib.sha256()
+            with exe.open("rb") as stream:
+                if stream.read(2) != b"MZ":
+                    raise HoldError("Factory EXE is not a Windows PE payload")
+                stream.seek(0)
+                for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            if digest.hexdigest() != expected_hash:
+                raise HoldError("Factory EXE hash differs from receipt")
             return
         for relative in self.WINDOWS_ENTRYPOINTS:
             path = source / relative

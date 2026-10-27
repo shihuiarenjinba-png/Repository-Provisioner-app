@@ -3,8 +3,8 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "Offline Notes Canary exact PR14 candidate duplicate JSON key data-loss defect reproduced: duplicate notes key silently yielded 0 notes. Patched main.py and tests/test_smoke.py in atomic Factory commit dbec7e3bb18de76ac6d6f8069430e64a8120e107; Git blobs 50a7afd2/e23d8d7d; 15/15 Linux headless tests and py_compile PASS. Linux Xvfb 1024x768 Japanese duplicate-JSON error screenshot inspected. Factory CI 40582657157 SUCCESS (test/windows-contracts PASS; windows-exe-smoke SKIPPED). Lifecycle remains HOLD.",
-  "next_action": "Factory owner/controller only: fix research->build .candidate/proposal.json stage cleanup preserving proposals/offline-notes-canary.json and remove build plan dependency on .runtime/market.json; add full-cycle regression without manual unlink. Then native plan -> 15 candidate tests -> validate -> promote -> verify products/offline-notes-canary -> pin source_branch/source_sha/request_id -> Windows EXE Artifact -> 36-minute E2E handoff. No new APP.",
+  "last_completed_step": "Offline Notes Canary Windows filename safety: reproduced COM¹/²/³ and LPT¹/²/³ reserved-device export filename defect; patched exact PR14 candidate main.py and test_smoke.py atomically at 6b73a7fae2f90bc32c7501353f679163b2dd9fb8. Exact Git blobs feb5ec8f/acb9fecd independently matched; Linux headless 16/16 PASS, py_compile PASS, Linux Xvfb 1024x768 11 GUI integration checks PASS (first run, create, dirty, unsaved search, save, English toggle, restart/reopen, cancel close). Factory CI 40599653913 SUCCESS (test/windows-contracts PASS; windows-exe-smoke SKIPPED). Factory lifecycle remains HOLD.",
+  "next_action": "Factory authorized owner/controller: fix research->build archived proposal cleanup (including legacy stage=build stale proposal) and remove build plan dependency on .runtime/market.json; regression full cycle without manual unlink. Then standard plan -> 16 candidate tests -> validate -> promote -> verify products/offline-notes-canary -> pin immutable source_sha/request_id -> real Windows EXE artifact. Identity user-managed, 36-minute E2E handoff only after EXE. No new APP.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "22abdac5d8e396a2f305e1f100d2fe5e51d2ba57",
@@ -77,7 +77,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
+  "resume_head_sha": "6b73a7fae2f90bc32c7501353f679163b2dd9fb8",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -95,9 +95,9 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T20:59:03.710Z",
+  "last_observed_at_utc": "2026-10-27T23:06:45.392Z",
   "request_id": null,
-  "factory_head_sha": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
+  "factory_head_sha": "6b73a7fae2f90bc32c7501353f679163b2dd9fb8",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
@@ -160,14 +160,14 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "Factory PR14 dbec7e3b CI 40582657157 SUCCESS (test, windows-contracts PASS; windows-exe-smoke SKIPPED); Provisioner PR10 22abdac5 CI 40574079029 SUCCESS; Windows-all-auto PR14 2e4e33d7 CI 40580391439 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
+    "ci": "Factory PR14 6b73a7fa CI 40599653913 SUCCESS (test/windows-contracts PASS; windows-exe-smoke SKIPPED); Provisioner PR10 f8d03890 CI 40582849698 SUCCESS; Windows-all-auto PR14 cc4c6c58 CI 40597008603 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
-    "ui": "PARTIAL_LINUX_XVFB_EXACT_GITHUB_BLOBS_SCREENSHOTS_INSPECTED_NOT_WINDOWS_GUI_PASS",
+    "ui": "PARTIAL_LINUX_XVFB_1024x768_11_GUI_INTEGRATION_CHECKS_PASS_NOT_WINDOWS_GUI_PASS",
     "commercial": "NOT_TESTED",
     "app_lifecycle": "NOT_PASSED_CONTROLLER_FIX_REQUIRED",
     "exe": "NOT_PASSED_NO_PRODUCT_EXE",
-    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_DUPLICATE_JSON_ERROR_SCREENSHOT_INSPECTED_NOT_WINDOWS",
+    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_EN_SAVED_SCREENSHOT_INSPECTED_NOT_WINDOWS",
     "e2e": "NOT_PASSED"
   },
   "research_promotion_gate": {
@@ -385,5 +385,23 @@
     "factory_ci_run_id": 40582657157,
     "factory_ci_conclusion": "SUCCESS",
     "windows_exe_artifact": null
+  },
+  "candidate_windows_reserved_superscripts_20261028": {
+    "factory_commit": "6b73a7fae2f90bc32c7501353f679163b2dd9fb8",
+    "main_blob_sha": "feb5ec8f9b9134b38084ea5a9e9de17fca0a9cd7",
+    "test_blob_sha": "acb9fecd70dca83bccb1311f35ad8652d76d9d39",
+    "reproduced_before": "COM¹/COM²/LPT³ filenames not prefixed; Windows reserved device names",
+    "fixed_after": "COM¹/²/³ and LPT¹/²/³ names prefixed note_",
+    "local_headless": "16_PASS",
+    "local_compile": "PASS",
+    "local_linux_gui": "11_CHECKS_PASS_1024x768_SCREEN_NOT_WINDOWS",
+    "factory_ci_run_id": 40599653913,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_exe_smoke": "SKIPPED",
+    "lifecycle": "HOLD",
+    "exe_artifact": null,
+    "ui_evidence": "/mnt/data/offline_notes_canary_windows_filename_qa_20261028.zip",
+    "source_sha": null,
+    "request_id": null
   }
 }

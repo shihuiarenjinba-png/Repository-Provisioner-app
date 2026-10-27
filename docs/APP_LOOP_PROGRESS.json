@@ -2,20 +2,20 @@
   "schema_version": 1,
   "lane": "APP",
   "active_product": null,
-  "phase": "PREIDENTITY_EXE_CODE_PATH__NO_ACTIVE_PRODUCT",
-  "last_completed_step": "Provisioner APP exact-EXE/CAS integration CI SUCCESS (run 40459089032); compared Factory PR #12/#13 divergent branches and posted PR #13 owner review #5663348986; no real APP product or MSIX",
-  "next_action": "AUTHORIZED FACTORY OWNER REVIEW: inspect AI-App-Factory PR #13 review #5663348986 at e8e3ca613a114cd0e919cf2f3a4454fa8149510a; safely integrate PR #12 workflow/pinned EXE Artifact/handoff with PR #13 request-bound EXE builder on a dedicated codex/* branch, add approved-identity.json vs EXE receipt immutable field/EXE SHA+size checks, prohibit PyInstaller rebuild, retain original source_sha and separate factory_head_sha. Factory AGENTS.md forbids this agent from modifying workflows/tools. Do not generate APP until supervisor assigns active_product and allows it; then pin exact request/source SHA before Windows build.",
+  "phase": "CANARY_RESEARCH_PROPOSAL_REVIEW__NO_ACTIVE_PRODUCT",
+  "last_completed_step": "Staged exactly one offline-notes APP canary research proposal on Factory Draft PR #14 (commit 60d84c37ab73d6efb6a8fe3d382b1bf500949921), without changing Factory state or generating product code/EXE; 5-repo CI/artifact inspection completed.",
+  "next_action": "FIRST: check AI-App-Factory codex/app-canary-offline-notes-20261027 HEAD 60d84c37ab73d6efb6a8fe3d382b1bf500949921 and Draft PR #14, Factory AGENTS.md and factory/state.json. Authorized Factory owner must use existing research validation/promotion to move stage=research to stage=build with market signals and plan snapshot; agent must not directly edit factory/state.json. Then implement REAL Tkinter GUI/main.py + headless tests ONLY under .candidate/product/, promote through reviewed Factory mechanism to products/offline-notes-canary, pin real product source_sha and request_id, build actual Windows EXE. Do not create another APP canary. Separately preserve PR #12/#13 EXE/Identity immutable correlation and original source_sha vs factory_head_sha. No Identity/MSIX/E2E PASS until real evidence.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
-  "resume_branch": "codex/app-msix-prebuilt-exe-20261027-1300",
+  "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
   "source_sha": null,
   "blocked_by": [
-    "Supervisor active_product for APP is null; new_product_allowed=false",
-    "Factory PR #12 and PR #13 diverged (merge base 58553ee3948b5ea5d8749803ff55384f05428dca; PR12 7 commits vs PR13 13 commits)",
-    "Factory PR #13 approved Identity vs EXE receipt lacks immutable request/branch/source SHA and approved EXE SHA/bytes correlation",
-    "Factory PR #13 MSIX export workflow still rebuilds EXE and handoff still replaces original source_sha with post-Identity HEAD",
-    "AI-App-Factory AGENTS.md prohibits factory agent workflow/tool/state edits; authorized owner integration required",
-    "No real APP EXE Artifact, authenticated Partner Center Identity, approved-identity.json, real MSIX, intake or local QA"
+    "FACTORY_RESEARCH_STAGE: factory/state.json is stage=research slug=null; AGENTS.md restricts research agent to .candidate/proposal.json and forbids direct factory/state.json/tools/workflow edits",
+    "HUMAN_APPROVAL: authorized Factory owner must validate market signals and promote research to build before actual candidate code can be written",
+    "NO_ACTIVE_PRODUCT: proposal is not committed products/<slug>; active_product remains null; do not start another APP canary",
+    "INTEGRATION_FIX: Factory PR #12/#13 diverged; exact EXE reuse, approved Identity correlation, immutable source_sha/factory_head_sha, MSIX workflow/handoff remain unintegrated",
+    "EXTERNAL_IDENTITY: authenticated Partner Center Identity not yet available (not needed for pre-Identity GUI/EXE stages)",
+    "No real APP EXE, GUI screenshot, MSIX, local return, Windows-all-auto intake, or Windows-checker QA evidence"
   ],
   "new_product_allowed": false,
   "factory_review": {
@@ -70,7 +70,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "e8e3ca613a114cd0e919cf2f3a4454fa8149510a",
+  "resume_head_sha": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -88,5 +88,32 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T07:03:34.225Z"
+  "last_observed_at_utc": "2026-10-27T09:21:55Z",
+  "request_id": null,
+  "factory_head_sha": null,
+  "build_sha": null,
+  "canary_research": {
+    "slug": "offline-notes-canary",
+    "status": "PROPOSAL_ONLY_NOT_ACTIVE_PRODUCT",
+    "title": "Offline Notes Canary — Searchable Scratchpad",
+    "factory_branch": "codex/app-canary-offline-notes-20261027",
+    "proposal_commit_sha": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
+    "draft_pr": 14,
+    "base_pr": 13,
+    "proposal_path": ".candidate/proposal.json",
+    "evidence_urls": [
+      "https://github.com/Zettlr/Zettlr/issues/6519",
+      "https://github.com/usememos/memos/issues/6309"
+    ],
+    "factory_stage": "research",
+    "product_code_committed": false,
+    "windows_exe_built": false,
+    "source_sha": null,
+    "request_id": null,
+    "ui_evidence": null,
+    "contract_pass": false,
+    "real_e2e_pass": false,
+    "ui_quality_pass": false,
+    "commercial_quality_pass": false
+  }
 }

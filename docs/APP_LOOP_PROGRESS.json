@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "lane": "APP",
+  "active_product": null,
+  "phase": "PREIDENTITY_EXE_CODE_PATH__NO_ACTIVE_PRODUCT",
+  "last_completed_step": "Provisioner exact-EXE retry/CAS Identity code and regression tests committed; CI verification pending",
+  "next_action": "Verify CI for this branch; compare AI-App-Factory PR #12/#13 and resolve workflow/handoff divergence under Factory AGENTS.md review, without changing main/release. Await an explicitly approved active_product and pinned Factory source SHA before any real Windows EXE job.",
+  "resume_repository": "shihuiarenjinba-png/Repository-Provisioner-app",
+  "resume_branch": "codex/e2e-belt-connection-20261027",
+  "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
+  "source_sha": null,
+  "blocked_by": [
+    "Supervisor active_product for APP is null; new_product_allowed=false",
+    "AI-App-Factory PR #12 and PR #13 are diverged; PR #13 has no MSIX workflow/artifact wiring",
+    "AI-App-Factory AGENTS.md forbids direct workflow/state edits by factory agent; owner review required",
+    "No real APP EXE Artifact, authenticated Partner Center Identity, approved-identity.json, real MSIX, intake or local QA"
+  ],
+  "new_product_allowed": false,
+  "factory_review": {
+    "repository": "shihuiarenjinba-png/AI-App-Factory",
+    "branch": "codex/app-msix-prebuilt-exe-20261027-1300",
+    "head_observed": "e8e3ca613a114cd0e919cf2f3a4454fa8149510a",
+    "draft_pr": 13,
+    "diverged_pr": 12
+  },
+  "provisioner_integration": {
+    "draft_pr": 10,
+    "branch": "codex/e2e-belt-connection-20261027",
+    "implementation_commits": [
+      "e987c6c053f0c846e587f16572421dcbd2cfaf69",
+      "c15207fa77b6347eaa46c4547727f495a87e95c3",
+      "9861e91f6ea1f064066c92c9f400da8c710f4fe3"
+    ],
+    "same_exe_retry_without_rebuild": true,
+    "cas_expected_head": "job.source_sha",
+    "exe_identity_not_msix": true
+  },
+  "transport": {
+    "repository": "shihuiarenjinba-png/Windows-all-auto",
+    "branch": "codex/e2e-belt-connection-20261027",
+    "head_observed": "cca585d07eaa1e7e1e5b82d63613f59667989184",
+    "draft_pr": 14
+  },
+  "real_app_exe_artifact": null,
+  "real_app_msix_artifact": null,
+  "app_e2e_pass": false,
+  "policy": {
+    "main_release_changes": false,
+    "merges": false,
+    "store_submission": false,
+    "identity_guessing": false,
+    "openai_paid_api": false
+  }
+}

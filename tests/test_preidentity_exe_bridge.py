@@ -12,14 +12,18 @@ from test_package_identity_pipeline import (
 )
 
 
-def write_factory_receipt(destination: Path, *, corrupt_sha: bool = False) -> None:
+def write_factory_receipt(destination: Path, *, corrupt_sha: bool = False,
+                          wrong_request: bool = False) -> None:
     raw = b"MZ" + b"x" * 2048
     (destination / "sample-product.exe").write_bytes(raw)
     receipt = {
         "schema_version": 1, "stage": "PRE_IDENTITY_WINDOWS_EXE",
-        "status": "EXE_QA_UNSIGNED",
+        "status": "EXE_QA_UNSIGNED", "source_factory": "AI-App-Factory",
         "source_repository": config().source_repository,
-        "source_sha": "a" * 40, "product_type": "APP",
+        "source_branch": config().source_branch,
+        "source_sha": "a" * 40,
+        "request_id": "different-request" if wrong_request else job()["request_id"],
+        "product_type": "APP",
         "slug": "sample-product", "display_name": "Sample Product",
         "executable": "sample-product.exe",
         "executable_sha256": ("0" * 64 if corrupt_sha else hashlib.sha256(raw).hexdigest()),
@@ -105,6 +109,35 @@ class PreIdentityExeBridgeTests(unittest.TestCase):
             self.assertIn("--expected-sha", commands[1])
             self.assertEqual(commands[1][commands[1].index("--expected-sha") + 1], "a" * 40)
             self.assertEqual(commands[1][commands[1].index("--slug") + 1], "sample-product")
+            self.assertEqual(commands[1][commands[1].index("--source-branch") + 1], job()["source_branch"])
+            self.assertEqual(commands[1][commands[1].index("--request-id") + 1], job()["request_id"])
+
+    def test_factory_builder_rejects_request_provenance_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "source"
+            (source / "tools").mkdir(parents=True)
+            (source / "tools/build_windows_exe.py").write_text("# committed builder\\n")
+            output = Path(tmp) / "artifacts"
+            output.mkdir()
+
+            def fake_run(command, cwd, timeout):
+                if "--output" in command:
+                    destination = Path(command[command.index("--output") + 1])
+                    destination.mkdir()
+                    write_factory_receipt(destination, wrong_request=True)
+
+            with patch.object(PackageBuilder, "_run", side_effect=fake_run):
+                with self.assertRaisesRegex(ConflictError, "pinned APP job"):
+                    PackageBuilder()._build_windows(
+                        source, Job.validate(job(), config()), output)
+
+    def test_factory_builder_rejects_unexpected_receipt_directory_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp)
+            write_factory_receipt(target)
+            (target / "extra.txt").write_text("unexpected")
+            with self.assertRaisesRegex(HoldError, "evidence is incomplete"):
+                PackageBuilder._verify_factory_exe_receipt(Job.validate(job(), config()), target)
 
     def test_factory_builder_rejects_receipt_sha_mismatch(self):
         with tempfile.TemporaryDirectory() as tmp:

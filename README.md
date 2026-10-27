@@ -24,3 +24,25 @@ python provisioner.py --input job.json --output result.json `
 - path: `products/<slug>/store/approved-identity.json`
 
 入力・出力契約は `schemas/`、運用とHOLD項目は `docs/LOCAL_PROVISIONER_HANDOFF.md` を参照してください。ローカル状態と生成物は `.provisioner-state/` と `.provisioner-work/` に製品タイプ別で保存され、Gitには追加されません。
+
+## APP pre-Identity Windows EXE stage (Draft)
+
+When the exact pinned Factory checkout contains the committed
+`tools/build_windows_exe.py`, Provisioner now passes the Factory job's
+`slug` and `source_sha` to that builder on the local Windows machine.
+It collects a real EXE, a SHA-256 receipt, and a fresh artifact path.
+
+An EXE-only result is **HOLD**, not a verified MSIX or Store candidate.
+The response retains `package.kind=exe`, `package.sha256` and
+`package.path`, with `next_stage=OBTAIN_OFFICIAL_IDENTITY_AND_BUILD_MSIX`.
+It does **not** call Partner Center, write approved-identity.json, or
+invent a Store ID from an EXE. MSIX generation and official Identity
+round-trip still require the authenticated local operator.
+
+Companion Factory implementation: 
+https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/11
+
+The current `config.json` still pins `codex/factory-autoloop-20261026`.
+That branch must contain a real committed product and the reviewed builder
+before the live pipeline can run. This Draft branch does not change that
+allowlisted source branch.

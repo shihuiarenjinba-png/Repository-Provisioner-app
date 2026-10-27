@@ -30,7 +30,7 @@ class BuildArtifactFreshnessTests(unittest.TestCase):
             (output / "old.msix").write_bytes(b"previous-build")
             fresh = output / "fresh.msix"
 
-            def produce(_source):
+            def produce(_source, _job, _output_dir):
                 fresh.write_bytes(b"current-build")
 
             with patch.object(PackageBuilder, "_build_windows", side_effect=produce):
@@ -46,7 +46,7 @@ class BuildArtifactFreshnessTests(unittest.TestCase):
             candidate = output / "candidate.msix"
             candidate.write_bytes(b"old")
 
-            def produce(_source):
+            def produce(_source, _job, _output_dir):
                 candidate.write_bytes(b"new-content-longer")
 
             with patch.object(PackageBuilder, "_build_windows", side_effect=produce):

@@ -2,22 +2,21 @@
   "schema_version": 1,
   "lane": "APP",
   "active_product": null,
-  "phase": "CANARY_BUILD_STAGE__LOCAL_GUI_PREVIEW_NOT_COMMITTED",
-  "last_completed_step": "Promoted existing offline-notes-canary research proposal to Factory stage=build on Draft PR #14 using authenticated live GitHub issue evidence from Zettlr #6519 and usememos/memos #6309; stage commit fb417440e207b7a967cdb1ea56fc8b82447e0138, Factory CI 40500329626 SUCCESS. Promotion reproduced factory.py research validation and output semantics in trusted orchestrator; native factory.py CLI was NOT executed. Separately developed original Tkinter GUI candidate locally with 12 headless tests PASS, py_compile PASS, Xvfb 1024x768 Japanese empty-state and English saved-state screenshots inspected, save/reopen data smoke PASS. Candidate source is not yet committed to Factory; no Windows EXE or APP product SHA.",
-  "next_action": "00 APP OWNER: re-fetch AI-App-Factory codex/app-canary-offline-notes-20261027 HEAD fb417440e207b7a967cdb1ea56fc8b82447e0138 and factory/state.json stage=build slug=offline-notes-canary. Commit only the reviewed single Tkinter implementation under .candidate/product (manifest.json, main.py, README.md, tests/test_smoke.py), re-run actual factory.py plan→validate→promote with the same authentic proposal, and commit resulting products/offline-notes-canary on codex/*; do not change factory.py/workflows directly. Then pin source_branch/source_sha/request_id, trigger Windows app-preidentity-exe.yml and inspect real EXE Artifact SHA plus 1024x768 real Windows GUI. No second canary. Keep Identity/MSIX downstream HOLD until real product and official evidence.",
+  "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
+  "last_completed_step": "Committed original functional offline-notes-canary Tkinter GUI, manifest, README, and 9 headless regression tests under allowed .candidate/product on Factory Draft PR #14; candidate commit e72dacdc4536bff966216c534f42005f6f534680. No product promotion or real Windows EXE. Factory CI 40508510792 queued at observation; previous local preview 12 PASS refers to different revision and must NOT be treated as validation of committed candidate.",
+  "next_action": "APP owner: read Factory PR #14 HEAD e72dacdc4536bff966216c534f42005f6f534680 and CI 40508510792. Verify .candidate/product tests on exact committed files, Python compile and native factory.py plan/validate. Current .candidate/proposal.json persists from research and will cause build-stage validate to reject unexpected candidate root; only trusted Factory controller/owner may perform authorized research-artifact cleanup (AGENTS restricts product agent to .candidate/product), then native factory.py promote on reviewed codex branch and commit products/offline-notes-canary. Recheck HEAD before writes. Only then pin immutable source_sha/source_branch/request_id and run real Windows EXE workflow; preserve APP-only canary, no new product.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
   "source_sha": null,
   "blocked_by": [
-    "PRODUCT_SOURCE_NOT_YET_COMMITTED: candidate GUI is locally tested preview only; no products/offline-notes-canary on Factory branch",
-    "FACTORY_CONTROLLER_REPLAY_REQUIRED: research promotion used verified controller-equivalent semantics, but native factory.py plan/validate/promote has not been executed in a full checkout; revalidate before product promotion",
-    "NO_ACTIVE_PRODUCT: active_product stays null until committed real product and pinned source SHA/request_id; new_product_allowed=false",
-    "WINDOWS_EXE_PENDING: no real Windows Runner EXE Artifact or SHA yet",
-    "INTEGRATION_FIX: Factory PR #12/#13 diverged; exact EXE reuse/Identity correlation/source_sha versus factory_head_sha and MSIX handoff still require integration",
-    "EXTERNAL_IDENTITY: authenticated Partner Center Identity absent (not needed for pre-Identity GUI/EXE)",
-    "GUI_QA_PARTIAL: Linux Xvfb 1024x768 screenshots reviewed, not real Windows installation/GUI QA",
-    "WINDOWS_CHECKER_CI_FAILURE: existing PR #2 CI remains failed; no APP package QA"
+    "FACTORY_PROMOTION: candidate GUI committed under .candidate/product but products/offline-notes-canary not yet present",
+    "FACTORY_CONTROLLER_CLEANUP: .candidate/proposal.json remains in build stage; native validate rejects non-product candidate root; AGENTS prohibits product agent from editing outside .candidate/product",
+    "EXACT_CANDIDATE_TESTS_PENDING: previous local preview tests/screenshots refer to different source revision; new GitHub CI tests Factory core, not .candidate/product tests",
+    "WINDOWS_EXE_PENDING: no committed product source SHA or real EXE Artifact",
+    "INTEGRATION_FIX: Factory PR #12/#13 Identity correlation, source_sha vs factory_head_sha and MSIX handoff divergence",
+    "EXTERNAL_IDENTITY: authenticated Partner Center Identity not yet available; not needed for preidentity EXE",
+    "WINDOWS_CHECKER_CI_FAILURE: no APP package QA"
   ],
   "new_product_allowed": false,
   "factory_review": {
@@ -73,7 +72,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "fb417440e207b7a967cdb1ea56fc8b82447e0138",
+  "resume_head_sha": "e72dacdc4536bff966216c534f42005f6f534680",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -91,13 +90,13 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T12:02:57.851Z",
+  "last_observed_at_utc": "2026-10-27T13:00:00Z",
   "request_id": null,
-  "factory_head_sha": null,
+  "factory_head_sha": "e72dacdc4536bff966216c534f42005f6f534680",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
-    "status": "PROMOTED_TO_BUILD_ON_DRAFT_BRANCH_NOT_ACTIVE",
+    "status": "BUILD_CANDIDATE_COMMITTED_NOT_PROMOTED",
     "title": "Offline Notes Canary — Searchable Scratchpad",
     "factory_branch": "codex/app-canary-offline-notes-20261027",
     "proposal_commit_sha": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
@@ -108,12 +107,12 @@
       "https://github.com/Zettlr/Zettlr/issues/6519",
       "https://github.com/usememos/memos/issues/6309"
     ],
-    "factory_stage": "research",
+    "factory_stage": "build",
     "product_code_committed": false,
     "windows_exe_built": false,
     "source_sha": null,
     "request_id": null,
-    "ui_evidence": null,
+    "ui_evidence": "PRIOR_PREVIEW_DIFFERENT_REVISION_NOT_PASS",
     "contract_pass": false,
     "real_e2e_pass": false,
     "ui_quality_pass": false,
@@ -132,7 +131,9 @@
     "authentic_evidence_urls": [
       "https://github.com/Zettlr/Zettlr/issues/6519",
       "https://github.com/usememos/memos/issues/6309"
-    ]
+    ],
+    "candidate_code_committed": true,
+    "candidate_commit_sha": "e72dacdc4536bff966216c534f42005f6f534680"
   },
   "safety_fix_20261027": {
     "classification": "CODE_FIX",
@@ -154,11 +155,11 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "PASS_FACTORY_RESEARCH_PROMOTION_ONLY; PROVISIONER_PREVIOUS_SUCCESS",
-    "contract": "PARTIAL_RESEARCH_PROMOTION_ONLY_NOT_CROSS_REPO",
+    "ci": "FACTORY_PR14_NEW_HEAD_40508510792_QUEUED; PROVISIONER_PREVIOUS_SUCCESS",
+    "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
-    "ui": "PARTIAL_LINUX_VIRTUAL_GUI_NOT_WINDOWS_PASS",
-    "commercial": "NOT_TESTED_NO_COMMITTED_PRODUCT"
+    "ui": "LOCAL_PREVIEW_ONLY_DIFFERENT_REVISION_NO_COMMITTED_GUI_QA",
+    "commercial": "NOT_TESTED"
   },
   "research_promotion_gate": {
     "status": "HOLD_OWNER_ACTION_REQUIRED",

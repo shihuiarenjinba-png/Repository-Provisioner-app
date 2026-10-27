@@ -3,7 +3,7 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_RESEARCH_PROPOSAL_REVIEW__NO_ACTIVE_PRODUCT",
-  "last_completed_step": "Staged exactly one offline-notes APP canary research proposal on Factory Draft PR #14 (commit 60d84c37ab73d6efb6a8fe3d382b1bf500949921), without changing Factory state or generating product code/EXE; 5-repo CI/artifact inspection completed.",
+  "last_completed_step": "Staged exactly one offline-notes APP canary research proposal on Factory Draft PR #14 (commit 60d84c37ab73d6efb6a8fe3d382b1bf500949921), without changing Factory state or generating product code/EXE; 5-repo CI/artifact inspection completed. Factory proposal PR #14 CI 40480434665 SUCCESS; Provisioner progress CI 40480473128 SUCCESS on preceding HEAD.",
   "next_action": "FIRST: check AI-App-Factory codex/app-canary-offline-notes-20261027 HEAD 60d84c37ab73d6efb6a8fe3d382b1bf500949921 and Draft PR #14, Factory AGENTS.md and factory/state.json. Authorized Factory owner must use existing research validation/promotion to move stage=research to stage=build with market signals and plan snapshot; agent must not directly edit factory/state.json. Then implement REAL Tkinter GUI/main.py + headless tests ONLY under .candidate/product/, promote through reviewed Factory mechanism to products/offline-notes-canary, pin real product source_sha and request_id, build actual Windows EXE. Do not create another APP canary. Separately preserve PR #12/#13 EXE/Identity immutable correlation and original source_sha vs factory_head_sha. No Identity/MSIX/E2E PASS until real evidence.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
@@ -114,6 +114,13 @@
     "contract_pass": false,
     "real_e2e_pass": false,
     "ui_quality_pass": false,
-    "commercial_quality_pass": false
+    "commercial_quality_pass": false,
+    "factory_ci_run_id": 40480434665,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_ci_head": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
+    "progress_ci_run_id": 40480473128,
+    "progress_ci_conclusion": "SUCCESS",
+    "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
+    "note": "Factory CI success validates infrastructure tests, NOT proposal research validation, real product, GUI, Windows EXE, Identity, or E2E."
   }
 }

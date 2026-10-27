@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "updated_at_utc": "2026-10-27T05:02:00Z",
+  "lane": "APP",
+  "status": "HOLD",
+  "e2e_pass": false,
+  "active_product": null,
+  "phase": "PREIDENTITY_EXE_CODE_PATH__NO_ACTIVE_PRODUCT",
+  "last_completed_step": "PROVISIONER_PR7_IDENTITY_RETURN_AND_PR8_EXE_PROVENANCE_CODE_RECONCILED_ON_REVIEW_BRANCH",
+  "next_action": "Review integration branch CI; reconcile Factory PR #12 vs #13 on a separate codex/* branch without losing immutable source_sha vs factory_head_sha; review source_branch allowlist and only then pin an accepted committed APP product/job. No new product generation until explicit gate release.",
+  "resume_repository": "shihuiarenjinba-png/Repository-Provisioner-app",
+  "resume_branch": "codex/app-identity-provenance-integration-20261027-1400",
+  "resume_code_commit_sha": "5ad29b432fe769152e0ca7e834c7fbc64b01dfd5",
+  "next_review_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "next_review_branch": "codex/app-msix-prebuilt-exe-20261027-1300",
+  "next_review_head_sha": "e8e3ca613a114cd0e919cf2f3a4454fa8149510a",
+  "source_sha": null,
+  "request_id": null,
+  "slug": null,
+  "display_name": null,
+  "new_product_allowed": false,
+  "blocked_by": [
+    "No accepted committed APP product; Factory factory/state.json has stage=research and slug=null",
+    "Factory PR #12 and #13 diverged; do not merge blindly or mislabel post-Identity factory_head_sha as source_sha",
+    "Provisioner config.json still allowlists codex/factory-autoloop-20261026, which is not the reviewed Factory #13 source branch",
+    "No authenticated Partner Center Identity, no local Windows EXE, no real MSIX or Windows-all-auto APP intake"
+  ],
+  "source_contract": {
+    "product_type": "APP",
+    "source_factory": "AI-App-Factory",
+    "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+    "source_branch_configured": "codex/factory-autoloop-20261026",
+    "source_branch_review_candidate": "codex/app-msix-prebuilt-exe-20261027-1300",
+    "source_sha": null,
+    "expected_head_sha": null
+  },
+  "local_job_input": {
+    "status": "NOT_RUNNABLE_UNTIL_ACCEPTED_PRODUCT_AND_BRANCH_REVIEW",
+    "schema_version": "1.0",
+    "request_id": null,
+    "product_type": "APP",
+    "source_factory": "AI-App-Factory",
+    "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+    "source_branch": null,
+    "source_sha": null,
+    "slug": null,
+    "display_name": null,
+    "target_owner": "shihuiarenjinba-png",
+    "dry_run": true,
+    "requested_actions": [
+      "BUILD_WINDOWS",
+      "INSPECT_PACKAGE",
+      "LOOKUP_OFFICIAL_IDENTITY",
+      "PROPOSE_GITHUB_RETURN"
+    ]
+  },
+  "expected_local_outputs": [
+    "DRY_RUN result with no side effects only after real job fields are populated",
+    "Actual SHA-pinned EXE and exe-receipt.json with matching request_id/source_branch/source_sha and EXE SHA-256",
+    "Authenticated Partner Center evidence retained locally",
+    "approved-identity.json written by explicit authorized CAS to products/<slug>/store/ on the exact Factory codex branch",
+    "Same EXE bytes inside MakeAppx MSIX, manifest Identity and package SHA-256 verified",
+    "factory-msix-handoff-<slug> real artifact consumed by Windows-all-auto and queued for Windows-checker/local QA"
+  ],
+  "last_verified": {
+    "factory_pr13_head": "e8e3ca613a114cd0e919cf2f3a4454fa8149510a",
+    "factory_pr12_head": "aff29e5e768f044cfa7cc2531d5af66023ff13fe",
+    "provisioner_pr7_head": "1fcc1b9f1918489d9497f3ab940bd857d8430717",
+    "provisioner_pr8_head": "cdf355e10e216f963601e66a398105774888b3e6",
+    "windows_all_auto_pr12_head": "aadfa40ed301a39310845e4a83d2e8cf9c9b0565",
+    "checker_pr1_head": "7780647efd80dea6b2ebc629172cfb2c743a9dcb"
+  },
+  "artifacts": {
+    "app_exe": null,
+    "app_msix": null,
+    "windows_all_auto_receipt": null,
+    "local_qa_receipt": null
+  },
+  "safety": {
+    "main_release_changed": false,
+    "merged": false,
+    "store_submitted": false,
+    "identity_guessed": false,
+    "paid_api_used": false
+  }
+}

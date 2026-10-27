@@ -316,7 +316,10 @@ class PackageBuilder:
             target = output_dir / ("preidentity-" + str(time.time_ns()))
             self._run([sys.executable, str(app_builder),
                        "--root", str(source), "--slug", job.slug,
-                       "--expected-sha", job.source_sha, "--output", str(target)],
+                       "--expected-sha", job.source_sha,
+                       "--source-branch", job.source_branch,
+                       "--request-id", job.request_id,
+                       "--output", str(target)],
                       source, 1800)
             self._verify_factory_exe_receipt(job, target)
             return
@@ -335,7 +338,8 @@ class PackageBuilder:
         """Verify the actual EXE bytes against Factory's SHA-pinned receipt."""
         exe, receipt_path = target / (job.slug + ".exe"), target / "exe-receipt.json"
         if (target.is_symlink() or exe.is_symlink() or receipt_path.is_symlink()
-                or not exe.is_file() or not receipt_path.is_file()):
+                or not exe.is_file() or not receipt_path.is_file()
+                or {p.name for p in target.iterdir()} != {exe.name, receipt_path.name}):
             raise HoldError("Factory pre-Identity EXE evidence is incomplete")
         if receipt_path.stat().st_size > 32_768:
             raise HoldError("Factory EXE receipt exceeds size limit")
@@ -345,9 +349,11 @@ class PackageBuilder:
             raise
         expected = {
             "schema_version": 1, "stage": "PRE_IDENTITY_WINDOWS_EXE",
-            "status": "EXE_QA_UNSIGNED", "source_repository": job.source_repository,
-            "source_sha": job.source_sha, "product_type": job.product_type,
-            "slug": job.slug, "display_name": job.display_name,
+            "status": "EXE_QA_UNSIGNED", "source_factory": job.source_factory,
+            "source_repository": job.source_repository, "source_branch": job.source_branch,
+            "source_sha": job.source_sha, "request_id": job.request_id,
+            "product_type": job.product_type, "slug": job.slug,
+            "display_name": job.display_name,
             "executable": job.slug + ".exe", "official_identity_status": "NOT_COLLECTED",
             "store_id": None, "msix_status": "NOT_BUILT",
         }

@@ -3,8 +3,8 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "Committed original functional offline-notes-canary Tkinter GUI, manifest, README, and 9 headless regression tests under allowed .candidate/product on Factory Draft PR #14; candidate commit e72dacdc4536bff966216c534f42005f6f534680. No product promotion or real Windows EXE. Factory CI 40508510792 queued at observation; previous local preview 12 PASS refers to different revision and must NOT be treated as validation of committed candidate.",
-  "next_action": "APP owner: read Factory PR #14 HEAD e72dacdc4536bff966216c534f42005f6f534680 and CI 40508510792. Verify .candidate/product tests on exact committed files, Python compile and native factory.py plan/validate. Current .candidate/proposal.json persists from research and will cause build-stage validate to reject unexpected candidate root; only trusted Factory controller/owner may perform authorized research-artifact cleanup (AGENTS restricts product agent to .candidate/product), then native factory.py promote on reviewed codex branch and commit products/offline-notes-canary. Recheck HEAD before writes. Only then pin immutable source_sha/source_branch/request_id and run real Windows EXE workflow; preserve APP-only canary, no new product.",
+  "last_completed_step": "APP canary candidate main.py and test_smoke.py updated on Factory PR #14: reproduced Windows reserved-device filename export bug (CON.txt, COM1.notes etc.), committed regression bae567b3, patched safe_filename in 66cabebc. Focused local equivalent function regression 2 PASS. Exact committed candidate full tests/GUI/Windows EXE not yet independently verified. Factory new HEAD CI 40527659871 in progress at observation.",
+  "next_action": "NEXT LOOK: AI-App-Factory PR #14 branch codex/app-canary-offline-notes-20261027 HEAD 66cabebcb0baf48ebf3ced30ea64b40aad924c85, CI run 40527659871. Verify exact committed candidate tests and UI, then Factory owner/controller must fix lifecycle candidate workspace transition (.candidate/proposal.json persists after research promote; build validate rejects unexpected candidate root), preserving proposals/offline-notes-canary.json. Do not edit factory.py/state or delete proposal as product agent. After authorized controller fix, run native factory.py plan -> candidate tests -> validate -> promote, verify products/offline-notes-canary, then pin source_sha/source_branch/request_id and generate real Windows EXE. Continue only same canary; no new products.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
@@ -16,7 +16,9 @@
     "WINDOWS_EXE_PENDING: no committed product source SHA or real EXE Artifact",
     "INTEGRATION_FIX: Factory PR #12/#13 Identity correlation, source_sha vs factory_head_sha and MSIX handoff divergence",
     "EXTERNAL_IDENTITY: authenticated Partner Center Identity not yet available; not needed for preidentity EXE",
-    "WINDOWS_CHECKER_CI_FAILURE: no APP package QA"
+    "WINDOWS_CHECKER_CI_FAILURE: no APP package QA",
+    "FACTORY_LIFECYCLE_OWNER_FIX: research->build workspace cleanup must be implemented by Factory controller; proposal must remain archived under proposals/<slug>.json",
+    "FULL_EXACT_CANDIDATE_TESTS_AND_WINDOWS_GUI_PENDING: only focused filename regression checked locally; Windows EXE not built"
   ],
   "new_product_allowed": false,
   "factory_review": {
@@ -72,7 +74,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "e72dacdc4536bff966216c534f42005f6f534680",
+  "resume_head_sha": "66cabebcb0baf48ebf3ced30ea64b40aad924c85",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -90,9 +92,9 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T13:00:00Z",
+  "last_observed_at_utc": "2026-10-27T15:08:00Z",
   "request_id": null,
-  "factory_head_sha": "e72dacdc4536bff966216c534f42005f6f534680",
+  "factory_head_sha": "66cabebcb0baf48ebf3ced30ea64b40aad924c85",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
@@ -133,7 +135,7 @@
       "https://github.com/usememos/memos/issues/6309"
     ],
     "candidate_code_committed": true,
-    "candidate_commit_sha": "e72dacdc4536bff966216c534f42005f6f534680"
+    "candidate_commit_sha": "66cabebcb0baf48ebf3ced30ea64b40aad924c85"
   },
   "safety_fix_20261027": {
     "classification": "CODE_FIX",
@@ -155,10 +157,10 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "FACTORY_PR14_NEW_HEAD_40508510792_QUEUED; PROVISIONER_PREVIOUS_SUCCESS",
+    "ci": "FACTORY_PR14_HEAD_66cabebc_RUN_40527659871_IN_PROGRESS; PROVISIONER_PREVIOUS_SUCCESS",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
-    "ui": "LOCAL_PREVIEW_ONLY_DIFFERENT_REVISION_NO_COMMITTED_GUI_QA",
+    "ui": "NOT_PASSED_EXACT_COMMITTED_GUI_NOT_VERIFIED",
     "commercial": "NOT_TESTED"
   },
   "research_promotion_gate": {
@@ -193,5 +195,18 @@
     "windows_exe": null,
     "official_identity": null,
     "msix": null
+  },
+  "candidate_filename_safety": {
+    "classification": "CODE_FIX",
+    "reproduced": "Windows reserved basename CON.txt/COM1.notes passed through TXT export filename sanitizer",
+    "test_commit": "bae567b3ef6b85f245cfbd9c734e9cb957b839d3",
+    "fix_commit": "66cabebcb0baf48ebf3ced30ea64b40aad924c85",
+    "test_path": ".candidate/product/tests/test_smoke.py",
+    "code_path": ".candidate/product/main.py",
+    "focused_local_regression": "2 PASS (function-equivalent reproduction, not full exact candidate test suite)",
+    "factory_ci_run_id": 40527659871,
+    "factory_ci_status": "IN_PROGRESS",
+    "windows_exe_artifact": null,
+    "real_gui_qa": null
   }
 }

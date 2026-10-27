@@ -318,8 +318,7 @@ class PackageBuilder:
                        "--root", str(source), "--slug", job.slug,
                        "--expected-sha", job.source_sha, "--output", str(target)],
                       source, 1800)
-            if not (target / (job.slug + ".exe")).is_file() or not (target / "exe-receipt.json").is_file():
-                raise HoldError("Factory pre-Identity EXE evidence is incomplete")
+            self._verify_factory_exe_receipt(job, target)
             return
         for relative in self.WINDOWS_ENTRYPOINTS:
             path = source / relative
@@ -330,6 +329,46 @@ class PackageBuilder:
             self._run(command, source, 1800)
             return
         raise HoldError("No allowlisted Windows build entrypoint exists in the pinned source")
+
+    @staticmethod
+    def _verify_factory_exe_receipt(job: Job, target: Path) -> None:
+        """Verify the actual EXE bytes against Factory's SHA-pinned receipt."""
+        exe, receipt_path = target / (job.slug + ".exe"), target / "exe-receipt.json"
+        if (target.is_symlink() or exe.is_symlink() or receipt_path.is_symlink()
+                or not exe.is_file() or not receipt_path.is_file()):
+            raise HoldError("Factory pre-Identity EXE evidence is incomplete")
+        if receipt_path.stat().st_size > 32_768:
+            raise HoldError("Factory EXE receipt exceeds size limit")
+        try:
+            receipt = load_json(receipt_path, 32_768)
+        except HoldError:
+            raise
+        expected = {
+            "schema_version": 1, "stage": "PRE_IDENTITY_WINDOWS_EXE",
+            "status": "EXE_QA_UNSIGNED", "source_repository": job.source_repository,
+            "source_sha": job.source_sha, "product_type": job.product_type,
+            "slug": job.slug, "display_name": job.display_name,
+            "executable": job.slug + ".exe", "official_identity_status": "NOT_COLLECTED",
+            "store_id": None, "msix_status": "NOT_BUILT",
+        }
+        if any(type(receipt.get(key)) is not type(value) or receipt.get(key) != value
+               for key, value in expected.items()):
+            raise ConflictError("Factory EXE receipt does not match the pinned APP job")
+        size = exe.stat().st_size
+        if (type(receipt.get("executable_bytes")) is not int
+                or not 1024 < size <= 300 * 1024 * 1024
+                or receipt["executable_bytes"] != size):
+            raise ConflictError("Factory EXE receipt byte count mismatch")
+        digest = hashlib.sha256()
+        with exe.open("rb") as stream:
+            if stream.read(2) != b"MZ":
+                raise HoldError("Factory EXE has no Windows PE header")
+            stream.seek(0)
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+        if (not isinstance(receipt.get("executable_sha256"), str)
+                or digest.hexdigest() != receipt["executable_sha256"]):
+            raise ConflictError("Factory EXE receipt SHA-256 mismatch")
 
     def _build_godot(self, source: Path, output_dir: Path) -> None:
         project, presets = source / "project.godot", source / "export_presets.cfg"

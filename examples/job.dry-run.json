@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "request_id": "example-app-dry-run-0001",
+  "product_type": "APP",
+  "source_factory": "AI-App-Factory",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/factory-autoloop-20261026",
+  "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "slug": "example-windows-app",
+  "display_name": "Example Windows App",
+  "target_owner": "shihuiarenjinba-png",
+  "dry_run": true,
+  "requested_actions": ["BUILD_WINDOWS", "INSPECT_PACKAGE", "LOOKUP_OFFICIAL_IDENTITY", "PROPOSE_GITHUB_RETURN"]
+}

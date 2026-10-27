@@ -3,8 +3,8 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_RESEARCH_PROPOSAL_REVIEW__NO_ACTIVE_PRODUCT",
-  "last_completed_step": "Staged exactly one offline-notes APP canary research proposal on Factory Draft PR #14 (commit 60d84c37ab73d6efb6a8fe3d382b1bf500949921), without changing Factory state or generating product code/EXE; 5-repo CI/artifact inspection completed. Factory proposal PR #14 CI 40480434665 SUCCESS; Provisioner progress CI 40480473128 SUCCESS on preceding HEAD.",
-  "next_action": "FIRST: check AI-App-Factory codex/app-canary-offline-notes-20261027 HEAD 60d84c37ab73d6efb6a8fe3d382b1bf500949921 and Draft PR #14, Factory AGENTS.md and factory/state.json. Authorized Factory owner must use existing research validation/promotion to move stage=research to stage=build with market signals and plan snapshot; agent must not directly edit factory/state.json. Then implement REAL Tkinter GUI/main.py + headless tests ONLY under .candidate/product/, promote through reviewed Factory mechanism to products/offline-notes-canary, pin real product source_sha and request_id, build actual Windows EXE. Do not create another APP canary. Separately preserve PR #12/#13 EXE/Identity immutable correlation and original source_sha vs factory_head_sha. No Identity/MSIX/E2E PASS until real evidence.",
+  "last_completed_step": "APP Provisioner Identity safety: reproduced JSON duplicate-key ambiguity and committed strict duplicate rejection for official evidence, EXE receipts and existing approved-identity replay. Commits ee9d5ba635328a51e17b200a50cbc106f76d2675 and 7f9319af1af4638e1c1d595a7bf1fab5bc5afd33; Windows and Ubuntu full unittest + py_compile CI 40485869857 SUCCESS. Factory PR #14 remains research-only; no GUI, EXE, or active APP.",
+  "next_action": "FIRST: re-fetch AI-App-Factory codex/app-canary-offline-notes-20261027 HEAD 60d84c37ab73d6efb6a8fe3d382b1bf500949921 and factory/state.json. Do not write product code while stage=research under AGENTS.md. Trusted Factory operator must obtain genuine .runtime/market.json signals, run factory.py plan/validate/promote through reviewed codex/* mechanism to stage=build (no direct agent state edit or unauthorized merge). Then generate ONE real offline-notes-canary .candidate/product/ manifest.json, Tkinter main.py, README, headless tests, promote via reviewed mechanism to products/offline-notes-canary, pin source_branch/source_sha/request_id, run real Windows EXE and GUI QA. Recheck Provisioner-app PR #10 code HEAD 7f9319af1af4638e1c1d595a7bf1fab5afd33 and CI 40485869857. Preserve original source_sha vs packaging factory_head_sha. No MSIX/E2E/UI PASS without evidence.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
@@ -43,9 +43,10 @@
     "same_exe_retry_without_rebuild": true,
     "cas_expected_head": "job.source_sha",
     "exe_identity_not_msix": true,
-    "head_observed": "71a5f4eec5c103e38bc55c5b04a9e9b21b190cf6",
-    "ci_run_id": 40459089032,
-    "ci_conclusion": "SUCCESS"
+    "head_observed": "7f9319af1af4638e1c1d595a7bf1fab5bc5afd33",
+    "ci_run_id": 40485869857,
+    "ci_conclusion": "SUCCESS",
+    "duplicate_json_safety_commit": "7f9319af1af4638e1c1d595a7bf1fab5bc5afd33"
   },
   "transport": {
     "repository": "shihuiarenjinba-png/Windows-all-auto",
@@ -88,7 +89,7 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T09:21:55Z",
+  "last_observed_at_utc": "2026-10-27T10:06:38Z",
   "request_id": null,
   "factory_head_sha": null,
   "build_sha": null,
@@ -122,5 +123,31 @@
     "progress_ci_conclusion": "SUCCESS",
     "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
     "note": "Factory CI success validates infrastructure tests, NOT proposal research validation, real product, GUI, Windows EXE, Identity, or E2E."
+  },
+  "safety_fix_20261027": {
+    "classification": "CODE_FIX",
+    "defect": "Ambiguous duplicate JSON object keys were accepted in local official Identity evidence, EXE receipt and existing approved-identity replay",
+    "reproduction": "json.loads accepted {\"request_id\":\"forged\",\"request_id\":\"req-0001\"} as req-0001; targeted regressions added",
+    "tests_commit": "ee9d5ba635328a51e17b200a50cbc106f76d2675",
+    "fix_commit": "7f9319af1af4638e1c1d595a7bf1fab5bc5afd33",
+    "files": [
+      "package_identity_provisioner.py",
+      "tests/test_package_identity_pipeline.py"
+    ],
+    "ci_run_id": 40485869857,
+    "ci_url": "https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40485869857",
+    "ci_conclusion": "SUCCESS",
+    "windows_unittest": "PASS",
+    "ubuntu_unittest": "PASS",
+    "py_compile": "PASS",
+    "real_exe_artifact": null,
+    "real_msix_artifact": null
+  },
+  "quality_gates": {
+    "ci": "PASS_PROVISIONER_ONLY",
+    "contract": "NOT_END_TO_END_VERIFIED",
+    "real_e2e": "NOT_PASSED",
+    "ui": "NOT_TESTED_NO_GUI",
+    "commercial": "NOT_TESTED_NO_PRODUCT"
   }
 }

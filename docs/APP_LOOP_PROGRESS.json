@@ -3,8 +3,8 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "Offline Notes Canary .candidate/product UI defect reproduced in function-equivalent local harness: TXT export showed Saved while notes remained dirty. Added GitHub regression b4da3ed7 and localized fix d4d0fce3; new Factory core CI 40536969326 SUCCESS (test and windows-contracts jobs). Prior local preview 12 tests PASS but is different source revision; exact committed candidate test suite and Windows GUI remain unverified. Factory lifecycle owner blocker persists.",
-  "next_action": "NEXT LOOK: AI-App-Factory PR #14 codex/app-canary-offline-notes-20261027 HEAD d4d0fce311d5bfa20388741a7101d87ab23c7aa5; CI 40536969326 SUCCESS. Factory OWNER/CONTROLLER must atomically clean .candidate/proposal.json at research->build transition, preserving proposals/offline-notes-canary.json; do not change factory.py/state or delete proposal as product agent. Then run native factory.py plan -> exact candidate tests -> validate -> promote, confirm products/offline-notes-canary, pin source_branch/source_sha/request_id, produce real Windows EXE. Until then only improve same candidate and independently verify GUI; 36-minute owner handles Identity/central ledger.",
+  "last_completed_step": "APP candidate TXT export overwrite confirmation had hardcoded English even in Japanese mode. Regression committed 45873ccd; localized Japanese/English confirmation fixed at Factory PR14 HEAD 1c07612a. Factory core CI 40546599736 SUCCESS, but candidate unittest is NOT part of workflow and exact candidate runtime/UI/Windows EXE remain unverified. Factory lifecycle blocker unchanged.",
+  "next_action": "NEXT LOOK: AI-App-Factory PR #14 codex/app-canary-offline-notes-20261027 HEAD 1c07612a5b8a46185e8a504a80ce8136f62c7a86; CI 40546599736 SUCCESS (core jobs only). Factory OWNER/CONTROLLER must implement atomic stage-aware cleanup of .candidate/proposal.json on research->build transition, preserving proposals/offline-notes-canary.json; AGENTS prohibits APP product agent from editing factory.py/state or deleting proposal as workaround. Then native factory.py plan -> exact .candidate/product/tests/test_smoke.py (including overwrite localization) -> validate -> promote -> verify products/offline-notes-canary -> pin source_branch/source_sha/request_id -> build real Windows EXE with provenance. 36-minute owner handles Identity and central ledger; no new APP.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "5f34e77224adb407d0f14866b17d8e2acc456c8d",
@@ -19,7 +19,9 @@
     "WINDOWS_CHECKER_CI_FAILURE: no APP package QA",
     "FACTORY_LIFECYCLE_OWNER_FIX: research->build workspace cleanup must be implemented by Factory controller; proposal must remain archived under proposals/<slug>.json",
     "FULL_EXACT_CANDIDATE_TESTS_AND_WINDOWS_GUI_PENDING: only focused filename regression checked locally; Windows EXE not built",
-    "UI_EXACT_TEST_EXECUTION_PENDING: added candidate export regression not run by Factory core CI; local function-equivalent reproduction only"
+    "UI_EXACT_TEST_EXECUTION_PENDING: added candidate export regression not run by Factory core CI; local function-equivalent reproduction only",
+    "FACTORY_LIFECYCLE_OWNER_FIX: stage-aware cleanup preserving archived proposal remains unimplemented",
+    "EXACT_CANDIDATE_TESTS_PENDING: GitHub core CI does not execute .candidate/product/tests/test_smoke.py including new overwrite localization regression"
   ],
   "new_product_allowed": false,
   "factory_review": {
@@ -55,9 +57,9 @@
   "transport": {
     "repository": "shihuiarenjinba-png/Windows-all-auto",
     "branch": "codex/e2e-belt-connection-20261027",
-    "head_observed": "c797ebb211a8958d10438f7469fb77790ae73ad8",
+    "head_observed": "9750c43276ab1d7c31d1b5f1694ddbaeae213be9",
     "draft_pr": 14,
-    "ci_run_id": 40533636679,
+    "ci_run_id": 40543152141,
     "ci_conclusion": "SUCCESS",
     "stacked_backlog_pr": 15,
     "stacked_backlog_branch": "codex/github-backlog-local-queue-20261027",
@@ -75,7 +77,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
+  "resume_head_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -95,7 +97,7 @@
   },
   "last_observed_at_utc": "2026-10-27T16:04:20.884Z",
   "request_id": null,
-  "factory_head_sha": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
+  "factory_head_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
@@ -120,9 +122,9 @@
     "real_e2e_pass": false,
     "ui_quality_pass": false,
     "commercial_quality_pass": false,
-    "factory_ci_run_id": 40536969326,
+    "factory_ci_run_id": 40546599736,
     "factory_ci_conclusion": "SUCCESS",
-    "factory_ci_head": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
+    "factory_ci_head": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
     "progress_ci_run_id": 40480473128,
     "progress_ci_conclusion": "SUCCESS",
     "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
@@ -136,7 +138,7 @@
       "https://github.com/usememos/memos/issues/6309"
     ],
     "candidate_code_committed": true,
-    "candidate_commit_sha": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5"
+    "candidate_commit_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86"
   },
   "safety_fix_20261027": {
     "classification": "CODE_FIX",
@@ -158,7 +160,7 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "FACTORY_PR14_HEAD_d4d0fce3_RUN_40536969326_SUCCESS_CORE_ONLY; PROVISIONER_PR10_HEAD_5f34e772_RUN_40527774367_SUCCESS; WINDOWS_ALL_AUTO_PR14_HEAD_c797ebb2_RUN_40533636679_SUCCESS; WINDOWS_CHECKER_PR2_FAILURE",
+    "ci": "FACTORY_PR14_HEAD_1c07612a_RUN_40546599736_SUCCESS_CORE_ONLY; PROVISIONER_PR10_HEAD_f86e855a_RUN_40537294327_SUCCESS; WINDOWS_ALL_AUTO_PR14_HEAD_9750c432_RUN_40543152141_SUCCESS; WINDOWS_DATA_PR1_SUCCESS; WINDOWS_CHECKER_PR2_FAILURE",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
     "ui": "NOT_PASSED_EXACT_COMMITTED_GUI_NOT_VERIFIED",
@@ -211,8 +213,8 @@
     "real_gui_qa": null
   },
   "provisioner": {
-    "head_observed": "5f34e77224adb407d0f14866b17d8e2acc456c8d",
-    "ci_run_id": 40527774367,
+    "head_observed": "f86e855a1e17d37b3499e712ba9d65ef4969871d",
+    "ci_run_id": 40537294327,
     "ci_conclusion": "SUCCESS"
   },
   "ui_export_status_fix_20261028": {
@@ -229,6 +231,23 @@
     "factory_ci_conclusion": "SUCCESS",
     "factory_ci_scope": "Factory core and Windows contracts only; exact candidate regression NOT executed by workflow",
     "exact_candidate_full_tests": "PENDING",
+    "windows_gui": "PENDING",
+    "real_exe_artifact": null
+  },
+  "ui_export_overwrite_localization_fix_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "TXT export existing-file overwrite confirmation was hardcoded English even in Japanese UI",
+    "reproduction": "Actual Factory PR14 main.py had messagebox.askyesno(self.t(0), 'Overwrite?') irrespective of app.lang; regression asserts Japanese and English prompts, declines overwrite, and preserves dirty state",
+    "test_commit": "45873ccd4b1049086e1cfeb58711c8cdc74fcb3e",
+    "fix_commit": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
+    "changed_files": [
+      ".candidate/product/tests/test_smoke.py",
+      ".candidate/product/main.py"
+    ],
+    "ci_run_id": 40546599736,
+    "ci_conclusion": "SUCCESS",
+    "ci_scope": "Factory core test + Windows contract jobs; candidate regression not executed by workflow",
+    "exact_candidate_test_execution": "PENDING",
     "windows_gui": "PENDING",
     "real_exe_artifact": null
   }

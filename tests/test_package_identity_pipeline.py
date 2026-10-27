@@ -194,6 +194,19 @@ class IdentityEvidenceTests(unittest.TestCase):
             path.write_text(json.dumps(evidence()), encoding="utf-8")
             result = OfficialIdentityProvider(path).lookup(Job.validate(job(), config()))
         self.assertEqual(result["store_id"], "9N1234567890")
+    def test_duplicate_official_identity_key_is_hold(self):
+        # The last duplicate value matching the expected Store ID must not
+        # hide an earlier conflicting value in authenticated evidence.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "identity.json"
+            raw = json.dumps(evidence())
+            raw = raw.replace('"store_id": "9N1234567890"',
+                              '"store_id": "FORGED", "store_id": "9N1234567890"', 1)
+            self.assertIn('"store_id": "FORGED"', raw)
+            path.write_text(raw, encoding="utf-8")
+            with self.assertRaisesRegex(HoldError, "duplicate JSON key"):
+                OfficialIdentityProvider(path).lookup(Job.validate(job(), config()))
+
     def test_untrusted_evidence_url_is_hold(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "identity.json"
@@ -235,6 +248,38 @@ class GitHubReturnTests(unittest.TestCase):
         if endpoint == "graphql":
             return {"data": {"createCommitOnBranch": {"commit": {"oid": "b" * 40, "url": "https://github.invalid/c"}}}}
         raise AssertionError(endpoint)
+
+    def test_duplicate_key_in_existing_identity_never_counts_as_verified_replay(self):
+        request = Job.validate(job(), config())
+        official = evidence()
+        package = {**package_result(), "kind": "msix"}
+        approved = {
+            "reviewed": True, "source": "partner_center",
+            "store_id": official["store_id"], "name": official["name"],
+            "publisher": official["publisher"], "version": official["version"],
+            "verified_by": official["authenticated_account"],
+            "evidence_url": official["official_evidence_url"],
+            "request_id": request.request_id, "product_type": request.product_type,
+            "source_factory": request.source_factory,
+            "source_repository": request.source_repository,
+            "source_branch": request.source_branch, "source_sha": request.source_sha,
+            "verified_source_sha": request.source_sha,
+            "package_sha256": package["sha256"],
+            "package_family_name": official["package_family_name"],
+            "package_sid": official["package_sid"],
+            "signature_status": package["signature_status"],
+        }
+        valid = json.dumps(approved)
+        def wrap(raw):
+            return {"encoding": "base64",
+                    "content": base64.b64encode(raw.encode("utf-8")).decode("ascii")}
+        self.assertTrue(GitHubReturnClient._existing_matches(
+            wrap(valid), official, request, package))
+        ambiguous = valid.replace('"request_id": "req-0001"',
+                                  '"request_id": "forged", "request_id": "req-0001"', 1)
+        self.assertIn('"request_id": "forged"', ambiguous)
+        self.assertFalse(GitHubReturnClient._existing_matches(
+            wrap(ambiguous), official, request, package))
 
     def test_atomic_apply_returns_real_commit_sha(self):
         result = GitHubReturnClient(self.api).return_identity(

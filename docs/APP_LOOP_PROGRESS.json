@@ -3,11 +3,11 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "Exact GitHub candidate source and tests reconstructed byte-identically (verified Git blob SHAs) and executed on Linux: baseline 12-test suite had 2 FAIL due to indexing test's status string; corrected test in Factory PR14 commit 4c497595. Observed Japanese malformed-file error status contained English parser text without next action; localized actionable guidance + regression committed d1300975/90b178e1. Exact final candidate 13/13 headless PASS, Python compile PASS, Xvfb 1024x768 JP empty/EN saved/restart/search/error GUI smoke PASS; three screenshots visually inspected. Factory core CI 40556513390 SUCCESS (Linux test and Windows contracts; windows-exe-smoke skipped), no product EXE artifact. Factory lifecycle blocker persists; controller-owner regression instructions in PR14 comment 6449741912.",
-  "next_action": "NEXT LOOK: Factory PR14 codex/app-canary-offline-notes-20261027 HEAD 90b178e1099bfd1e4943b56d0a58ea7bee7317e5, core CI 40556513390 SUCCESS (not candidate tests or real EXE). Authorized Factory controller owner must fix research->build stale .candidate/proposal.json cleanup preserving archived proposal and remove manual unlink in tests/test_factory.py, add lifecycle regression; see https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6449741912. Then native plan -> exact 13 candidate tests -> validate -> promote -> verify products/offline-notes-canary -> pin source_branch/source_sha/request_id -> build Windows EXE and Artifact. 00 APP may review exact Linux GUI evidence; 36 E2E owns Identity/central ledger/QA backlog. No new APP.",
+  "last_completed_step": "Offline Notes Canary unsaved-search GUI defect reproduced on exact PR14 candidate: new/edited note was absent from search before Save (0 hits expected 1). Fixed only .candidate/product/main.py and tests/test_smoke.py in atomic Factory commit e24ad9b3. Exact Git blobs d5c1dcd3/5e0aed0f; local Linux 14/14 unittest and compile PASS, Xvfb 1024x768 JP unsaved search, EN saved display, nonmatch, Save/readback PASS; both screenshots visually inspected. Factory CI 40573882452 SUCCESS (test and windows-contracts SUCCESS, windows-exe-smoke SKIPPED); no APP EXE Artifact. Lifecycle controller cleanup still HOLD.",
+  "next_action": "Factory owner/controller only: repair research->build stale .candidate/proposal.json cleanup preserving proposals/offline-notes-canary.json and regression tests that currently unlink it manually; ensure build plan does not require stale .runtime/market.json on clean checkout. AGENTS.md prohibits APP candidate agent editing factory.py/state/tests/workflows. Then native plan -> candidate 14 tests -> validate -> promote -> verify products/offline-notes-canary -> pin source_branch/source_sha/request_id/slug -> real Windows EXE Artifact -> 36-minute E2E handoff. No new APP.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
-  "resume_head_before_progress_commit": "5f34e77224adb407d0f14866b17d8e2acc456c8d",
+  "resume_head_before_progress_commit": "7bdc61baaef2b977bf4d6f32b75abda2509c55fc",
   "source_sha": null,
   "blocked_by": [
     "FACTORY_PROMOTION: candidate GUI committed under .candidate/product but products/offline-notes-canary not yet present",
@@ -77,7 +77,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
+  "resume_head_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -95,9 +95,9 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T18:00:03Z",
+  "last_observed_at_utc": "2026-10-27T19:59:36Z",
   "request_id": null,
-  "factory_head_sha": "90b178e1099bfd1e4943b56d0a58ea7bee7317e5",
+  "factory_head_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
@@ -160,14 +160,14 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "Factory PR14 90b178e1 core CI 40556513390 SUCCESS Linux core+Windows contracts; Provisioner PR10 66a6dc08 CI 40556180182 SUCCESS; Windows-all-auto PR14 50d73847 CI 40553170850 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
+    "ci": "Factory PR14 e24ad9b3 CI 40573882452 SUCCESS (Linux core, Windows contracts; EXE smoke skipped); Provisioner PR10 7bdc61ba CI 40556681352 SUCCESS; Windows-all-auto PR14 419021f8 CI 40572651775 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
-    "ui": "NOT_PASSED_EXACT_COMMITTED_GUI_NOT_VERIFIED",
+    "ui": "PARTIAL_LINUX_XVFB_EXACT_GITHUB_BLOBS_SCREENSHOTS_INSPECTED_NOT_WINDOWS_GUI_PASS",
     "commercial": "NOT_TESTED",
     "app_lifecycle": "NOT_PASSED_CONTROLLER_FIX_REQUIRED",
     "exe": "NOT_PASSED_NO_PRODUCT_EXE",
-    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_EXACT_SOURCE_SCREENSHOTS_VERIFIED_NOT_WINDOWS",
+    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_JA_UNSAVED_SEARCH_EN_SAVED_REVIEWED_NOT_WINDOWS",
     "e2e": "NOT_PASSED"
   },
   "research_promotion_gate": {
@@ -217,8 +217,8 @@
     "real_gui_qa": null
   },
   "provisioner": {
-    "head_observed": "f86e855a1e17d37b3499e712ba9d65ef4969871d",
-    "ci_run_id": 40537294327,
+    "head_observed": "7bdc61baaef2b977bf4d6f32b75abda2509c55fc",
+    "ci_run_id": 40556681352,
     "ci_conclusion": "SUCCESS"
   },
   "ui_export_status_fix_20261028": {
@@ -320,5 +320,50 @@
     "request_id": null,
     "identity_receipt": null,
     "msix_receipt": null
+  },
+  "candidate_unsaved_search_fix_20261028": {
+    "factory_pr": 14,
+    "branch": "codex/app-canary-offline-notes-20261027",
+    "head_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
+    "commit_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
+    "repro": "Linux Xvfb Tkinter: new note title 'Budget Meeting' unsaved, search 'Budget' returned 0 results before patch; 1 after patch",
+    "fix": "Search uses unsaved current-editor snapshot without mutating persisted notes; refreshes filtered list on edits",
+    "git_blobs": {
+      "main.py": "d5c1dcd3a049e06fd700fc5c7ef140c9b55fad94",
+      "tests/test_smoke.py": "5e0aed0ffde575633050c18495e7f2ac81cd1217"
+    },
+    "local_candidate_tests": "14_PASS_LINUX_EXACT_GITHUB_BLOBS",
+    "compile": "PASS_LOCAL_LINUX",
+    "gui_environment": "Linux Xvfb 1024x768 NOT Windows",
+    "gui_checks": [
+      "JA unsaved title search shows one result",
+      "Unsaved editor content not committed by search",
+      "Nonmatching search shows zero results",
+      "Save then readback succeeds",
+      "EN saved state screenshot visually inspected",
+      "1024x768 major controls visible"
+    ],
+    "screenshots": [
+      {
+        "name": "gui_ja_unsaved_search_1024x768.png",
+        "sha256": "e2a362c4ef55c4afa331603f50c03d637d2e92be4dcd69c8d75c1b305bd615f4"
+      },
+      {
+        "name": "gui_en_saved_search_1024x768.png",
+        "sha256": "0351563af4030e726b3db701c4e802ae09092938e3e6cd450605f94ef90c7f17"
+      }
+    ],
+    "local_evidence_archive": "offline_notes_canary_search_gui_qa_20261028.zip (conversation sandbox only; not GitHub Artifact)",
+    "local_evidence_sha256": "f06ec063d0c29a5fcb123a8cc060c91171960b75c8ae172e2db57f763ab42fd9",
+    "factory_ci_run_id": 40573882452,
+    "factory_ci_conclusion": "SUCCESS_CORE_ONLY",
+    "factory_ci_jobs": [
+      "test SUCCESS",
+      "windows-contracts SUCCESS",
+      "windows-exe-smoke SKIPPED"
+    ],
+    "real_exe_artifact": null,
+    "source_sha": null,
+    "request_id": null
   }
 }

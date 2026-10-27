@@ -88,14 +88,25 @@ def redact(text: str) -> str:
     return result[:4000]
 
 
+def reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    """Reject ambiguous provenance and official Identity JSON at every depth."""
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError("duplicate JSON key: " + key)
+        value[key] = item
+    return value
+
+
 def load_json(path: Path, max_bytes: int = 65_536) -> dict[str, Any]:
     if not path.is_file():
         raise HoldError(f"JSON file not found: {path}")
     if path.stat().st_size > max_bytes:
         raise HoldError(f"JSON file exceeds {max_bytes} bytes")
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        value = json.loads(path.read_text(encoding="utf-8"),
+                           object_pairs_hook=reject_duplicate_json_keys)
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
         raise HoldError(f"Invalid JSON: {exc}") from exc
     if not isinstance(value, dict):
         raise HoldError("JSON root must be an object")
@@ -730,7 +741,7 @@ class GitHubReturnClient:
             raw = base64.b64decode(existing["content"], validate=True)
             if len(raw) > 32_768:
                 return False
-            content = json.loads(raw)
+            content = json.loads(raw, object_pairs_hook=reject_duplicate_json_keys)
         except (ValueError, TypeError, KeyError, UnicodeDecodeError):
             return False
         if not isinstance(content, dict):

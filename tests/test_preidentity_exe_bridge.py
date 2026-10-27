@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 
 from package_identity_provisioner import HoldError, Job, PackageBuilder, Provisioner
+from test_app_exe_identity_resume import ReceiptBuilder
 from test_package_identity_pipeline import (
     FakeBuilder, FakeGitHub, FakeIdentity, FakeSource, config, job,
 )
@@ -18,18 +19,18 @@ class PreIdentityExeBridgeTests(unittest.TestCase):
             identity, github = FakeIdentity(error=HoldError("not registered")), FakeGitHub()
             provisioner = Provisioner(
                 config(), Path(tmp) / "state", Path(tmp) / "work",
-                source=FakeSource(), builder=FakeBuilder(artifact_kind="exe"),
+                source=FakeSource(), builder=ReceiptBuilder(),
                 identity=identity, github=github,
             )
             result = provisioner.run(job(), apply=True)
             self.assertEqual(result["status"], "HOLD")
-            self.assertEqual(result["next_stage"], "OBTAIN_OFFICIAL_IDENTITY_AND_BUILD_MSIX")
+            self.assertEqual(result["next_stage"], "OBTAIN_AUTHENTICATED_OFFICIAL_IDENTITY")
             self.assertEqual(result["package"]["kind"], "exe")
             self.assertRegex(result["package"]["sha256"], r"^[0-9a-f]{64}$")
             self.assertTrue(Path(result["package"]["path"]).is_file())
             self.assertEqual(result["official_identity"]["status"], "UNVERIFIED")
             self.assertEqual(result["github_return"]["status"], "NOT_APPLIED")
-            self.assertEqual(identity.calls, 0)
+            self.assertEqual(identity.calls, 1)
             self.assertEqual(github.calls, 0)
 
     def test_factory_builder_receives_exact_slug_and_sha(self):

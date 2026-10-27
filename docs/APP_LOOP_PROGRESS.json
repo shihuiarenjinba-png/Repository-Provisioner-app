@@ -3,11 +3,11 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "APP canary candidate main.py and test_smoke.py updated on Factory PR #14: reproduced Windows reserved-device filename export bug (CON.txt, COM1.notes etc.), committed regression bae567b3, patched safe_filename in 66cabebc. Focused local equivalent function regression 2 PASS. Exact committed candidate full tests/GUI/Windows EXE not yet independently verified. Factory new HEAD CI 40527659871 in progress at observation.",
-  "next_action": "NEXT LOOK: AI-App-Factory PR #14 branch codex/app-canary-offline-notes-20261027 HEAD 66cabebcb0baf48ebf3ced30ea64b40aad924c85, CI run 40527659871. Verify exact committed candidate tests and UI, then Factory owner/controller must fix lifecycle candidate workspace transition (.candidate/proposal.json persists after research promote; build validate rejects unexpected candidate root), preserving proposals/offline-notes-canary.json. Do not edit factory.py/state or delete proposal as product agent. After authorized controller fix, run native factory.py plan -> candidate tests -> validate -> promote, verify products/offline-notes-canary, then pin source_sha/source_branch/request_id and generate real Windows EXE. Continue only same canary; no new products.",
+  "last_completed_step": "Offline Notes Canary .candidate/product UI defect reproduced in function-equivalent local harness: TXT export showed Saved while notes remained dirty. Added GitHub regression b4da3ed7 and localized fix d4d0fce3; new Factory core CI 40536969326 SUCCESS (test and windows-contracts jobs). Prior local preview 12 tests PASS but is different source revision; exact committed candidate test suite and Windows GUI remain unverified. Factory lifecycle owner blocker persists.",
+  "next_action": "NEXT LOOK: AI-App-Factory PR #14 codex/app-canary-offline-notes-20261027 HEAD d4d0fce311d5bfa20388741a7101d87ab23c7aa5; CI 40536969326 SUCCESS. Factory OWNER/CONTROLLER must atomically clean .candidate/proposal.json at research->build transition, preserving proposals/offline-notes-canary.json; do not change factory.py/state or delete proposal as product agent. Then run native factory.py plan -> exact candidate tests -> validate -> promote, confirm products/offline-notes-canary, pin source_branch/source_sha/request_id, produce real Windows EXE. Until then only improve same candidate and independently verify GUI; 36-minute owner handles Identity/central ledger.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
-  "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
+  "resume_head_before_progress_commit": "5f34e77224adb407d0f14866b17d8e2acc456c8d",
   "source_sha": null,
   "blocked_by": [
     "FACTORY_PROMOTION: candidate GUI committed under .candidate/product but products/offline-notes-canary not yet present",
@@ -18,7 +18,8 @@
     "EXTERNAL_IDENTITY: authenticated Partner Center Identity not yet available; not needed for preidentity EXE",
     "WINDOWS_CHECKER_CI_FAILURE: no APP package QA",
     "FACTORY_LIFECYCLE_OWNER_FIX: research->build workspace cleanup must be implemented by Factory controller; proposal must remain archived under proposals/<slug>.json",
-    "FULL_EXACT_CANDIDATE_TESTS_AND_WINDOWS_GUI_PENDING: only focused filename regression checked locally; Windows EXE not built"
+    "FULL_EXACT_CANDIDATE_TESTS_AND_WINDOWS_GUI_PENDING: only focused filename regression checked locally; Windows EXE not built",
+    "UI_EXACT_TEST_EXECUTION_PENDING: added candidate export regression not run by Factory core CI; local function-equivalent reproduction only"
   ],
   "new_product_allowed": false,
   "factory_review": {
@@ -54,9 +55,9 @@
   "transport": {
     "repository": "shihuiarenjinba-png/Windows-all-auto",
     "branch": "codex/e2e-belt-connection-20261027",
-    "head_observed": "7c470a6bad645bbc9e9ec39fb384c0db1f931e1a",
+    "head_observed": "c797ebb211a8958d10438f7469fb77790ae73ad8",
     "draft_pr": 14,
-    "ci_run_id": 40489937981,
+    "ci_run_id": 40533636679,
     "ci_conclusion": "SUCCESS",
     "stacked_backlog_pr": 15,
     "stacked_backlog_branch": "codex/github-backlog-local-queue-20261027",
@@ -74,7 +75,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "66cabebcb0baf48ebf3ced30ea64b40aad924c85",
+  "resume_head_sha": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -92,9 +93,9 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T15:08:00Z",
+  "last_observed_at_utc": "2026-10-27T16:04:20.884Z",
   "request_id": null,
-  "factory_head_sha": "66cabebcb0baf48ebf3ced30ea64b40aad924c85",
+  "factory_head_sha": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
@@ -119,9 +120,9 @@
     "real_e2e_pass": false,
     "ui_quality_pass": false,
     "commercial_quality_pass": false,
-    "factory_ci_run_id": 40500329626,
+    "factory_ci_run_id": 40536969326,
     "factory_ci_conclusion": "SUCCESS",
-    "factory_ci_head": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
+    "factory_ci_head": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
     "progress_ci_run_id": 40480473128,
     "progress_ci_conclusion": "SUCCESS",
     "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
@@ -135,7 +136,7 @@
       "https://github.com/usememos/memos/issues/6309"
     ],
     "candidate_code_committed": true,
-    "candidate_commit_sha": "66cabebcb0baf48ebf3ced30ea64b40aad924c85"
+    "candidate_commit_sha": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5"
   },
   "safety_fix_20261027": {
     "classification": "CODE_FIX",
@@ -157,7 +158,7 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "FACTORY_PR14_HEAD_66cabebc_RUN_40527659871_IN_PROGRESS; PROVISIONER_PREVIOUS_SUCCESS",
+    "ci": "FACTORY_PR14_HEAD_d4d0fce3_RUN_40536969326_SUCCESS_CORE_ONLY; PROVISIONER_PR10_HEAD_5f34e772_RUN_40527774367_SUCCESS; WINDOWS_ALL_AUTO_PR14_HEAD_c797ebb2_RUN_40533636679_SUCCESS; WINDOWS_CHECKER_PR2_FAILURE",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
     "ui": "NOT_PASSED_EXACT_COMMITTED_GUI_NOT_VERIFIED",
@@ -208,5 +209,27 @@
     "factory_ci_status": "IN_PROGRESS",
     "windows_exe_artifact": null,
     "real_gui_qa": null
+  },
+  "provisioner": {
+    "head_observed": "5f34e77224adb407d0f14866b17d8e2acc456c8d",
+    "ci_run_id": 40527774367,
+    "ci_conclusion": "SUCCESS"
+  },
+  "ui_export_status_fix_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "Export TXT status incorrectly said Saved while notes database remained dirty, potentially misleading users about persistence",
+    "reproduction": "Function-equivalent local test: dirty=True but status=Saved; fixed equivalent shows TXT exported without clearing dirty",
+    "test_commit": "b4da3ed7ad389aaafa85efffbebcc06715a98db0",
+    "fix_commit": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
+    "files": [
+      ".candidate/product/tests/test_smoke.py",
+      ".candidate/product/main.py"
+    ],
+    "factory_ci_run_id": 40536969326,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_ci_scope": "Factory core and Windows contracts only; exact candidate regression NOT executed by workflow",
+    "exact_candidate_full_tests": "PENDING",
+    "windows_gui": "PENDING",
+    "real_exe_artifact": null
   }
 }

@@ -584,6 +584,40 @@ def compare_package_identity(package: dict[str, Any], official: dict[str, Any]) 
         raise ConflictError("Package and official Identity mismatch: " + ", ".join(mismatches))
 
 
+def verify_exe_receipt(job: Job, package: dict[str, Any]) -> None:
+    """Bind a locally inspected EXE to the exact Factory job before Identity CAS.
+
+    An arbitrary MZ file or an EXE rebuilt during an Identity retry is not
+    sufficient evidence for the pre-Identity -> same-EXE MSIX contract.
+    """
+    path = Path(package["path"])
+    receipt_path = path.with_name("exe-receipt.json")
+    if (path.is_symlink() or not path.is_file() or path.name != job.slug + ".exe"
+            or receipt_path.is_symlink() or not receipt_path.is_file()):
+        raise HoldError("Pinned APP EXE and its Factory receipt are required")
+    receipt = load_json(receipt_path, 32_768)
+    required = {
+        "schema_version": 1, "stage": "PRE_IDENTITY_WINDOWS_EXE",
+        "status": "EXE_QA_UNSIGNED", "request_id": job.request_id,
+        "product_type": job.product_type, "source_factory": job.source_factory,
+        "source_repository": job.source_repository,
+        "source_branch": job.source_branch, "source_sha": job.source_sha,
+        "slug": job.slug, "display_name": job.display_name,
+        "executable": path.name, "official_identity_status": "NOT_COLLECTED",
+        "store_id": None, "msix_status": "NOT_BUILT",
+        "executable_sha256": package["sha256"],
+        "executable_bytes": package["size_bytes"],
+    }
+    if (package["kind"] != "exe" or package["size_bytes"] <= 1024
+            or package["size_bytes"] > 300 * 1024 * 1024
+            or any(type(receipt.get(key)) is not type(value)
+                   or receipt.get(key) != value for key, value in required.items())):
+        raise ConflictError("EXE bytes or immutable Factory receipt mismatch")
+    with path.open("rb") as stream:
+        if stream.read(2) != b"MZ":
+            raise HoldError("Factory EXE has no PE signature")
+
+
 def windows_all_auto_record(job: Job, official: dict[str, Any], package: dict[str, Any]) -> dict[str, Any]:
     return {"schema_version": 1, "type": {"APP": "app", "GAME": "game", "GAME_3D": "3d-game"}[job.product_type],
             "request_id": job.request_id, "product_type": job.product_type,
@@ -632,6 +666,13 @@ class GitHubReturnClient:
                     "signature_status": package["signature_status"], "store_id": official["store_id"],
                     "name": official["name"], "publisher": official["publisher"], "version": official["version"],
                     "verified_by": official["authenticated_account"], "evidence_url": official["official_evidence_url"]}
+        if package.get("kind") == "exe":
+            approved.update({
+                "expected_head_sha": job.source_sha,
+                "display_name": job.display_name,
+                "package_kind": "exe",
+                "package_bytes": package["size_bytes"],
+            })
         content = json.dumps(approved, ensure_ascii=False, indent=2) + "\n"
         body = {"query": self.MUTATION, "variables": {"input": {
             "branch": {"repositoryNameWithOwner": config.source_repository, "branchName": job.source_branch},
@@ -715,6 +756,13 @@ class GitHubReturnClient:
             "package_sid": official["package_sid"],
             "signature_status": package["signature_status"],
         }
+        if package.get("kind") == "exe":
+            required.update({
+                "expected_head_sha": job.source_sha,
+                "display_name": job.display_name,
+                "package_kind": "exe",
+                "package_bytes": package["size_bytes"],
+            })
         return all(type(content.get(key)) is type(value) and content.get(key) == value
                    for key, value in required.items())
 
@@ -780,19 +828,56 @@ class Provisioner:
                 try:
                     root = self.work_dir / hashlib.sha256(job.request_id.encode()).hexdigest()[:16]
                     source_dir = self.source.acquire(job, root / "source")
-                    package = inspect_package(self.builder.build(job, source_dir, root / "artifacts", self.config))
+                    prior = (previous or {}).get("checkpoint", {})
+                    if prior.get("stage") in {"PRE_IDENTITY_EXE_BUILT", "EXE_IDENTITY_VERIFIED_NOT_APPLIED"}:
+                        # Reuse the original on-disk EXE. Rebuilding here would
+                        # silently change the bytes after Partner Center review.
+                        saved = (previous or {}).get("response", {}).get("package", {})
+                        saved_path = Path(saved.get("path") or "")
+                        artifact_root = (root / "artifacts").resolve()
+                        if (saved_path.is_symlink() or not saved_path.is_file()
+                                or not saved_path.resolve().is_relative_to(artifact_root)):
+                            raise HoldError("Pinned EXE evidence is missing; do not rebuild during Identity retry")
+                        package = inspect_package(saved_path)
+                        if (package["kind"] != "exe" or package["sha256"] != prior.get("package_sha256")
+                                or package["sha256"] != saved.get("sha256")
+                                or package["size_bytes"] != saved.get("size_bytes")):
+                            raise ConflictError("Pinned EXE changed between Identity attempts")
+                    else:
+                        package = inspect_package(self.builder.build(job, source_dir, root / "artifacts", self.config))
                     if package.get("kind") == "exe":
-                        # A real executable is useful evidence before Partner
-                        # Center registration, but has no MSIX Identity. Keep
-                        # its SHA/path instead of losing it to a generic HOLD.
-                        response = self._base_response(job, "HOLD", started)
-                        response.update(
-                            package=package,
-                            next_stage="OBTAIN_OFFICIAL_IDENTITY_AND_BUILD_MSIX",
-                            errors=["Windows EXE built and hashed; official Partner Center Identity and MSIX are not yet verified"],
-                        )
-                        self._save(job, response, {"stage": "PRE_IDENTITY_EXE_BUILT",
-                                                   "package_sha256": package["sha256"]})
+                        verify_exe_receipt(job, package)
+                        try:
+                            official = self.identity.lookup(job)
+                        except HoldError as exc:
+                            response = self._base_response(job, "HOLD", started)
+                            response.update(package=package,
+                                next_stage="OBTAIN_AUTHENTICATED_OFFICIAL_IDENTITY",
+                                errors=[redact(str(exc))])
+                            self._save(job, response, {"stage": "PRE_IDENTITY_EXE_BUILT",
+                                                       "package_sha256": package["sha256"]})
+                            return response
+                        # An EXE has no embedded MSIX Identity. Verify the
+                        # authenticated Partner Center export and exact EXE
+                        # receipt, then CAS-return Identity; never claim MSIX.
+                        returned = self.github.return_identity(
+                            job, self.config, official, package, apply=apply)
+                        status = "COMPLETED" if returned["status"] in {"APPLIED", "EXISTING_VERIFIED"} else "HOLD"
+                        response = self._base_response(job, status, started)
+                        response.update(package=package, official_identity={
+                            "status": "VERIFIED_OPERATOR_EXPORT",
+                            **{key: official[key] for key in
+                               ("store_id", "name", "publisher", "version", "package_family_name",
+                                "package_sid", "official_evidence_url", "verified_at")}},
+                            github_return=returned, windows_all_auto_record=None,
+                            next_stage=("BUILD_MSIX_FROM_PINNED_EXE" if status == "COMPLETED"
+                                        else "APPLY_VERIFIED_GITHUB_RETURN"))
+                        if status == "HOLD":
+                            response["errors"] = ["Authenticated Identity verified; CAS not applied"]
+                        self._save(job, response, {
+                            "stage": (returned["status"] if status == "COMPLETED"
+                                      else "EXE_IDENTITY_VERIFIED_NOT_APPLIED"),
+                            "package_sha256": package["sha256"]})
                         return response
                     official = self.identity.lookup(job)
                     compare_package_identity(package, official)

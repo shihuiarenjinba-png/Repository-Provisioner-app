@@ -3,8 +3,8 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "APP candidate TXT export overwrite confirmation had hardcoded English even in Japanese mode. Regression committed 45873ccd; localized Japanese/English confirmation fixed at Factory PR14 HEAD 1c07612a. Factory core CI 40546599736 SUCCESS, but candidate unittest is NOT part of workflow and exact candidate runtime/UI/Windows EXE remain unverified. Factory lifecycle blocker unchanged.",
-  "next_action": "NEXT LOOK: AI-App-Factory PR #14 codex/app-canary-offline-notes-20261027 HEAD 1c07612a5b8a46185e8a504a80ce8136f62c7a86; CI 40546599736 SUCCESS (core jobs only). Factory OWNER/CONTROLLER must implement atomic stage-aware cleanup of .candidate/proposal.json on research->build transition, preserving proposals/offline-notes-canary.json; AGENTS prohibits APP product agent from editing factory.py/state or deleting proposal as workaround. Then native factory.py plan -> exact .candidate/product/tests/test_smoke.py (including overwrite localization) -> validate -> promote -> verify products/offline-notes-canary -> pin source_branch/source_sha/request_id -> build real Windows EXE with provenance. 36-minute owner handles Identity and central ledger; no new APP.",
+  "last_completed_step": "Read-only 5-repo HEAD/PR/CI/Artifact + Factory AGENTS/state/controller/test inspection. Confirmed existing lifecycle HOLD; NEW: core tests/test_factory.py test_full_cycle and _prototype_for_validation manually unlink stale .candidate/proposal.json, masking actual research->build defect; factory.py plan unconditionally loads .runtime/market.json even in build. Actionable authorized-owner regression request posted to Factory PR14 comment 6449741912. No Factory forbidden-file edit, product promotion, EXE or GUI QA claimed.",
+  "next_action": "NEXT LOOK: AI-App-Factory PR14 codex/app-canary-offline-notes-20261027 HEAD 1c07612a5b8a46185e8a504a80ce8136f62c7a86, Factory CI 40546599736 SUCCESS CORE ONLY; owner comment https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6449741912. Authorized controller must fix idempotent stage-scoped candidate proposal cleanup preserving proposals/offline-notes-canary.json, remove manual unlink in both tests/test_factory.py helpers, add research->build->plan->candidate tests->validate->promote regression; avoid transient market.json requirement outside research. Then exact candidate 12 smoke tests, native validate/promote, verify products/offline-notes-canary, pin source_branch/source_sha/request_id, real Windows EXE Artifact and 1024x768 GUI evidence. Identity/E2E to 36-minute owner. No new APP.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "5f34e77224adb407d0f14866b17d8e2acc456c8d",
@@ -21,7 +21,9 @@
     "FULL_EXACT_CANDIDATE_TESTS_AND_WINDOWS_GUI_PENDING: only focused filename regression checked locally; Windows EXE not built",
     "UI_EXACT_TEST_EXECUTION_PENDING: added candidate export regression not run by Factory core CI; local function-equivalent reproduction only",
     "FACTORY_LIFECYCLE_OWNER_FIX: stage-aware cleanup preserving archived proposal remains unimplemented",
-    "EXACT_CANDIDATE_TESTS_PENDING: GitHub core CI does not execute .candidate/product/tests/test_smoke.py including new overwrite localization regression"
+    "EXACT_CANDIDATE_TESTS_PENDING: GitHub core CI does not execute .candidate/product/tests/test_smoke.py including new overwrite localization regression",
+    "FACTORY_CORE_TEST_GAP: test_full_cycle and _prototype_for_validation manually unlink stale proposal, masking lifecycle regression; authorized controller/test owner only",
+    "FACTORY_BUILD_PLAN_CACHE_DEPENDENCY: factory.py plan reads .runtime/market.json in build/improve; clean checkout requires transient cache unless owner corrects"
   ],
   "new_product_allowed": false,
   "factory_review": {
@@ -95,7 +97,7 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T16:04:20.884Z",
+  "last_observed_at_utc": "2026-10-27T18:00:03Z",
   "request_id": null,
   "factory_head_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
   "build_sha": null,
@@ -160,11 +162,15 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "FACTORY_PR14_HEAD_1c07612a_RUN_40546599736_SUCCESS_CORE_ONLY; PROVISIONER_PR10_HEAD_f86e855a_RUN_40537294327_SUCCESS; WINDOWS_ALL_AUTO_PR14_HEAD_9750c432_RUN_40543152141_SUCCESS; WINDOWS_DATA_PR1_SUCCESS; WINDOWS_CHECKER_PR2_FAILURE",
+    "ci": "Factory PR14 1c07612a CI 40546599736 SUCCESS core-only; Provisioner PR10 ca47655f CI 40546826026 SUCCESS; Windows-all-auto PR14 50d73847 CI 40553170850 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
     "ui": "NOT_PASSED_EXACT_COMMITTED_GUI_NOT_VERIFIED",
-    "commercial": "NOT_TESTED"
+    "commercial": "NOT_TESTED",
+    "app_lifecycle": "NOT_PASSED_CONTROLLER_FIX_REQUIRED",
+    "exe": "NOT_PASSED_NO_REAL_APP_ARTIFACT",
+    "ui_evidence": "NOT_PASSED_NO_EXACT_WINDOWS_GUI",
+    "e2e": "NOT_PASSED"
   },
   "research_promotion_gate": {
     "status": "HOLD_OWNER_ACTION_REQUIRED",
@@ -250,5 +256,22 @@
     "exact_candidate_test_execution": "PENDING",
     "windows_gui": "PENDING",
     "real_exe_artifact": null
+  },
+  "factory_lifecycle_test_gap_20261028": {
+    "status": "CONTROLLER_OWNER_REPAIR_REQUESTED_NOT_PATCHED",
+    "factory_pr": 14,
+    "factory_head_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
+    "owner_comment_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6449741912",
+    "masked_by": [
+      "tests/test_factory.py::test_full_cycle manual .candidate/proposal.json unlink",
+      "tests/test_factory.py::_prototype_for_validation manual .candidate/proposal.json unlink"
+    ],
+    "secondary_issue": "factory.py::plan unconditionally loads .runtime/market.json before stage branch",
+    "fix_owner": "Factory controller/test maintainer, not APP candidate agent",
+    "source_product_sha": null,
+    "request_id": null,
+    "real_exe_artifact": null,
+    "exact_candidate_runtime_tests": "NOT_EXECUTED",
+    "gui_evidence": "NOT_VERIFIED"
   }
 }

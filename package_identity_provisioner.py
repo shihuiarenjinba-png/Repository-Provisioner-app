@@ -19,6 +19,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 from typing import Any, Callable
@@ -283,7 +284,7 @@ class PackageBuilder:
         if config.build_kind == "GODOT_WINDOWS":
             self._build_godot(source, output_dir)
         else:
-            self._build_windows(source)
+            self._build_windows(source, job, output_dir)
         candidates = [
             p for root in (source, output_dir)
             for p in self._candidates(root, config)
@@ -302,7 +303,24 @@ class PackageBuilder:
             result.extend(root.glob(pattern))
         return result
 
-    def _build_windows(self, source: Path) -> None:
+    def _build_windows(self, source: Path, job: Job | None = None,
+                       output_dir: Path | None = None) -> None:
+        # Factory products live under products/<slug>; the older repository-
+        # root build entrypoints do not exist there. Use the SHA-pinned,
+        # pre-Identity Windows EXE builder when available. Never invent an ID.
+        app_builder = source / "tools" / "build_windows_exe.py"
+        if app_builder.exists() and job is not None and output_dir is not None:
+            if app_builder.is_symlink() or not app_builder.is_file():
+                raise HoldError("Factory Windows builder must be a regular file")
+            self._run(["git", "cat-file", "-e", "HEAD:tools/build_windows_exe.py"], source, 30)
+            target = output_dir / ("preidentity-" + str(time.time_ns()))
+            self._run([sys.executable, str(app_builder),
+                       "--root", str(source), "--slug", job.slug,
+                       "--expected-sha", job.source_sha, "--output", str(target)],
+                      source, 1800)
+            if not (target / (job.slug + ".exe")).is_file() or not (target / "exe-receipt.json").is_file():
+                raise HoldError("Factory pre-Identity EXE evidence is incomplete")
+            return
         for relative in self.WINDOWS_ENTRYPOINTS:
             path = source / relative
             if not path.is_file():
@@ -677,6 +695,19 @@ class Provisioner:
                     root = self.work_dir / hashlib.sha256(job.request_id.encode()).hexdigest()[:16]
                     source_dir = self.source.acquire(job, root / "source")
                     package = inspect_package(self.builder.build(job, source_dir, root / "artifacts", self.config))
+                    if package.get("kind") == "exe":
+                        # A real executable is useful evidence before Partner
+                        # Center registration, but has no MSIX Identity. Keep
+                        # its SHA/path instead of losing it to a generic HOLD.
+                        response = self._base_response(job, "HOLD", started)
+                        response.update(
+                            package=package,
+                            next_stage="OBTAIN_OFFICIAL_IDENTITY_AND_BUILD_MSIX",
+                            errors=["Windows EXE built and hashed; official Partner Center Identity and MSIX are not yet verified"],
+                        )
+                        self._save(job, response, {"stage": "PRE_IDENTITY_EXE_BUILT",
+                                                   "package_sha256": package["sha256"]})
+                        return response
                     official = self.identity.lookup(job)
                     compare_package_identity(package, official)
                     contract = windows_all_auto_record(job, official)

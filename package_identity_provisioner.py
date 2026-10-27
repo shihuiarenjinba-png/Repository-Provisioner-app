@@ -316,7 +316,10 @@ class PackageBuilder:
             target = output_dir / ("preidentity-" + str(time.time_ns()))
             self._run([sys.executable, str(app_builder),
                        "--root", str(source), "--slug", job.slug,
-                       "--expected-sha", job.source_sha, "--output", str(target)],
+                       "--expected-sha", job.source_sha,
+                       "--source-branch", job.source_branch,
+                       "--request-id", job.request_id,
+                       "--output", str(target)],
                       source, 1800)
             if not (target / (job.slug + ".exe")).is_file() or not (target / "exe-receipt.json").is_file():
                 raise HoldError("Factory pre-Identity EXE evidence is incomplete")

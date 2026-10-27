@@ -203,6 +203,8 @@ class IdentityEvidenceTests(unittest.TestCase):
 
 
 class GitHubReturnTests(unittest.TestCase):
+    PACKAGE = {"kind": "msix", "sha256": "f" * 64, "size_bytes": 2048}
+
     def api(self, endpoint, body=None, allow_missing=False):
         if "git/ref/heads/" in endpoint:
             return {"object": {"sha": SHA}}
@@ -218,7 +220,7 @@ class GitHubReturnTests(unittest.TestCase):
         raise AssertionError(endpoint)
 
     def test_atomic_apply_returns_real_commit_sha(self):
-        result = GitHubReturnClient(self.api).return_identity(Job.validate(job(), config()), config(), evidence(), True)
+        result = GitHubReturnClient(self.api).return_identity(Job.validate(job(), config()), config(), evidence(), True, package=self.PACKAGE)
         self.assertEqual(result["status"], "APPLIED")
         self.assertEqual(result["commit_sha"], "b" * 40)
     def test_no_apply_is_side_effect_free(self):
@@ -230,7 +232,7 @@ class GitHubReturnTests(unittest.TestCase):
         def wrong_head(*_a, **_k):
             return {"object": {"sha": "c" * 40}}
         with self.assertRaises(ConflictError):
-            GitHubReturnClient(wrong_head).return_identity(Job.validate(job(), config()), config(), evidence(), True)
+            GitHubReturnClient(wrong_head).return_identity(Job.validate(job(), config()), config(), evidence(), True, package=self.PACKAGE)
     def test_existing_different_identity_is_conflict(self):
         def existing(endpoint, body=None, allow_missing=False):
             if "git/ref" in endpoint:
@@ -240,7 +242,7 @@ class GitHubReturnTests(unittest.TestCase):
                 return {"encoding": "base64", "content": base64.b64encode(raw).decode()}
             return {"encoding": "base64", "content": base64.b64encode(b'{"store_id":"OTHER000"}').decode()}
         with self.assertRaises(ConflictError):
-            GitHubReturnClient(existing).return_identity(Job.validate(job(), config()), config(), evidence(), True)
+            GitHubReturnClient(existing).return_identity(Job.validate(job(), config()), config(), evidence(), True, package=self.PACKAGE)
 
 
 class OrchestratorTests(unittest.TestCase):

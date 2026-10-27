@@ -3,8 +3,8 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_RESEARCH_PROPOSAL_REVIEW__NO_ACTIVE_PRODUCT",
-  "last_completed_step": "APP Provisioner Identity safety: reproduced JSON duplicate-key ambiguity and committed strict duplicate rejection for official evidence, EXE receipts and existing approved-identity replay. Commits ee9d5ba635328a51e17b200a50cbc106f76d2675 and 7f9319af1af4638e1c1d595a7bf1fab5bc5afd33; Windows and Ubuntu full unittest + py_compile CI 40485869857 SUCCESS. Factory PR #14 remains research-only; no GUI, EXE, or active APP.",
-  "next_action": "FIRST: re-fetch AI-App-Factory codex/app-canary-offline-notes-20261027 HEAD 60d84c37ab73d6efb6a8fe3d382b1bf500949921 and factory/state.json. Do not write product code while stage=research under AGENTS.md. Trusted Factory operator must obtain genuine .runtime/market.json signals, run factory.py plan/validate/promote through reviewed codex/* mechanism to stage=build (no direct agent state edit or unauthorized merge). Then generate ONE real offline-notes-canary .candidate/product/ manifest.json, Tkinter main.py, README, headless tests, promote via reviewed mechanism to products/offline-notes-canary, pin source_branch/source_sha/request_id, run real Windows EXE and GUI QA. Recheck Provisioner-app PR #10 code HEAD 7f9319af1af4638e1c1d595a7bf1fab5afd33 and CI 40485869857. Preserve original source_sha vs packaging factory_head_sha. No MSIX/E2E/UI PASS without evidence.",
+  "last_completed_step": "Verified Factory research→build gate against live market query results: both existing issue URLs are real but absent from current market() 16 signals; default fresh plan/validate cannot promote the present proposal without matching authentic market evidence. Native factory-cycle also gates on FACTORY_ENABLED and OPENAI_API_KEY. Posted actionable owner handoff on Factory PR #14 comment 6440323634. No product code/EXE generated; prior Provisioner duplicate-JSON safety fix remains CI-green.",
+  "next_action": "FIRST: re-fetch AI-App-Factory codex/app-canary-offline-notes-20261027 HEAD 60d84c37ab73d6efb6a8fe3d382b1bf500949921 and factory/state.json; inspect Factory PR #14 comment 6440323634. Authorized Factory owner must provide a genuine matching .runtime/market.json for Zettlr #6519 and usememos #6309 (or re-research the SAME canary with genuinely relevant current signals) and use a reviewed no-OpenAI-paid-API-key plan→validate→promote mechanism to advance stage=build. Do not edit AGENTS-forbidden state/workflows directly, bypass human review, or merge. Then 00 APP owner implements exactly offline-notes-canary under .candidate/product with real Tkinter GUI, save/search/export and headless tests; promote to products/<slug> via authorized reviewed mechanism, pin request_id/source_sha, build real Windows EXE and GUI evidence. Only after that continue Provisioner→official Identity→same-EXE MSIX→all-auto→Checker.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "9861e91f6ea1f064066c92c9f400da8c710f4fe3",
@@ -15,7 +15,9 @@
     "NO_ACTIVE_PRODUCT: proposal is not committed products/<slug>; active_product remains null; do not start another APP canary",
     "INTEGRATION_FIX: Factory PR #12/#13 diverged; exact EXE reuse, approved Identity correlation, immutable source_sha/factory_head_sha, MSIX workflow/handoff remain unintegrated",
     "EXTERNAL_IDENTITY: authenticated Partner Center Identity not yet available (not needed for pre-Identity GUI/EXE stages)",
-    "No real APP EXE, GUI screenshot, MSIX, local return, Windows-all-auto intake, or Windows-checker QA evidence"
+    "No real APP EXE, GUI screenshot, MSIX, local return, Windows-all-auto intake, or Windows-checker QA evidence",
+    "RESEARCH_SIGNAL_MISMATCH: both authentic proposal issue URLs absent from current 16 market() search signals; research validate requires exact URL membership in .runtime/market.json",
+    "FACTORY_NO_KEY_ACTIVATION: factory-cycle.yml requires OPENAI_API_KEY and FACTORY_ENABLED=true; no approved no-paid-key promotion path established"
   ],
   "new_product_allowed": false,
   "factory_review": {
@@ -43,17 +45,17 @@
     "same_exe_retry_without_rebuild": true,
     "cas_expected_head": "job.source_sha",
     "exe_identity_not_msix": true,
-    "head_observed": "7f9319af1af4638e1c1d595a7bf1fab5bc5afd33",
-    "ci_run_id": 40485869857,
+    "head_observed": "4b10ecf5978ffe3d6091ebc7890f7de32cfce88b",
+    "ci_run_id": 40486044695,
     "ci_conclusion": "SUCCESS",
     "duplicate_json_safety_commit": "7f9319af1af4638e1c1d595a7bf1fab5bc5afd33"
   },
   "transport": {
     "repository": "shihuiarenjinba-png/Windows-all-auto",
     "branch": "codex/e2e-belt-connection-20261027",
-    "head_observed": "e3d637cc659cc18d35764139af9175fcc11a01a1",
+    "head_observed": "7c470a6bad645bbc9e9ec39fb384c0db1f931e1a",
     "draft_pr": 14,
-    "ci_run_id": 40463213981,
+    "ci_run_id": 40489937981,
     "ci_conclusion": "SUCCESS",
     "stacked_backlog_pr": 15,
     "stacked_backlog_branch": "codex/github-backlog-local-queue-20261027",
@@ -89,13 +91,13 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T10:06:38Z",
+  "last_observed_at_utc": "2026-10-27T11:05:28.380Z",
   "request_id": null,
   "factory_head_sha": null,
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
-    "status": "PROPOSAL_ONLY_NOT_ACTIVE_PRODUCT",
+    "status": "PROPOSAL_ONLY_RESEARCH_PROMOTION_HOLD",
     "title": "Offline Notes Canary — Searchable Scratchpad",
     "factory_branch": "codex/app-canary-offline-notes-20261027",
     "proposal_commit_sha": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
@@ -122,7 +124,9 @@
     "progress_ci_run_id": 40480473128,
     "progress_ci_conclusion": "SUCCESS",
     "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
-    "note": "Factory CI success validates infrastructure tests, NOT proposal research validation, real product, GUI, Windows EXE, Identity, or E2E."
+    "note": "Factory CI success validates infrastructure tests, NOT proposal research validation, real product, GUI, Windows EXE, Identity, or E2E.",
+    "owner_handoff_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6440323634",
+    "market_signal_validation": "CURRENT_MARKET_SAMPLE_EXCLUDES_BOTH_CITED_URLS"
   },
   "safety_fix_20261027": {
     "classification": "CODE_FIX",
@@ -149,5 +153,22 @@
     "real_e2e": "NOT_PASSED",
     "ui": "NOT_TESTED_NO_GUI",
     "commercial": "NOT_TESTED_NO_PRODUCT"
+  },
+  "research_promotion_gate": {
+    "status": "HOLD_OWNER_ACTION_REQUIRED",
+    "factory_state": "research",
+    "factory_slug": null,
+    "proposal_branch": "codex/app-canary-offline-notes-20261027",
+    "proposal_head": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
+    "evidence_issue_urls_verified_exist": true,
+    "current_market_signal_count": 16,
+    "proposal_evidence_urls_present_in_current_market_sample": 0,
+    "market_sample_is_time_sensitive": true,
+    "native_workflow_requires_openai_api_key": true,
+    "native_workflow_requires_factory_enabled": true,
+    "forbidden_direct_state_or_workflow_edit": true,
+    "owner_handoff_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6440323634",
+    "real_gui": false,
+    "real_exe": false
   }
 }

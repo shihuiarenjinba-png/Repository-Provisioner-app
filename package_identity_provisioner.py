@@ -658,12 +658,23 @@ class GitHubReturnClient:
         if not apply:
             return proposal
         ref = self.api(base + "git/ref/heads/" + job.source_branch)
-        if not isinstance(ref, dict) or ref.get("object", {}).get("sha") != job.source_sha:
-            raise ConflictError("Factory HEAD changed before identity return")
+        current_head = ref.get("object", {}).get("sha") if isinstance(ref, dict) else None
+        if current_head != job.source_sha:
+            existing = self.api(base + "contents/" + target_path + "?ref=" + quote(job.source_branch, safe=""), allow_missing=True)
+            if existing is None or not self._existing_matches(existing, official, job, package):
+                raise ConflictError("Factory HEAD changed before identity return")
+            self._verify_product(base, job, config)
+            latest = self.api(base + "git/ref/heads/" + job.source_branch)
+            if not isinstance(latest, dict) or latest.get("object", {}).get("sha") != current_head:
+                raise ConflictError("Factory HEAD changed while verifying existing identity")
+            return {**proposal, "status": "EXISTING_VERIFIED", "commit_sha": current_head}
         self._verify_product(base, job, config)
         existing = self.api(base + "contents/" + target_path + "?ref=" + quote(job.source_branch, safe=""), allow_missing=True)
         if existing is not None:
             if self._existing_matches(existing, official, job, package):
+                latest = self.api(base + "git/ref/heads/" + job.source_branch)
+                if not isinstance(latest, dict) or latest.get("object", {}).get("sha") != job.source_sha:
+                    raise ConflictError("Factory HEAD changed while verifying existing identity")
                 return {**proposal, "status": "EXISTING_VERIFIED",
                         "commit_sha": job.source_sha,
                         "commit_url": f"https://github.com/{config.source_repository}/commit/{job.source_sha}"}
@@ -675,15 +686,25 @@ class GitHubReturnClient:
                     "verified_source_sha": job.source_sha, "package_sha256": package["sha256"],
                     "package_family_name": official["package_family_name"], "package_sid": official["package_sid"],
                     "signature_status": package["signature_status"], "store_id": official["store_id"],
-                    "name": official["name"], "publisher": official["publisher"], "version": official["version"],
+                    "name": official["name"], "publisher": official["publisher"],
                     "verified_by": official["authenticated_account"], "evidence_url": official["official_evidence_url"]}
+        if official.get("version") is not None:
+            approved["version"] = official["version"]
         if package.get("kind") == "exe":
             approved.update({
                 "expected_head_sha": job.source_sha,
                 "display_name": job.display_name,
                 "package_kind": "exe",
                 "package_bytes": package["size_bytes"],
+                "reserved_display_name": official.get("reserved_display_name"),
+                "publisher_display_name": official.get("publisher_display_name"),
+                "package_version_gate": official.get("package_version_gate", "READY"),
             })
+        for key in ("job_origin", "central_repository", "central_branch", "central_head_sha",
+                    "queue_job_digest", "captured_at", "batch_id", "batch_index",
+                    "batch_total", "trigger_origin", "automation_id"):
+            if official.get(key) is not None:
+                approved[key] = official[key]
         content = json.dumps(approved, ensure_ascii=False, indent=2) + "\n"
         body = {"query": self.MUTATION, "variables": {"input": {
             "branch": {"repositoryNameWithOwner": config.source_repository, "branchName": job.source_branch},
@@ -720,7 +741,10 @@ class GitHubReturnClient:
         if not isinstance(item, dict) or item.get("encoding") != "base64":
             raise ConflictError("Factory product evidence is missing")
         try:
-            raw = base64.b64decode(item.get("content", ""), validate=True)
+            encoded = item.get("content", "")
+            if not isinstance(encoded, str):
+                raise ValueError("content is not text")
+            raw = base64.b64decode("".join(encoded.split()), validate=True)
         except Exception as exc:
             raise ConflictError("Factory product evidence is not valid base64") from exc
         if len(raw) > limit:
@@ -738,11 +762,9 @@ class GitHubReturnClient:
         if not isinstance(existing, dict) or existing.get("encoding") != "base64":
             return False
         try:
-            raw = base64.b64decode(existing["content"], validate=True)
-            if len(raw) > 32_768:
-                return False
-            content = json.loads(raw, object_pairs_hook=reject_duplicate_json_keys)
-        except (ValueError, TypeError, KeyError, UnicodeDecodeError):
+            content = json.loads(GitHubReturnClient._decode_content(existing, 64_000),
+                                 object_pairs_hook=reject_duplicate_json_keys)
+        except (ValueError, TypeError, KeyError, UnicodeDecodeError, ConflictError):
             return False
         if not isinstance(content, dict):
             return False
@@ -752,7 +774,6 @@ class GitHubReturnClient:
             "store_id": official["store_id"],
             "name": official["name"],
             "publisher": official["publisher"],
-            "version": official["version"],
             "verified_by": official["authenticated_account"],
             "evidence_url": official["official_evidence_url"],
             "request_id": job.request_id,
@@ -773,7 +794,17 @@ class GitHubReturnClient:
                 "display_name": job.display_name,
                 "package_kind": "exe",
                 "package_bytes": package["size_bytes"],
+                "reserved_display_name": official.get("reserved_display_name"),
+                "publisher_display_name": official.get("publisher_display_name"),
+                "package_version_gate": official.get("package_version_gate", "READY"),
             })
+        if official.get("version") is not None:
+            required["version"] = official["version"]
+        for key in ("job_origin", "central_repository", "central_branch", "central_head_sha",
+                    "queue_job_digest", "captured_at", "batch_id", "batch_index",
+                    "batch_total", "trigger_origin", "automation_id"):
+            if official.get(key) is not None:
+                required[key] = official[key]
         return all(type(content.get(key)) is type(value) and content.get(key) == value
                    for key, value in required.items())
 

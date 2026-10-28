@@ -73,7 +73,14 @@ def validate_job_receipt(job: dict[str, Any], receipt: dict[str, Any]) -> None:
     _require(_matches(SLUG, job.get("slug")), "invalid slug")
     _require(isinstance(job.get("display_name"), str) and 1 <= len(job["display_name"].strip()) <= 100,
              "invalid display name")
-    _require(job.get("requested_actions") and isinstance(job["requested_actions"], list), "missing job actions")
+    actions = job.get("requested_actions")
+    _require(isinstance(actions, list) and bool(actions), "missing job actions")
+    allowed_actions = {"BUILD_WINDOWS", "INSPECT_PACKAGE", "LOOKUP_OFFICIAL_IDENTITY",
+                       "PROPOSE_GITHUB_RETURN"}
+    _require(all(isinstance(action, str) and action in allowed_actions for action in actions),
+             "unsupported APP job action")
+    _require(len(set(actions)) == len(actions), "duplicate APP job action")
+    _require("BUILD_WINDOWS" in actions, "APP job must request BUILD_WINDOWS")
     for key in SOURCE_KEYS:
         _require(receipt.get(key) == job[key], "EXE receipt mismatch: " + key)
     _require(receipt.get("source_factory") == job["source_factory"], "EXE receipt Factory mismatch")

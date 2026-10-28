@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "request_id": "app-file-integrity-ledger-d1108d12f7d1",
+  "product_type": "APP",
+  "source_factory": "AI-App-Factory",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-ledger-snapshot-size-20261028",
+  "source_sha": "d1108d12f7d1697af30400f97c7db39cba5e6791",
+  "slug": "file-integrity-ledger",
+  "display_name": "File Integrity Ledger — Offline Checksum Snapshot",
+  "target_owner": "shihuiarenjinba-png",
+  "dry_run": false,
+  "requested_actions": [
+    "BUILD_WINDOWS",
+    "INSPECT_PACKAGE",
+    "LOOKUP_OFFICIAL_IDENTITY",
+    "PROPOSE_GITHUB_RETURN"
+  ]
+}

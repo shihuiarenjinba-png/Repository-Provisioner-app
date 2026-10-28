@@ -1,5 +1,15 @@
 # APP Canary — pinned pre-Identity handoff (2026-10-28 JST)
 
+## 2026-10-28 14:08 JST — clean-source guard + fresh request-bound EXE verified
+
+- **CODE FIX (APP-owned Provisioner only):** [commit 49f2ab33](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/commit/49f2ab339062350e25b55de126d9ea04f5f02133) adds `verify_clean_factory_checkout` before executing the Factory builder. An existing Git checkout can have the correct HEAD while retaining modified, untracked or ignored files; these now fail closed instead of running altered local source. The [test refinement c551d4ea](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/commit/c551d4eaabe6f2792450a2e31558daf493536f81) verifies ignored payloads are truly ignored by Git. Three new regression tests cover clean checkout, dirty/ignored checkout and SHA mismatch.
+- **CI PASS:** [Provisioner Windows+Ubuntu CI 40636040523](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40636040523) SUCCESS at `c551d4ea`.
+- **NEW Windows EXE PASS:** [run 40636033797](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40636033797) SUCCESS, [Artifact 12793163698](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40636033797/artifacts/12793163698). Artifact ZIP independently downloaded and verified: ZIP SHA-256 `d63f8d80262b7191f1dce332a2108c777335ddabd932adc191374ccf3ba0b779`, EXE **11,491,423 bytes**, SHA-256 `373b069b5a5f5ebdfea8785edc1c165030b6988b688739105585f34ed4501ab0`. Windows PE `MZ`, `PE\\0\\0`, AMD64, PE32+ checked. Exact two files: `offline-notes-canary.exe`, `exe-receipt.json`. Receipt source SHA/request_id/slug match the immutable canary. ZIP digest matches GitHub artifact digest. Expires **2026-11-02 05:07:41 UTC**.
+- **Source unchanged:** Factory PR #14 `b83702c8948991cc3bd31745db5df64afaf6010f`; request_id `app-offline-notes-canary-b83702c89489`; slug `offline-notes-canary`. No new APP, no Store Identity applied. Artifact EXE bytes may differ across PyInstaller builds; use exact hash/receipt of the chosen artifact, not a prior EXE hash.
+- **36-minute owner next:** prefer this latest request-bound EXE for Windows GUI QA at 1024x768, save/restart/recovery, then authenticated Identity attestation, CAS, MSIX, Windows-checker and E2E. **Windows GUI and commercial quality remain unverified**. Identity reference already available in Windows-all-auto PR #19; do not re-request. The 00-minute lane did not touch central E2E, Identity scheduler or Partner Center.
+
+---
+
 ## Latest: request-bound Windows EXE VERIFIED (2026-10-28 13:05 JST)
 
 - **NEW PASS**: [Provisioner Windows workflow run 40630198770](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40630198770) on PR #10 work branch at Provisioner commit `7d4a9da745bf6ae399b0b7d5a738b20a5f94fcff`; [Artifact 12791411541](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40630198770/artifacts/12791411541).

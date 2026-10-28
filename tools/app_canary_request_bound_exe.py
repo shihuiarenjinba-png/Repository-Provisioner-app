@@ -68,6 +68,7 @@ def verify_exe_receipt(job: Job, output: Path) -> dict:
     with exe.open("rb") as handle:
         if handle.read(2) != b"MZ":
             raise ValueError("EXE does not have a PE header")
+        handle.seek(0)  # hash the entire PE, including its MZ header
         digest = hashlib.sha256()
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)

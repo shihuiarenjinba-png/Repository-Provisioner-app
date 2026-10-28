@@ -71,6 +71,9 @@ def validate_job_receipt(job: dict[str, Any], receipt: dict[str, Any]) -> None:
     _require(_matches(SHA40, job.get("source_sha")) and job["source_sha"] != "0" * 40, "invalid source SHA")
     _require(_matches(REQUEST, job.get("request_id")), "invalid request ID")
     _require(_matches(SLUG, job.get("slug")), "invalid slug")
+    # Matching job and receipt fields alone do not prove request/source provenance.
+    _require(job["request_id"] == "app-" + job["slug"] + "-" + job["source_sha"][:12],
+             "request ID does not bind to slug and source SHA")
     _require(isinstance(job.get("display_name"), str) and 1 <= len(job["display_name"].strip()) <= 100,
              "invalid display name")
     actions = job.get("requested_actions")

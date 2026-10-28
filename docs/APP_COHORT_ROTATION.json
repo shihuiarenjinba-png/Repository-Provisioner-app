@@ -77,7 +77,28 @@
       "artifact_mismatch_observed": 0,
       "schema_mismatch_observed": 0,
       "retry_count_observed": 2,
-      "manual_intervention_count_observed_min": 2
+      "manual_intervention_count_observed_min": 2,
+      "improvement_revision": {
+        "source_branch": "codex/app-focus-save-rollback-20261029",
+        "source_sha": "fda3f2fce807d667594313592bb5e1e7f7839511",
+        "request_id": "app-focus-session-desk-fda3f2fce807",
+        "factory_lifecycle": "PASS_REAL_IMPROVE_PLAN_VALIDATE_PROMOTE_REVISION_2",
+        "functional_tests": "20/20_PASS_UBUNTU_AND_WINDOWS",
+        "factory_core_tests": "110/110_PASS_UBUNTU_AND_WINDOWS",
+        "windows_exe": "REAL_ARTIFACT_SHA256_VERIFIED_IN_ACTIONS_AND_INDEPENDENT_ZIP",
+        "artifact_sha256": "031ffc7e62dd265ff989581b67c165b451eab7127f061cf15ee537e5115e000b",
+        "artifact_bytes": 11474457,
+        "artifact_zip_sha256": "ab970e5a6a5fb05d78af15aa09f2e8d915868cd0a6d8af191fc99f5a3e51cf4a",
+        "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40722852829/artifacts/12830748482",
+        "provisioner_handoff": "docs/APP_FOCUS_IMPROVEMENT_PRE_IDENTITY_HANDOFF.md",
+        "identity_status": "WAITING_USER_IDENTITY",
+        "windows_gui": "UNVERIFIED",
+        "msix": "NOT_BUILT",
+        "e2e": "NOT_PASSED",
+        "retry_count_observed": 1,
+        "manual_intervention_count_observed_min": 2,
+        "previous_frozen_source_preserved": true
+      }
     },
     {
       "slot": 3,
@@ -224,14 +245,16 @@
     "text_diff_retry_count_observed": 3,
     "text_diff_manual_intervention_count_observed_min": 3,
     "text_diff_metadata_mismatch_observed": 1,
-    "retries_total_observed_min": 7,
-    "manual_interventions_total_observed_min": 7,
+    "retries_total_observed_min": 8,
+    "manual_interventions_total_observed_min": 9,
     "unquantified_product_slots": [
       1
     ],
-    "stability_review": "5/5 cloud PRE_IDENTITY_READY (original cohort); Ledger improvement revision also exact-source PRE_IDENTITY_READY. At least 7 retries and 7 manual interventions including improvement promotion; slot 1 unknown. Stable unattended operation remains unproven.",
+    "stability_review": "5/5 cloud PRE_IDENTITY_READY; Ledger and Focus improvement revisions also exact-source PRE_IDENTITY_READY. At least 8 retries and 9 manual interventions including improvements; slot 1 unknown. Stable unattended operation, GUI, MSIX, E2E remain unproven.",
     "ledger_improvement_retry_count_observed": 1,
-    "ledger_improvement_manual_intervention_count_observed_min": 1
+    "ledger_improvement_manual_intervention_count_observed_min": 1,
+    "focus_improvement_retry_count_observed": 1,
+    "focus_improvement_manual_intervention_count_observed_min": 2
   },
   "owner_boundaries": {
     "app": "Factory+Provisioner",
@@ -249,6 +272,7 @@
     "2026-10-28 slot 4: Offline Text Diff Desk original bilingual text comparison app promoted via native Factory research/build and improve controller. Ubuntu 19/19 and Windows 19/19 tests PASS after CRLF normalization; initial Windows tests, ignored candidate staging, and incorrect intermediate handoff metadata required three corrections. Final run 40686212829 built source/request-bound unsigned Windows EXE and final corrected registration handoff; ZIP/PE/SHA/receipt independently verified. Source a7d37280; no GUI/install, MSIX, Identity CAS or Store PASS.",
     "2026-10-28 slot 5: Offline Image Inventory Desk original stdlib-only PNG/JPEG/GIF/BMP header inventory, CSV export and JSON recovery. Native research/build plan-validate-promote PASS in Actions 40693150965, Ubuntu and Windows 23/23 functional tests PASS, correlated Windows unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. Cloud PRE_IDENTITY_READY 5/5; no new APP without 48-minute explicit approval. GUI/install, MSIX, Identity CAS and E2E remain unverified.",
     "2026-10-28 APP quality audit: File Integrity Ledger accepts and saves 100 paths of length 2048 but previously rejected saved snapshots >128 KiB on reload. Fix is isolated in Factory Draft PR #19 (codex/app-ledger-snapshot-size-20261028); frozen source deaa9f32 and its original EXE/receipt are unchanged. Do not treat improvement as promoted or update PRE_IDENTITY identity binding until owner-approved improve lifecycle, new exact source/EXE and correlation verification.",
-    "2026-10-28 Ledger improvement: source d1108d12f7d1697af30400f97c7db39cba5e6791 / request app-file-integrity-ledger-d1108d12f7d1 promoted via genuine improve controller and separately EXE/ZIP verified. Prior deaa9f32 frozen contract not overwritten; see APP_LEDGER_IMPROVEMENT_PRE_IDENTITY_HANDOFF.md."
+    "2026-10-28 Ledger improvement: source d1108d12f7d1697af30400f97c7db39cba5e6791 / request app-file-integrity-ledger-d1108d12f7d1 promoted via genuine improve controller and separately EXE/ZIP verified. Prior deaa9f32 frozen contract not overwritten; see APP_LEDGER_IMPROVEMENT_PRE_IDENTITY_HANDOFF.md.",
+    "2026-10-29 Focus revision 2: storage-failure rollback in task/timer/language model, genuine improve controller promote and 20/20 product tests on Ubuntu/Windows, 110/110 core tests, exact-source unsigned Windows EXE independently ZIP/MZ/SHA/source/request verified. Original Focus source/request retained; new revision separately pinned. Windows GUI/MSIX/E2E/Identity CAS remain HOLD."
   ]
 }

@@ -4,10 +4,10 @@
   "policy": "FIVE_PRODUCT_PRE_IDENTITY_STABILITY_COHORT",
   "max_products": 5,
   "max_implementation_wip": 2,
-  "new_product_generation_allowed": true,
+  "new_product_generation_allowed": false,
   "product_rotation_gate": "real code committed + functional tests PASS + source/request/slug pinned + Windows EXE or reproducible entrypoint + MSIX registration classification + machine-readable Identity state",
   "factory_stable": false,
-  "stability_threshold": "5/5 products PRE_IDENTITY_READY with same contract",
+  "stability_threshold": "5/5 cloud PRE_IDENTITY_READY reached; stable remains HOLD pending intervention-free repeatability review, GUI/MSIX/E2E separate gates",
   "local_unavailable_mode": true,
   "windows_gui_not_preidentity_blocker": true,
   "products": [
@@ -153,15 +153,45 @@
     },
     {
       "slot": 5,
-      "slug": null,
-      "status": "NOT_STARTED",
-      "candidate_category": "local file workflow utility (avoid existing folder automation/privacy tools)"
+      "slug": "offline-image-inventory-desk",
+      "status": "PRE_IDENTITY_READY_CLOUD_CONTRACT",
+      "candidate_category": "offline image header metadata / CSV inventory / local JSON session",
+      "overlap_review": "SCREENED_IMAGE_PRIVACY_REPOS; DISTINCT_READ_ONLY_DIMENSIONS_NO_EXIF_CLEANING; CONTENT_REVIEW_PENDING",
+      "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+      "source_branch": "codex/app-cohort-image-inventory-20261028",
+      "source_sha": "16b6a772952ca0988f2ae2f8b5f4db2e59ec5877",
+      "request_id": "app-offline-image-inventory-desk-16b6a772952c",
+      "formal_product_path": "products/offline-image-inventory-desk",
+      "product_code_committed": true,
+      "functional_tests": "23/23_PASS_HEADLESS_UBUNTU; 23/23_PASS_WINDOWS",
+      "native_lifecycle_status": "PASS_REAL_CONTROLLER_RESEARCH_BUILD_PROMOTE",
+      "windows_exe": "REAL_ARTIFACT_SHA256_VERIFIED",
+      "artifact_sha256": "0e023bcd74f6035a2a3e1cf4cd785f83033c69785723a5c01f7f69d2c5d7b980",
+      "artifact_bytes": 11391021,
+      "artifact_zip_sha256": "3b5776497126a6e5db8ea23ff7c7c4103d0bdccdbfe16cc24116beb44dd371ca",
+      "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40693150965/artifacts/12817339804",
+      "packaging_family": "MSIX",
+      "partner_center_registration_type": "MSIX_OR_PWA_APP",
+      "identity_status": "WAITING_USER_IDENTITY",
+      "identity_attestation": "NOT_VERIFIED",
+      "windows_gui": "UNVERIFIED",
+      "e2e": "NOT_PASSED",
+      "source_conflicts_observed": 0,
+      "artifact_mismatch_observed": 0,
+      "schema_mismatch_observed": 0,
+      "retry_count_observed": 0,
+      "manual_intervention_count_observed_min": 0,
+      "evidence_urls": [
+        "https://github.com/pwyq/Fabricum/issues/29",
+        "https://github.com/cemfirat/mediarama/issues/91"
+      ],
+      "identity_return_target": "36_MIN_WINDOWS_E2E"
     }
   ],
   "metrics": {
-    "pre_identity_ready_count": 4,
+    "pre_identity_ready_count": 5,
     "total_target": 5,
-    "observed_success_rate": "4/4 verified cloud PRE_IDENTITY_READY; cohort 4/5, not stable",
+    "observed_success_rate": "5/5 verified cloud PRE_IDENTITY_READY; manual corrections in prior slots; end-to-end stable NOT established",
     "retries_total": null,
     "branch_conflicts_total_observed": 0,
     "artifact_mismatches_total_observed": 0,
@@ -188,6 +218,7 @@
     "Slot 2 uses isolated pre-canary research ancestor 60d84c37, so its controller predates the reviewed stale-proposal cleanup. Do not claim build promotion until the owner-approved lifecycle patch is present and native tests pass.",
     "2026-10-28 slot 2: real Factory controller research/build plan-validate-promote on Actions run 40668807091; 109 Factory tests and 18 Focus tests PASS, products/focus-session-desk committed at 8b00bc4e90828c4282463826873aa8dfd2eb93f4; correlated Windows EXE independently ZIP/PE/SHA verified, Identity not yet collected, Windows GUI unverified. Two promotion workflow retries were needed (import path, ignored tracked deletion); no blind overwrite.",
     "2026-10-28 slot 3: File Integrity Ledger original read-only hashing/snapshot GUI promoted via native research/build controller in run 40677868773. First attempt failed old regression tests assuming manual candidate cleanup; fixed with audited test blob and reran successfully. Ubuntu product 18/18 PASS, Windows regression step PASS, correlated unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. No Windows GUI/install, MSIX or Identity CAS claims.",
-    "2026-10-28 slot 4: Offline Text Diff Desk original bilingual text comparison app promoted via native Factory research/build and improve controller. Ubuntu 19/19 and Windows 19/19 tests PASS after CRLF normalization; initial Windows tests, ignored candidate staging, and incorrect intermediate handoff metadata required three corrections. Final run 40686212829 built source/request-bound unsigned Windows EXE and final corrected registration handoff; ZIP/PE/SHA/receipt independently verified. Source a7d37280; no GUI/install, MSIX, Identity CAS or Store PASS."
+    "2026-10-28 slot 4: Offline Text Diff Desk original bilingual text comparison app promoted via native Factory research/build and improve controller. Ubuntu 19/19 and Windows 19/19 tests PASS after CRLF normalization; initial Windows tests, ignored candidate staging, and incorrect intermediate handoff metadata required three corrections. Final run 40686212829 built source/request-bound unsigned Windows EXE and final corrected registration handoff; ZIP/PE/SHA/receipt independently verified. Source a7d37280; no GUI/install, MSIX, Identity CAS or Store PASS.",
+    "2026-10-28 slot 5: Offline Image Inventory Desk original stdlib-only PNG/JPEG/GIF/BMP header inventory, CSV export and JSON recovery. Native research/build plan-validate-promote PASS in Actions 40693150965, Ubuntu and Windows 23/23 functional tests PASS, correlated Windows unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. Cloud PRE_IDENTITY_READY 5/5; no new APP without 48-minute explicit approval. GUI/install, MSIX, Identity CAS and E2E remain unverified."
   ]
 }

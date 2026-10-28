@@ -702,7 +702,8 @@ class GitHubReturnClient:
             })
         for key in ("job_origin", "central_repository", "central_branch", "central_head_sha",
                     "queue_job_digest", "captured_at", "batch_id", "batch_index",
-                    "batch_total", "trigger_origin", "automation_id"):
+                    "batch_total", "trigger_origin", "automation_id",
+                    "dispatch_origin", "execution_origin"):
             if official.get(key) is not None:
                 approved[key] = official[key]
         content = json.dumps(approved, ensure_ascii=False, indent=2) + "\n"
@@ -802,7 +803,8 @@ class GitHubReturnClient:
             required["version"] = official["version"]
         for key in ("job_origin", "central_repository", "central_branch", "central_head_sha",
                     "queue_job_digest", "captured_at", "batch_id", "batch_index",
-                    "batch_total", "trigger_origin", "automation_id"):
+                    "batch_total", "trigger_origin", "automation_id",
+                    "dispatch_origin", "execution_origin"):
             if official.get(key) is not None:
                 required[key] = official[key]
         return all(type(content.get(key)) is type(value) and content.get(key) == value

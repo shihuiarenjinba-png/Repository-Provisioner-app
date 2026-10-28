@@ -8,6 +8,14 @@
 Windowsの認証済みUI receiptを受け取る。書込みは既存
 `GitHubReturnClient`へ委譲し、別のCAS実装は持たない。
 
+ローカル実行のprovenanceはdispatchとexecutionを分離する。正式な4 APP
+receiptには`dispatch_origin=CHATGPT_36_MIN_LOOP`と、
+`MANUAL_WINDOWS_TERMINAL` / `WINDOWS_TASK_SCHEDULER` /
+`WINDOWS_TASK_SCHEDULER_MANUAL_START`のいずれかの`execution_origin`を必須とする。
+これらはapproved Identityにも保存され、AIがjobを配置したこととWindowsが
+実際に実行したことを混同しない。CLI単体は従来どおりtrusted UI verifierを
+持たずHOLDし、Windows-all-autoの信頼済みrunnerだけがcallbackを渡す。
+
 Store IdentityとPackage Versionは分離する。Identity取得段階ではVersionを
 生成せず、`package_version_gate=HOLD`とする。初回CASは`APPLIED`、同じ内容の
 再開は`EXISTING_VERIFIED`。既存ファイル差異、source/queue digest drift、誤った

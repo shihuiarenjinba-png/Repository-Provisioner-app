@@ -37,6 +37,7 @@ RECEIPT_FIELDS = {
     "identity_details_observed", "package_version_gate",
     "existing_scheduler_routing_pending", "cas_applied", "store_submitted",
     "batch_id", "batch_index", "batch_total", "trigger_origin", "automation_id",
+    "dispatch_origin", "execution_origin",
 } | IDENTITY_FIELDS
 
 
@@ -61,6 +62,7 @@ def _official(receipt: dict, job: Job, queue_job: dict, *, independent_ui_verifi
         "central_branch": "codex/e2e-belt-connection-20261027",
         "queue_job_digest": canonical_digest(queue_job),
         "trigger_origin": "SCHEDULED_36_MIN_LOOP",
+        "dispatch_origin": "CHATGPT_36_MIN_LOOP",
         "automation_id": "6adf4b1e7654819193b997fb4fb83c85",
         "batch_total": 4,
     }
@@ -77,6 +79,12 @@ def _official(receipt: dict, job: Job, queue_job: dict, *, independent_ui_verifi
             or receipt.get("cas_applied") is not False
             or receipt.get("store_submitted") is not False):
         raise HoldError("APP Identity receipt evidence is incomplete")
+    if receipt.get("execution_origin") not in {
+        "MANUAL_WINDOWS_TERMINAL",
+        "WINDOWS_TASK_SCHEDULER",
+        "WINDOWS_TASK_SCHEDULER_MANUAL_START",
+    }:
+        raise HoldError("APP execution origin is invalid")
     if (not re.fullmatch(r"[0-9a-f]{40}", str(receipt.get("central_head_sha", "")))
             or not isinstance(receipt.get("batch_index"), int)
             or not 1 <= receipt["batch_index"] <= 4):

@@ -66,6 +66,8 @@ def receipt(job):
         "cas_applied": False, "store_submitted": False,
         "batch_id": "batch-1", "batch_index": 1, "batch_total": 4,
         "trigger_origin": "SCHEDULED_36_MIN_LOOP",
+        "dispatch_origin": "CHATGPT_36_MIN_LOOP",
+        "execution_origin": "MANUAL_WINDOWS_TERMINAL",
         "automation_id": "6adf4b1e7654819193b997fb4fb83c85",
     }
 
@@ -148,6 +150,11 @@ class IdentityOnlyReturnTests(unittest.TestCase):
     def test_wrong_return_target_rejected(self):
         with self.assertRaisesRegex(ConflictError, "another job"):
             self.run_one(lambda x: x.update(identity_return_target="products/wrong/store/approved-identity.json"),
+                         verifier=lambda receipt, job, queue: True)
+
+    def test_execution_origin_must_be_local_windows_owner(self):
+        with self.assertRaisesRegex(Exception, "execution origin"):
+            self.run_one(lambda x: x.update(execution_origin="CHATGPT"),
                          verifier=lambda receipt, job, queue: True)
 
 

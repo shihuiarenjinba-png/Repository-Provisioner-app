@@ -1,0 +1,27 @@
+name: APP cohort final contract verification
+on:
+  push:
+    branches:
+      - codex/e2e-belt-connection-20261027
+    paths:
+      - .github/workflows/app-cohort-final-verify.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run all Provisioner contract tests
+        run: python -m unittest discover -s tests -v
+      - name: Check exact fifth cohort contract
+        run: python -m unittest discover -s tests -p test_app_image_inventory_registration.py -v

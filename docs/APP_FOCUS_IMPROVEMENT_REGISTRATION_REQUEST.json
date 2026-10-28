@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "product": "Focus Session Desk — Offline Timer and Task Checklist",
+  "slug": "focus-session-desk",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-focus-save-rollback-20261029",
+  "source_sha": "fda3f2fce807d667594313592bb5e1e7f7839511",
+  "request_id": "app-focus-session-desk-fda3f2fce807",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "suggested_display_name": "Focus Session Desk",
+  "identity_status": "WAITING_USER_IDENTITY",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "store_id": null,
+  "required_fields": [
+    "store_id",
+    "reserved_display_name",
+    "identity_name",
+    "publisher",
+    "publisher_display_name",
+    "pfn",
+    "package_sid"
+  ],
+  "user_id_request": "REQUEST_OFFICIAL_IDENTITY",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "031ffc7e62dd265ff989581b67c165b451eab7127f061cf15ee537e5115e000b",
+    "bytes": 11474457,
+    "receipt_only_not_binary_reverification": false
+  },
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40722852829/artifacts/12830748482",
+  "artifact_zip_sha256": "ab970e5a6a5fb05d78af15aa09f2e8d915868cd0a6d8af191fc99f5a3e51cf4a",
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AWAIT_USER_IDENTITY",
+  "identity_return_target": {
+    "owner": "36_MIN_WINDOWS_E2E",
+    "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+    "source_sha": "fda3f2fce807d667594313592bb5e1e7f7839511",
+    "request_id": "app-focus-session-desk-fda3f2fce807"
+  },
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "UNVERIFIED",
+  "artifact_external_download_verified": true,
+  "improvement_revision": 2,
+  "prior_immutable_source_sha": "8b00bc4e90828c4282463826873aa8dfd2eb93f4",
+  "prior_immutable_request_id": "app-focus-session-desk-8b00bc4e9082"
+}

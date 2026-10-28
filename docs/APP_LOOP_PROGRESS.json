@@ -2,9 +2,9 @@
   "schema_version": 1,
   "lane": "APP",
   "active_product": "offline-notes-canary",
-  "phase": "CANARY_NATIVE_PROMOTED__REQUEST_BOUND_WINDOWS_EXE_VERIFIED__WINDOWS_GUI_PENDING",
-  "last_completed_step": "Factory native plan/tests/validate/promote PASS at immutable b83702c8. Provisioner Windows Actions 40630198770 built and independently verified a NEW request-bound EXE artifact 12791411541 at exact request_id app-offline-notes-canary-b83702c89489 and source SHA b83702c8; 11,490,228 bytes, PE MZ, SHA256 a3bcec9bc181d7fa5f755ec3fb61bcbe140f23671430595dc87fbde9479df0e5. ZIP SHA256 1c0f0718f1eb39e372c22f0f1c7934e6ea676ac95cd53f641f3c3f2ab33a7ec7. Provisioner CI 40630203771 Windows/Ubuntu SUCCESS. Windows GUI, official Identity attestation/CAS, MSIX and E2E still HOLD.",
-  "next_action": "36-minute Windows/E2E owner: consume request-bound artifact https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40630198770/artifacts/12791411541 before 2026-11-02T04:04:52Z; verify Windows 1024x768 GUI save/restart/recovery, then authenticated Identity evidence against Windows-all-auto PR19 user reference, CAS, MSIX, checker, central E2E. Do not reuse earlier Factory request_id-null EXE. No Partner Center automation by 00-minute owner.",
+  "phase": "CANARY_PRE_IDENTITY_CLOUD_CONTRACT_READY__FIVE_PRODUCT_COHORT_1_OF_5",
+  "last_completed_step": "Canary source/request/real Windows EXE independently verified; APP registration routing module and 10 targeted local tests added. Final MSIX registration type MSIX_OR_PWA_APP; user-provided Identity reference bound to source/request without attestation/CAS. Five-product bounded cohort initiated; no second product generated yet.",
+  "next_action": "APP 00-minute: begin distinct second APP through authorized native Factory lifecycle without changing pinned canary source or direct factory/state edits; 36-minute owner separately handles authenticated Identity evidence, CAS, MSIX, Windows checker and E2E. Local Windows GUI unavailable: nonblocking for cloud PRE_IDENTITY rotation.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
   "resume_head_before_progress_commit": "0a306ac170b1563c7e6286375efaa83213578456",
@@ -16,7 +16,7 @@
     "WINDOWS_CHECKER_CI_FAILURE: downstream checker previously failed",
     "FACTORY_PR12_PR13_DIVERGENCE: separate stacked Factory MSIX source_sha/packaging HEAD contracts need downstream reconciliation"
   ],
-  "new_product_allowed": false,
+  "new_product_allowed": true,
   "factory_review": {
     "repository": "shihuiarenjinba-png/AI-App-Factory",
     "branch": "codex/app-msix-prebuilt-exe-20261027-1300",
@@ -183,8 +183,8 @@
     "exe": "PASS: real request-bound Windows unsigned EXE, 11,490,228 bytes, SHA256 a3bcec9bc181d7fa5f755ec3fb61bcbe140f23671430595dc87fbde9479df0e5, Artifact 12791411541.",
     "ui_evidence": "PARTIAL: first run, save, unsaved search, EN toggle, restart/reopen, malformed JSON error handling on Linux Xvfb; no Windows screenshot/install evidence",
     "e2e": "NOT_PASSED",
-    "pre_identity_ready": "PARTIAL: Factory/Provisioner source/request/EXE contracts PASS, Windows GUI QA not yet verified.",
-    "post_identity_ready": "NOT_READY: Store Identity reference available in Windows-all-auto PR19, authenticated evidence and CAS not performed."
+    "pre_identity_ready": "PASS_CLOUD_CONTRACT: source/request pinned, functional tests 18/18, real request-bound EXE SHA verified, registration type MSIX_OR_PWA_APP, Identity reference machine-readable; Windows GUI not verified",
+    "post_identity_ready": "HOLD: authenticated Identity attestation/CAS and MSIX not yet completed"
   },
   "research_promotion_gate": {
     "status": "ARCHIVED_RESEARCH_BUILD_PROMOTED",
@@ -528,5 +528,16 @@
     "independent_zip_hash_verified": true,
     "independent_exe_receipt_verified": true,
     "windows_gui_verified": false
+  },
+  "cohort_policy": {
+    "max_products": 5,
+    "max_implementation_wip": 2,
+    "generated_products": 1,
+    "pre_identity_ready_cloud": 1,
+    "stable": false,
+    "local_unavailable_mode": true,
+    "windows_gui_blocking_preidentity": false,
+    "rotation_record": "docs/APP_COHORT_ROTATION.json",
+    "registration_record": "docs/APP_COHORT_REGISTRATION_REQUEST.json"
   }
 }

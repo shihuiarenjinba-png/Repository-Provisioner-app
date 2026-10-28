@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "stage": "PRE_IDENTITY_WINDOWS_EXE",
+  "status": "EXE_QA_UNSIGNED",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_factory": "AI-App-Factory",
+  "source_branch": "codex/app-cohort-integrity-ledger-20261028",
+  "source_sha": "deaa9f324326a1ee276596c325f7a360adf27877",
+  "request_id": "app-file-integrity-ledger-deaa9f324326",
+  "product_type": "APP",
+  "slug": "file-integrity-ledger",
+  "display_name": "File Integrity Ledger — Offline Checksum Snapshot",
+  "executable": "file-integrity-ledger.exe",
+  "executable_sha256": "3df9536f2289ad8aff7ea72b0e7f17c146ed4ac6803ad822f1b05387c435a70a",
+  "executable_bytes": 11394479,
+  "official_identity_status": "NOT_COLLECTED",
+  "store_id": null,
+  "msix_status": "NOT_BUILT"
+}

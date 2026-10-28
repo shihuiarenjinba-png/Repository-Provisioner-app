@@ -37,10 +37,24 @@
     },
     {
       "slot": 2,
-      "slug": null,
-      "status": "ELIGIBLE_NOT_GENERATED",
+      "slug": "focus-session-desk",
+      "status": "RESEARCH_CANDIDATE_STAGED",
       "candidate_category": "offline productivity/focus session timer and checklist",
-      "overlap_review": "REPO_NAME_SCREENED; CONTENT_REVIEW_PENDING"
+      "overlap_review": "REPO_NAME_SCREENED; CONTENT_REVIEW_PENDING; TWO_DISTINCT_PUBLIC_ISSUE_SIGNALS",
+      "candidate_branch": "codex/app-cohort-focus-desk-20261028",
+      "candidate_commit": "7aaf417032c43ddcee02881b0684f05b72843d4b",
+      "source_sha": null,
+      "request_id": null,
+      "product_code_committed": false,
+      "functional_tests": "NOT_RUN",
+      "windows_exe": "NOT_BUILT",
+      "packaging_family": "MSIX",
+      "partner_center_registration_type": "MSIX_OR_PWA_APP",
+      "identity_status": "NOT_READY_SOURCE_UNFIXED",
+      "evidence_urls": [
+        "https://github.com/Dylan-Buchanan/WorkTime/issues/120",
+        "https://github.com/DJisaiah/pomo-tracker/issues/77"
+      ]
     },
     {
       "slot": 3,
@@ -83,6 +97,7 @@
     "Existing Factory state is improve/revision=1 for canary; do not directly edit factory/state.json or bypass native promotion.",
     "Product 2 must not duplicate existing repositories; no second product has been generated yet.",
     "The 2026-10-28 user-supplied Store Identity is a reference only, not authenticated attestation.",
-    "Registration family MSIX_OR_PWA_APP is based on final MSIX packaging, not intermediate unsigned EXE."
+    "Registration family MSIX_OR_PWA_APP is based on final MSIX packaging, not intermediate unsigned EXE.",
+    "Slot 2 research candidate is not a promoted product; do not request Store Identity or count it PRE_IDENTITY_READY until real code, tests, source/request, Windows build and registration contract are fixed."
   ]
 }

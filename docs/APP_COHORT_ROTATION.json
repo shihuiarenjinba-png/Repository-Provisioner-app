@@ -176,7 +176,8 @@
         "e2e": "NOT_PASSED",
         "retry_count_observed": 1,
         "manual_intervention_count_observed_min": 1,
-        "previous_frozen_source_preserved": true
+        "previous_frozen_source_preserved": true,
+        "artifact_bytes": 11393466
       }
     },
     {

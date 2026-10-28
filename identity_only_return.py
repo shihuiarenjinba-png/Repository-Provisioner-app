@@ -97,6 +97,9 @@ def _official(receipt: dict, job: Job, queue_job: dict, *, independent_ui_verifi
         raise HoldError("HOLD_INDEPENDENT_UI_ATTESTATION: trusted local UI evidence not verified")
     return {
         **receipt,
+        "authenticated_partner_center_pass": True,
+        "capture_source": "INDEPENDENT_TRUSTED_LOCAL_UI_VERIFIER",
+        "authenticated_ui_evidence_status": "VERIFIED_BY_TRUSTED_LOCAL_UI_WORKER",
         "name": receipt["identity_name"],
         "version": None,
         "authenticated_account": "LOCAL_WINDOWS_PARTNER_CENTER_OPERATOR",

@@ -38,15 +38,15 @@
     {
       "slot": 2,
       "slug": "focus-session-desk",
-      "status": "RESEARCH_CANDIDATE_STAGED",
+      "status": "CANDIDATE_CODE_COMMITTED_NOT_PROMOTED",
       "candidate_category": "offline productivity/focus session timer and checklist",
       "overlap_review": "REPO_NAME_SCREENED; CONTENT_REVIEW_PENDING; TWO_DISTINCT_PUBLIC_ISSUE_SIGNALS",
       "candidate_branch": "codex/app-cohort-focus-desk-20261028",
-      "candidate_commit": "7aaf417032c43ddcee02881b0684f05b72843d4b",
+      "candidate_commit": "96842b75858d29ba1ee64246895784565db2e3d6",
       "source_sha": null,
       "request_id": null,
       "product_code_committed": false,
-      "functional_tests": "NOT_RUN",
+      "functional_tests": "NOT_RUN_UNVERIFIED",
       "windows_exe": "NOT_BUILT",
       "packaging_family": "MSIX",
       "partner_center_registration_type": "MSIX_OR_PWA_APP",
@@ -55,8 +55,15 @@
         "https://github.com/Dylan-Buchanan/WorkTime/issues/120",
         "https://github.com/DJisaiah/pomo-tracker/issues/77"
       ],
-      "native_lifecycle_status": "HOLD_CONTROLLER_FIX_NOT_PRESENT_ON_RESEARCH_BASE",
-      "native_lifecycle_next": "Port reviewed controller lifecycle fix through Factory owner (no direct candidate-agent factory.py/state edits), then native plan/validate/promote; product code/EXE not yet generated"
+      "native_lifecycle_status": "HOLD_RESEARCH_STAGE_WITH_CANDIDATE_PRODUCT_AND_OLD_CONTROLLER",
+      "native_lifecycle_next": "Factory owner must apply reviewed controller patch to isolated research base, execute native research plan/validate/promote, then build plan/candidate functional tests/validate/promote. Candidate product source is staged only; no source_sha/request_id/EXE yet.",
+      "candidate_source_paths": [
+        ".candidate/product/main.py",
+        ".candidate/product/manifest.json",
+        ".candidate/product/README.md",
+        ".candidate/product/tests/test_smoke.py"
+      ],
+      "candidate_code_committed": true
     },
     {
       "slot": 3,
@@ -101,6 +108,7 @@
     "The 2026-10-28 user-supplied Store Identity is a reference only, not authenticated attestation.",
     "Registration family MSIX_OR_PWA_APP is based on final MSIX packaging, not intermediate unsigned EXE.",
     "Slot 2 research candidate is not a promoted product; do not request Store Identity or count it PRE_IDENTITY_READY until real code, tests, source/request, Windows build and registration contract are fixed.",
-    "Slot 2 uses isolated pre-canary research ancestor 60d84c37, so its controller predates the reviewed stale-proposal cleanup. Do not claim build promotion until the owner-approved lifecycle patch is present and native tests pass."
+    "Slot 2 uses isolated pre-canary research ancestor 60d84c37, so its controller predates the reviewed stale-proposal cleanup. Do not claim build promotion until the owner-approved lifecycle patch is present and native tests pass.",
+    "2026-10-28 slot 2: original Focus Session Desk timer/checklist candidate source, manifest, README and 16 headless test definitions committed to .candidate/product at 96842b75; no test execution or native Factory promotion yet. Existing research proposal remains; this branch must not be called FACTORY_PRODUCT_GENERATED."
   ]
 }

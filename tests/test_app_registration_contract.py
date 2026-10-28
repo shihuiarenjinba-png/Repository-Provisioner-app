@@ -47,6 +47,24 @@ class RegistrationContractTests(unittest.TestCase):
         self.assertIsNone(result["partner_center_display_name"])
         self.assertEqual(result["required_fields"], [])
 
+    def test_jointly_forged_job_and_receipt_request_rejected(self):
+        bad = "app-offline-notes-canary-000000000000"
+        with self.assertRaisesRegex(RegistrationContractError, "request ID does not bind"):
+            registration_request({**JOB, "request_id": bad},
+                                 {**RECEIPT, "request_id": bad})
+
+    def test_jointly_wrong_product_request_rejected(self):
+        bad = "app-other-product-" + JOB["source_sha"][:12]
+        with self.assertRaisesRegex(RegistrationContractError, "request ID does not bind"):
+            registration_request({**JOB, "request_id": bad},
+                                 {**RECEIPT, "request_id": bad})
+
+    def test_jointly_changed_source_with_old_request_rejected(self):
+        bad_sha = "f" * 40
+        with self.assertRaisesRegex(RegistrationContractError, "request ID does not bind"):
+            registration_request({**JOB, "source_sha": bad_sha},
+                                 {**RECEIPT, "source_sha": bad_sha})
+
     def test_exe_intermediate_does_not_change_msix_registration(self):
         result = registration_request(JOB, RECEIPT)
         self.assertEqual(result["packaging_family"], "MSIX")

@@ -1,7 +1,7 @@
 """Return an APP Store Identity through the existing single-writer CAS client.
 
-This entrypoint accepts the GitHub PRE_IDENTITY job and a private authenticated
-UI receipt.  It intentionally does not select a package version or build an
+This entrypoint accepts the GitHub PRE_IDENTITY job and an operator-attested
+UI payload. Only an independent trusted local UI verifier may promote it.  It intentionally does not select a package version or build an
 MSIX; the Factory performs that later after Identity return.
 """
 from __future__ import annotations
@@ -28,7 +28,7 @@ IDENTITY_FIELDS = {
 }
 RECEIPT_FIELDS = {
     "schema_version", "status", "authenticated_partner_center_pass",
-    "capture_source", "job_origin", "central_repository", "central_branch",
+    "capture_source", "authenticated_ui_evidence_status", "job_origin", "central_repository", "central_branch",
     "central_head_sha", "queue_job_digest", "request_id", "slug",
     "product_type", "display_name", "source_repository", "source_branch",
     "source_sha", "source_snapshot_path", "source_snapshot_head",
@@ -45,7 +45,7 @@ def canonical_digest(value: object) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
-def _official(receipt: dict, job: Job, queue_job: dict) -> dict:
+def _official(receipt: dict, job: Job, queue_job: dict, *, independent_ui_verifier=None) -> dict:
     if set(receipt) != RECEIPT_FIELDS:
         raise HoldError("APP Identity receipt has missing or unexpected fields")
     exact = {
@@ -66,9 +66,10 @@ def _official(receipt: dict, job: Job, queue_job: dict) -> dict:
     }
     if any(receipt.get(key) != value for key, value in exact.items()):
         raise ConflictError("APP Identity receipt belongs to another job/product/source")
-    if (receipt.get("status") != "IDENTITY_CAPTURED__AUTHENTICATED_UI__GITHUB_BOUND"
-            or receipt.get("authenticated_partner_center_pass") is not True
-            or receipt.get("capture_source") != "AUTHENTICATED_PARTNER_CENTER_UI"
+    if (receipt.get("status") != "IDENTITY_CAPTURED__OPERATOR_ATTESTED__GITHUB_BOUND"
+            or receipt.get("authenticated_partner_center_pass") is not False
+            or receipt.get("capture_source") != "LOCAL_OPERATOR_SUPPLIED_JSON_UNVERIFIED_UI"
+            or receipt.get("authenticated_ui_evidence_status") != "HOLD_INDEPENDENT_UI_ATTESTATION"
             or receipt.get("creation_status") not in {"CREATED", "REUSED_EXISTING"}
             or receipt.get("overview_exact_match_count") != 1
             or receipt.get("identity_details_observed") is not True
@@ -88,6 +89,12 @@ def _official(receipt: dict, job: Job, queue_job: dict) -> dict:
             or not receipt["publisher"].startswith("CN=")
             or not re.fullmatch(r"S-1-15-2(?:-\d+){7}", receipt["package_sid"])):
         raise HoldError("APP Identity schema is invalid")
+    # JSON flags, a manual reference, or a self-asserted browser screenshot
+    # cannot independently attest an authenticated Partner Center session.
+    # The CLI deliberately supplies no verifier; it must remain HOLD until a
+    # separately implemented trusted Windows UI worker is integrated.
+    if independent_ui_verifier is None or independent_ui_verifier(receipt, job, queue_job) is not True:
+        raise HoldError("HOLD_INDEPENDENT_UI_ATTESTATION: trusted local UI evidence not verified")
     return {
         **receipt,
         "name": receipt["identity_name"],
@@ -101,13 +108,16 @@ def _official(receipt: dict, job: Job, queue_job: dict) -> dict:
 
 def run_identity_return(*, ledger: dict, operator_job: dict, receipt_path: Path,
                         config: ProductConfig, apply: bool,
-                        github: GitHubReturnClient | None = None) -> dict:
+                        github: GitHubReturnClient | None = None,
+                        independent_ui_verifier=None) -> dict:
     jobs = (ledger.get("rotation_cohorts") or {}).get("app_jobs", [])
     matches = [item for item in jobs if isinstance(item, dict)
                and item.get("slug") == operator_job.get("slug")]
     if len(matches) != 1 or matches[0].get("status") != "PRE_IDENTITY_READY":
         raise HoldError("APP PRE_IDENTITY GitHub job is not unique and ready")
     queue_job = matches[0]
+    if queue_job.get("identity_return_target") != f"products/{operator_job.get('slug')}/store/approved-identity.json":
+        raise ConflictError("APP queue Identity target is missing or belongs to another product")
     if canonical_digest(queue_job) != operator_job.get("queue_job_digest"):
         raise ConflictError("APP PRE_IDENTITY queue job digest changed")
     required = {
@@ -137,7 +147,8 @@ def run_identity_return(*, ledger: dict, operator_job: dict, receipt_path: Path,
         "requested_actions": ["LOOKUP_OFFICIAL_IDENTITY", "PROPOSE_GITHUB_RETURN"],
     }
     job = Job.validate(raw_job, config)
-    official = _official(load_json(receipt_path, 64_000), job, queue_job)
+    official = _official(load_json(receipt_path, 64_000), job, queue_job,
+                         independent_ui_verifier=independent_ui_verifier)
     package = {
         "kind": "exe", "sha256": queue_job["expected_exe_sha256"],
         "size_bytes": queue_job["expected_exe_bytes"],

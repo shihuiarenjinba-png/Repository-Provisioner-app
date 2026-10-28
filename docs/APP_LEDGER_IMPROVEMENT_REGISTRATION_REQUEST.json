@@ -31,11 +31,11 @@
     "status": "EXE_QA_UNSIGNED",
     "sha256": "9100bbcfba20ed2768e5d2dffcb39c987466377d26a34af1e03cc166071e02ca",
     "bytes": 11393466,
-    "receipt_only_not_binary_reverification": true
+    "receipt_only_not_binary_reverification": false
   },
   "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40711443897/artifacts/12826068537",
-  "artifact_zip_sha256": null,
-  "artifact_external_download_verified": false,
+  "artifact_zip_sha256": "c4c1f299318cf182d3d04773284990e55e270c25de28f4b8eb3baf7895548b88",
+  "artifact_external_download_verified": true,
   "next_owner": "36_MIN_WINDOWS_E2E",
   "next_stage": "AWAIT_USER_IDENTITY",
   "identity_return_target": {

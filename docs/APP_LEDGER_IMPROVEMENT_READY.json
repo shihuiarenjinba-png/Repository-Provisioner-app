@@ -20,8 +20,8 @@
   "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40711443897/artifacts/12826068537",
   "artifact_id": 12826068537,
   "artifact_expires_at": "2026-11-02T15:04:16Z",
-  "verification_scope": "GitHub Windows Actions checked MZ, EXE SHA256, source_sha and request_id against receipt; external ZIP download not independently rehashed",
-  "external_zip_hash_verified": false,
+  "verification_scope": "GitHub Windows Actions verified MZ/PE, SHA256 and receipt; downloaded artifact ZIP independently rehashed, EXE extracted and byte/hash/source/request/registration verified outside Actions",
+  "external_zip_hash_verified": true,
   "packaging_family": "MSIX",
   "partner_center_registration_type": "MSIX_OR_PWA_APP",
   "identity_status": "WAITING_USER_IDENTITY",
@@ -34,5 +34,6 @@
   "replacement_policy": "New revision is separately pinned. Do not silently mutate old frozen package job, EXE hash or Identity bindings.",
   "workflow_run": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40711443897",
   "promotion_retry_count_observed": 1,
-  "promotion_manual_fix_count_observed_min": 1
+  "promotion_manual_fix_count_observed_min": 1,
+  "artifact_zip_sha256": "c4c1f299318cf182d3d04773284990e55e270c25de28f4b8eb3baf7895548b88"
 }

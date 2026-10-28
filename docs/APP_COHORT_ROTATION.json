@@ -190,7 +190,28 @@
         "https://github.com/TheLastRKoch/DevToolkit/issues/27",
         "https://github.com/Blank-Enterprise/spinney/issues/70"
       ],
-      "identity_return_target": "36_MIN_WINDOWS_E2E"
+      "identity_return_target": "36_MIN_WINDOWS_E2E",
+      "improvement_revision": {
+        "source_branch": "codex/app-text-diff-backup-safety-20261029",
+        "source_sha": "b97cb768bdb323dfd91591c777d8972de8dd4e5d",
+        "request_id": "app-offline-text-diff-desk-b97cb768bdb3",
+        "factory_lifecycle": "PASS_REAL_IMPROVE_PLAN_VALIDATE_PROMOTE_CYCLE_2_RESEARCH_RESET_NO_NEW_PRODUCT",
+        "functional_tests": "22/22_PASS_UBUNTU_AND_WINDOWS",
+        "factory_core_tests": "108/108_PASS_UBUNTU_AND_WINDOWS",
+        "windows_exe": "REAL_ARTIFACT_SHA256_VERIFIED_IN_ACTIONS_AND_INDEPENDENT_ZIP",
+        "artifact_sha256": "a6ea78ef8ae3174848c71061f9f76afd00ea436287d300615c09d393c46fb0df",
+        "artifact_bytes": 11422950,
+        "artifact_zip_sha256": "04ab3a1ddda41155cd59405ec4bd0bd81af2287d08eb336368f7c1a7d118b951",
+        "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40741038173/artifacts/12840300145",
+        "provisioner_handoff": "docs/APP_TEXT_DIFF_BACKUP_SAFETY_PRE_IDENTITY_HANDOFF.md",
+        "identity_status": "WAITING_USER_IDENTITY",
+        "windows_gui": "UNVERIFIED",
+        "msix": "NOT_BUILT",
+        "e2e": "NOT_PASSED",
+        "retry_count_observed": 0,
+        "manual_intervention_count_observed_min": 1,
+        "previous_frozen_source_preserved": true
+      }
     },
     {
       "slot": 5,
@@ -266,17 +287,19 @@
     "text_diff_manual_intervention_count_observed_min": 3,
     "text_diff_metadata_mismatch_observed": 1,
     "retries_total_observed_min": 8,
-    "manual_interventions_total_observed_min": 10,
+    "manual_interventions_total_observed_min": 11,
     "unquantified_product_slots": [
       1
     ],
-    "stability_review": "5/5 cloud PRE_IDENTITY_READY; Focus, Ledger, and Image Inventory improvement revisions also exact-source PRE_IDENTITY_READY. At least 8 retries and 10 manual interventions including improvements; slot 1 unknown. Stable unattended operation, GUI, MSIX, E2E remain unproven.",
+    "stability_review": "5/5 cloud PRE_IDENTITY_READY, including verified Text Diff backup-safety revision; at least 8 retries and 11 manual interventions across product work. Stable unattended operation, Windows GUI, MSIX, E2E remain unproven.",
     "ledger_improvement_retry_count_observed": 1,
     "ledger_improvement_manual_intervention_count_observed_min": 1,
     "focus_improvement_retry_count_observed": 1,
     "focus_improvement_manual_intervention_count_observed_min": 2,
     "image_inventory_improvement_retry_count_observed": 0,
-    "image_inventory_improvement_manual_intervention_count_observed_min": 1
+    "image_inventory_improvement_manual_intervention_count_observed_min": 1,
+    "text_diff_backup_safety_retry_count_observed": 0,
+    "text_diff_backup_safety_manual_intervention_count_observed_min": 1
   },
   "owner_boundaries": {
     "app": "Factory+Provisioner",
@@ -296,6 +319,7 @@
     "2026-10-28 APP quality audit: File Integrity Ledger accepts and saves 100 paths of length 2048 but previously rejected saved snapshots >128 KiB on reload. Fix is isolated in Factory Draft PR #19 (codex/app-ledger-snapshot-size-20261028); frozen source deaa9f32 and its original EXE/receipt are unchanged. Do not treat improvement as promoted or update PRE_IDENTITY identity binding until owner-approved improve lifecycle, new exact source/EXE and correlation verification.",
     "2026-10-28 Ledger improvement: source d1108d12f7d1697af30400f97c7db39cba5e6791 / request app-file-integrity-ledger-d1108d12f7d1 promoted via genuine improve controller and separately EXE/ZIP verified. Prior deaa9f32 frozen contract not overwritten; see APP_LEDGER_IMPROVEMENT_PRE_IDENTITY_HANDOFF.md.",
     "2026-10-29 Focus revision 2: storage-failure rollback in task/timer/language model, genuine improve controller promote and 20/20 product tests on Ubuntu/Windows, 110/110 core tests, exact-source unsigned Windows EXE independently ZIP/MZ/SHA/source/request verified. Original Focus source/request retained; new revision separately pinned. Windows GUI/MSIX/E2E/Identity CAS remain HOLD.",
-    "2026-10-29 Image Inventory revision 2: old image rows were silently lost on Add if original files moved or disappeared. Fixed by appending new inspection results without rescanning prior snapshots; 26/26 Ubuntu/Windows functional tests, genuine improve controller promotion, exact-source Windows unsigned EXE and ZIP/MZ/PE/SHA/receipt independently verified. Prior source 16b6a772 remains frozen. Partner Center Focus priority unchanged; Identity CAS, GUI, MSIX, E2E HOLD."
+    "2026-10-29 Image Inventory revision 2: old image rows were silently lost on Add if original files moved or disappeared. Fixed by appending new inspection results without rescanning prior snapshots; 26/26 Ubuntu/Windows functional tests, genuine improve controller promotion, exact-source Windows unsigned EXE and ZIP/MZ/PE/SHA/receipt independently verified. Prior source 16b6a772 remains frozen. Partner Center Focus priority unchanged; Identity CAS, GUI, MSIX, E2E HOLD.",
+    "2026-10-29 APP quality audit: Text Diff write_atomic formerly allowed output `report.diff` to overwrite protected input `report.diff.bak` through implicit backup, including hardlink aliases. Audited owner-controlled revision on branch codex/app-text-diff-backup-safety-20261029 source b97cb768bdb323dfd91591c777d8972de8dd4e5d ran 22/22 product and 108/108 Factory tests on Ubuntu/Windows; independent ZIP/PE/SHA verification of EXE a6ea78ef8ae3174848c71061f9f76afd00ea436287d300615c09d393c46fb0df in Actions run 40741038173. Original revision source/request preserved; Factory cycle 2 research reset does not authorize a sixth product. No GUI/MSIX/Identity CAS/Store PASS."
   ]
 }

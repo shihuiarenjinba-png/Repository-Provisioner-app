@@ -90,5 +90,29 @@ class RegistrationContractTests(unittest.TestCase):
             registration_request({**JOB, "product_type": "GAME"}, RECEIPT)
 
 
+    def test_unknown_job_action_rejected(self):
+        with self.assertRaisesRegex(RegistrationContractError, "unsupported APP job action"):
+            registration_request({**JOB, "requested_actions": ["BUILD_WINDOWS", "DELETE_FILES"]}, RECEIPT)
+
+    def test_duplicate_job_action_rejected(self):
+        with self.assertRaisesRegex(RegistrationContractError, "duplicate APP job action"):
+            registration_request({**JOB, "requested_actions": ["BUILD_WINDOWS", "BUILD_WINDOWS"]}, RECEIPT)
+
+    def test_non_string_job_action_rejected(self):
+        with self.assertRaisesRegex(RegistrationContractError, "unsupported APP job action"):
+            registration_request({**JOB, "requested_actions": ["BUILD_WINDOWS", {"action": "LOOKUP_OFFICIAL_IDENTITY"}]}, RECEIPT)
+
+    def test_missing_build_action_rejected(self):
+        with self.assertRaisesRegex(RegistrationContractError, "must request BUILD_WINDOWS"):
+            registration_request({**JOB, "requested_actions": ["LOOKUP_OFFICIAL_IDENTITY"]}, RECEIPT)
+
+    def test_approved_multi_action_job_remains_compatible(self):
+        approved = ["BUILD_WINDOWS", "INSPECT_PACKAGE", "LOOKUP_OFFICIAL_IDENTITY",
+                    "PROPOSE_GITHUB_RETURN"]
+        result = registration_request({**JOB, "requested_actions": approved}, RECEIPT, REFERENCE)
+        self.assertEqual(result["identity_status"], "REFERENCE_AVAILABLE")
+        self.assertFalse(result["identity_cas_allowed"])
+
+
 if __name__ == "__main__":
     unittest.main()

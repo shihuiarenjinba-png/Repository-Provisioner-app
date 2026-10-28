@@ -27,6 +27,7 @@ def queue_job():
         "partner_center_selection": "MSIX or PWA app",
         "expected_exe_sha256": "e" * 64, "expected_exe_bytes": 12000,
         "artifact_metadata_verified": True,
+        "identity_return_target": f"products/{SLUG}/store/approved-identity.json",
     }
 
 
@@ -37,9 +38,10 @@ def operator_job(job):
 
 def receipt(job):
     return {
-        "schema_version": 1, "status": "IDENTITY_CAPTURED__AUTHENTICATED_UI__GITHUB_BOUND",
-        "authenticated_partner_center_pass": True,
-        "capture_source": "AUTHENTICATED_PARTNER_CENTER_UI",
+        "schema_version": 1, "status": "IDENTITY_CAPTURED__OPERATOR_ATTESTED__GITHUB_BOUND",
+        "authenticated_partner_center_pass": False,
+        "capture_source": "LOCAL_OPERATOR_SUPPLIED_JSON_UNVERIFIED_UI",
+        "authenticated_ui_evidence_status": "HOLD_INDEPENDENT_UI_ATTESTATION",
         "job_origin": "GITHUB_PRE_IDENTITY_QUEUE",
         "central_repository": "shihuiarenjinba-png/Windows-all-auto",
         "central_branch": "codex/e2e-belt-connection-20261027",
@@ -81,7 +83,7 @@ class FakeGitHub:
 
 
 class IdentityOnlyReturnTests(unittest.TestCase):
-    def run_one(self, mutate=None, status="APPLIED"):
+    def run_one(self, mutate=None, status="APPLIED", verifier=None):
         job = queue_job()
         data = receipt(job)
         if mutate:
@@ -93,30 +95,60 @@ class IdentityOnlyReturnTests(unittest.TestCase):
             result = identity_return.run_identity_return(
                 ledger={"rotation_cohorts": {"app_jobs": [job]}},
                 operator_job=operator_job(job), receipt_path=path,
-                config=config(), apply=True, github=github)
+                config=config(), apply=True, github=github,
+                independent_ui_verifier=verifier)
         return result, github
 
     def test_identity_return_does_not_require_package_version(self):
-        result, github = self.run_one()
+        result, github = self.run_one(verifier=lambda receipt, job, queue: True)
         self.assertEqual(result["status"], "APPLIED")
         self.assertIsNone(github.official["version"])
         self.assertEqual(result["package_version_gate"], "HOLD")
 
     def test_replay_existing_verified(self):
-        result, _ = self.run_one(status="EXISTING_VERIFIED")
+        result, _ = self.run_one(status="EXISTING_VERIFIED",
+                                 verifier=lambda receipt, job, queue: True)
         self.assertEqual(result["status"], "EXISTING_VERIFIED")
+
+    def test_operator_json_without_independent_ui_verifier_is_hold(self):
+        with self.assertRaisesRegex(Exception, "HOLD_INDEPENDENT_UI_ATTESTATION"):
+            self.run_one()
+
+    def test_self_asserted_authenticated_flag_cannot_unlock_cas(self):
+        with self.assertRaisesRegex(Exception, "incomplete"):
+            self.run_one(lambda x: x.update(authenticated_partner_center_pass=True))
+
+    def test_untrusted_verifier_false_remains_hold(self):
+        with self.assertRaisesRegex(Exception, "HOLD_INDEPENDENT_UI_ATTESTATION"):
+            self.run_one(verifier=lambda receipt, job, queue: False)
+
+    def test_queue_identity_target_must_be_owned_by_job(self):
+        job = queue_job()
+        job["identity_return_target"] = "products/other/store/approved-identity.json"
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "identity.json"
+            path.write_text(json.dumps(receipt(job)), encoding="utf-8")
+            with self.assertRaisesRegex(ConflictError, "Identity target"):
+                identity_return.run_identity_return(
+                    ledger={"rotation_cohorts": {"app_jobs": [job]}},
+                    operator_job=operator_job(job), receipt_path=path,
+                    config=config(), apply=True, github=FakeGitHub(),
+                    independent_ui_verifier=lambda receipt, job, queue: True)
 
     def test_cross_product_identity_rejected(self):
         with self.assertRaisesRegex(ConflictError, "another job"):
-            self.run_one(lambda x: x.update(request_id="app-other-00000000"))
+            self.run_one(lambda x: x.update(request_id="app-other-00000000"),
+                         verifier=lambda receipt, job, queue: True)
 
     def test_secret_or_unknown_field_rejected(self):
         with self.assertRaisesRegex(Exception, "unexpected"):
-            self.run_one(lambda x: x.update(cookie="secret"))
+            self.run_one(lambda x: x.update(cookie="secret"),
+                         verifier=lambda receipt, job, queue: True)
 
     def test_wrong_return_target_rejected(self):
         with self.assertRaisesRegex(ConflictError, "another job"):
-            self.run_one(lambda x: x.update(identity_return_target="products/wrong/store/approved-identity.json"))
+            self.run_one(lambda x: x.update(identity_return_target="products/wrong/store/approved-identity.json"),
+                         verifier=lambda receipt, job, queue: True)
 
 
 if __name__ == "__main__":

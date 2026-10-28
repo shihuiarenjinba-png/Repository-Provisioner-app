@@ -77,6 +77,32 @@ def verify_exe_receipt(job: Job, output: Path) -> dict:
     return receipt
 
 
+def verify_clean_factory_checkout(source: Path, expected_sha: str) -> None:
+    """Reject dirty, untracked and ignored files before running pinned Factory code.
+
+    Git checkout --detach at an unchanged HEAD does not necessarily discard
+    pre-existing local edits. The request-bound builder must never execute them.
+    """
+    if source.is_symlink() or not source.is_dir():
+        raise ValueError("Factory source checkout must be a real directory")
+    try:
+        def git(*args: str) -> str:
+            return subprocess.run(
+                ["git", *args], cwd=source, capture_output=True,
+                text=True, check=True, timeout=30,
+            ).stdout.strip()
+
+        root = git("rev-parse", "--show-toplevel")
+        head = git("rev-parse", "HEAD")
+        dirty = git("status", "--porcelain=v1", "--untracked-files=all", "--ignored")
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+        raise ValueError("Factory checkout integrity could not be verified") from exc
+    if Path(root).resolve() != source.resolve() or head != expected_sha:
+        raise ValueError("Factory checkout does not match the pinned source root/SHA")
+    if dirty:
+        raise ValueError("Factory checkout contains modified, untracked or ignored files")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-dir", type=Path, required=True)
@@ -89,6 +115,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.output.exists() or args.output.is_symlink():
         parser.error("refusing to overwrite existing request-bound evidence")
     source = SourceManager().acquire(job, args.source_dir)
+    verify_clean_factory_checkout(source, job.source_sha)
     builder = source / "tools" / "build_windows_exe.py"
     if builder.is_symlink() or not builder.is_file():
         raise ValueError("committed Factory EXE builder missing")

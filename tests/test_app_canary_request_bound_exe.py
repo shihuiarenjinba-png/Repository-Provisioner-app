@@ -1,6 +1,7 @@
 """Fail-closed tests for one pinned request-bound Windows EXE stage."""
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -8,7 +9,7 @@ import unittest
 from package_identity_provisioner import ProductConfig
 from tools.app_canary_request_bound_exe import (
     EXPECTED_REQUEST_ID, EXPECTED_SOURCE_SHA, JOB_PATH, ROOT,
-    validate_canary_job, verify_exe_receipt,
+    validate_canary_job, verify_clean_factory_checkout, verify_exe_receipt,
 )
 
 
@@ -33,6 +34,50 @@ class RequestBoundExeTests(unittest.TestCase):
     def test_rejects_dry_run_mutation(self):
         with self.assertRaisesRegex(ValueError, "immutable"):
             validate_canary_job({**self.raw, "dry_run": True}, self.config)
+
+    def _local_git_checkout(self, root):
+        source = Path(root) / "source"
+        source.mkdir()
+        subprocess.run(["git", "init", "--quiet", str(source)], check=True)
+        (source / ".gitignore").write_text("ignored.txt\\n", encoding="utf-8")
+        (source / "builder.py").write_text("print('clean')\\n", encoding="utf-8")
+        subprocess.run(["git", "add", ".gitignore", "builder.py"], cwd=source, check=True)
+        subprocess.run([
+            "git", "-c", "user.name=QA", "-c", "user.email=qa@example.com",
+            "commit", "--quiet", "-m", "baseline",
+        ], cwd=source, check=True)
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source, text=True).strip()
+        return source, sha
+
+    def test_clean_factory_checkout_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source, sha = self._local_git_checkout(tmp)
+            verify_clean_factory_checkout(source, sha)
+
+    def test_dirty_factory_checkout_rejected_before_builder_execution(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source, sha = self._local_git_checkout(tmp)
+            cases = (
+                ("tracked modification", source / "builder.py", "print('tampered')\\n"),
+                ("untracked payload", source / "extra.py", "print('untracked')\\n"),
+                ("ignored payload", source / "ignored.txt", "unsafe\\n"),
+            )
+            for name, path, payload in cases:
+                with self.subTest(name=name):
+                    path.write_text(payload, encoding="utf-8")
+                    with self.assertRaisesRegex(ValueError, "modified, untracked or ignored"):
+                        verify_clean_factory_checkout(source, sha)
+                    if path.name == "builder.py":
+                        path.write_text("print('clean')\\n", encoding="utf-8")
+                    else:
+                        path.unlink()
+            verify_clean_factory_checkout(source, sha)
+
+    def test_factory_checkout_wrong_sha_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source, _ = self._local_git_checkout(tmp)
+            with self.assertRaisesRegex(ValueError, "pinned source"):
+                verify_clean_factory_checkout(source, "a" * 40)
 
     def _evidence(self, root):
         output = Path(root) / "artifact"

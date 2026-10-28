@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "product": "File Integrity Ledger — Offline Checksum Snapshot",
+  "slug": "file-integrity-ledger",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-cohort-integrity-ledger-20261028",
+  "source_sha": "deaa9f324326a1ee276596c325f7a360adf27877",
+  "request_id": "app-file-integrity-ledger-deaa9f324326",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "suggested_display_name": "File Integrity Ledger",
+  "reserved_display_name_verified": false,
+  "identity_status": "WAITING_USER_IDENTITY",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "store_id": null,
+  "required_fields": [
+    "store_id",
+    "reserved_display_name",
+    "identity_name",
+    "publisher",
+    "publisher_display_name",
+    "pfn",
+    "package_sid"
+  ],
+  "user_id_request": "REQUEST_OFFICIAL_IDENTITY_WHEN_PARTNER_CENTER_AVAILABLE",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "3df9536f2289ad8aff7ea72b0e7f17c146ed4ac6803ad822f1b05387c435a70a",
+    "bytes": 11394479,
+    "receipt_only_not_binary_reverification": false
+  },
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40677868773/artifacts/12811680779",
+  "artifact_zip_sha256": "13624596d88749a86c956ff3b0770106b2db28995bd37a7458f4d45a84c37096",
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AWAIT_USER_IDENTITY",
+  "identity_return_target": {
+    "owner": "36_MIN_WINDOWS_E2E",
+    "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+    "source_sha": "deaa9f324326a1ee276596c325f7a360adf27877",
+    "request_id": "app-file-integrity-ledger-deaa9f324326"
+  },
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "UNVERIFIED",
+  "priority_note": "Focus Session Desk remains the next local Partner Center new-registration test; this slot is ready for later Identity collection, not a request to register now."
+}

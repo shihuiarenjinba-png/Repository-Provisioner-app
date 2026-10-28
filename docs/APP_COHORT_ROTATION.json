@@ -81,9 +81,39 @@
     },
     {
       "slot": 3,
-      "slug": null,
-      "status": "NOT_STARTED",
-      "candidate_category": "local structured-data/JSON utility (avoid existing CSV/privacy tools)"
+      "slug": "file-integrity-ledger",
+      "status": "PRE_IDENTITY_READY_CLOUD_CONTRACT",
+      "candidate_category": "read-only file integrity / SHA-256 snapshot and verification",
+      "overlap_review": "REPO_NAME_SCREENED; DISTINCT_FROM_EXISTING_CSV_AND_FOLDER_PRODUCTS; CONTENT_REVIEW_PENDING",
+      "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+      "source_branch": "codex/app-cohort-integrity-ledger-20261028",
+      "source_sha": "deaa9f324326a1ee276596c325f7a360adf27877",
+      "request_id": "app-file-integrity-ledger-deaa9f324326",
+      "formal_product_path": "products/file-integrity-ledger",
+      "product_code_committed": true,
+      "functional_tests": "18/18_PASS_HEADLESS_UBUNTU; WINDOWS_TEST_STEP_PASS",
+      "native_lifecycle_status": "PASS_REAL_CONTROLLER_RESEARCH_BUILD_PROMOTE",
+      "windows_exe": "REAL_ARTIFACT_SHA256_VERIFIED",
+      "artifact_sha256": "3df9536f2289ad8aff7ea72b0e7f17c146ed4ac6803ad822f1b05387c435a70a",
+      "artifact_bytes": 11394479,
+      "artifact_zip_sha256": "13624596d88749a86c956ff3b0770106b2db28995bd37a7458f4d45a84c37096",
+      "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40677868773/artifacts/12811680779",
+      "packaging_family": "MSIX",
+      "partner_center_registration_type": "MSIX_OR_PWA_APP",
+      "identity_status": "WAITING_USER_IDENTITY",
+      "identity_attestation": "NOT_VERIFIED",
+      "windows_gui": "UNVERIFIED",
+      "e2e": "NOT_PASSED",
+      "source_conflicts_observed": 0,
+      "artifact_mismatch_observed": 0,
+      "schema_mismatch_observed": 0,
+      "retry_count_observed": 1,
+      "manual_intervention_count_observed_min": 1,
+      "evidence_urls": [
+        "https://github.com/qarmin/czkawka/issues/1295",
+        "https://github.com/agalwood/Motrix/issues/2061"
+      ],
+      "identity_return_target": "36_MIN_WINDOWS_E2E"
     },
     {
       "slot": 4,
@@ -99,16 +129,18 @@
     }
   ],
   "metrics": {
-    "pre_identity_ready_count": 2,
+    "pre_identity_ready_count": 3,
     "total_target": 5,
-    "observed_success_rate": "2/2 verified cloud PRE_IDENTITY_READY; cohort 2/5, not stable",
+    "observed_success_rate": "3/3 verified cloud PRE_IDENTITY_READY; cohort 3/5, not stable",
     "retries_total": null,
     "branch_conflicts_total_observed": 0,
     "artifact_mismatches_total_observed": 0,
     "schema_mismatches_total_observed": 0,
     "manual_interventions_total": null,
     "unknown_metrics_not_zero": true,
-    "focus_retry_count_observed": 2
+    "focus_retry_count_observed": 2,
+    "ledger_retry_count_observed": 1,
+    "ledger_manual_intervention_count_observed_min": 1
   },
   "owner_boundaries": {
     "app": "Factory+Provisioner",
@@ -118,13 +150,10 @@
   },
   "notes": [
     "Canary source SHA remains frozen; new products must use distinct branches/immutable SHA.",
-    "Existing Factory state is improve/revision=1 for canary; do not directly edit factory/state.json or bypass native promotion.",
-    "Product 2 must not duplicate existing repositories; no second product has been generated yet.",
     "The 2026-10-28 user-supplied Store Identity is a reference only, not authenticated attestation.",
     "Registration family MSIX_OR_PWA_APP is based on final MSIX packaging, not intermediate unsigned EXE.",
-    "Slot 2 research candidate is not a promoted product; do not request Store Identity or count it PRE_IDENTITY_READY until real code, tests, source/request, Windows build and registration contract are fixed.",
     "Slot 2 uses isolated pre-canary research ancestor 60d84c37, so its controller predates the reviewed stale-proposal cleanup. Do not claim build promotion until the owner-approved lifecycle patch is present and native tests pass.",
-    "2026-10-28 slot 2: original Focus Session Desk timer/checklist candidate source, manifest, README and 16 headless test definitions committed to .candidate/product at 96842b75; no test execution or native Factory promotion yet. Existing research proposal remains; this branch must not be called FACTORY_PRODUCT_GENERATED.",
-    "2026-10-28 slot 2: real Factory controller research/build plan-validate-promote on Actions run 40668807091; 109 Factory tests and 18 Focus tests PASS, products/focus-session-desk committed at 8b00bc4e90828c4282463826873aa8dfd2eb93f4; correlated Windows EXE independently ZIP/PE/SHA verified, Identity not yet collected, Windows GUI unverified. Two promotion workflow retries were needed (import path, ignored tracked deletion); no blind overwrite."
+    "2026-10-28 slot 2: real Factory controller research/build plan-validate-promote on Actions run 40668807091; 109 Factory tests and 18 Focus tests PASS, products/focus-session-desk committed at 8b00bc4e90828c4282463826873aa8dfd2eb93f4; correlated Windows EXE independently ZIP/PE/SHA verified, Identity not yet collected, Windows GUI unverified. Two promotion workflow retries were needed (import path, ignored tracked deletion); no blind overwrite.",
+    "2026-10-28 slot 3: File Integrity Ledger original read-only hashing/snapshot GUI promoted via native research/build controller in run 40677868773. First attempt failed old regression tests assuming manual candidate cleanup; fixed with audited test blob and reran successfully. Ubuntu product 18/18 PASS, Windows regression step PASS, correlated unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. No Windows GUI/install, MSIX or Identity CAS claims."
   ]
 }

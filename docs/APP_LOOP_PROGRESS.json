@@ -3,11 +3,11 @@
   "lane": "APP",
   "active_product": null,
   "phase": "CANARY_BUILD_CANDIDATE_COMMITTED__PROMOTION_PENDING",
-  "last_completed_step": "Offline Notes Canary Windows filename safety: reproduced COM¹/²/³ and LPT¹/²/³ reserved-device export filename defect; patched exact PR14 candidate main.py and test_smoke.py atomically at 6b73a7fae2f90bc32c7501353f679163b2dd9fb8. Exact Git blobs feb5ec8f/acb9fecd independently matched; Linux headless 16/16 PASS, py_compile PASS, Linux Xvfb 1024x768 11 GUI integration checks PASS (first run, create, dirty, unsaved search, save, English toggle, restart/reopen, cancel close). Factory CI 40599653913 SUCCESS (test/windows-contracts PASS; windows-exe-smoke SKIPPED). Factory lifecycle remains HOLD.",
-  "next_action": "Factory authorized owner/controller: fix research->build archived proposal cleanup (including legacy stage=build stale proposal) and remove build plan dependency on .runtime/market.json; regression full cycle without manual unlink. Then standard plan -> 16 candidate tests -> validate -> promote -> verify products/offline-notes-canary -> pin immutable source_sha/request_id -> real Windows EXE artifact. Identity user-managed, 36-minute E2E handoff only after EXE. No new APP.",
+  "last_completed_step": "Offline Notes Canary malformed JSON Unicode safety: reproduced escaped lone surrogate accepted by read_notes/validate_notes and uncaught UnicodeEncodeError on save; patched only .candidate/product main.py/tests at Factory PR14 1520b0f011aec61c73bb2109fcc8d51433e4d37e. Exact Git blobs 041285b4/942b4768 verified; local 17/17 headless PASS, py_compile PASS, Linux Xvfb 1024x768 11 GUI checks PASS; Factory CI 40606516026 SUCCESS (test/windows-contracts PASS, windows-exe-smoke SKIPPED). Lifecycle still HOLD.",
+  "next_action": "AUTHORIZED FACTORY CONTROLLER OWNER: repair research->build stale .candidate/proposal.json cleanup and remove build-stage dependency on .runtime/market.json, with no manual candidate deletion and full cycle regressions. Then standard plan -> 17 candidate tests -> validate -> promote -> products/offline-notes-canary -> pin source_branch/source_sha/request_id/slug -> real Windows EXE. Identity is NOT NEEDED before formal promote/EXE; do not request it yet. 36-minute E2E owner handles downstream.",
   "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
   "resume_branch": "codex/app-canary-offline-notes-20261027",
-  "resume_head_before_progress_commit": "22abdac5d8e396a2f305e1f100d2fe5e51d2ba57",
+  "resume_head_before_progress_commit": "93119afe7459afa6e7a4b70ce029418b0001f94f",
   "source_sha": null,
   "blocked_by": [
     "FACTORY_PROMOTION: candidate GUI committed under .candidate/product but products/offline-notes-canary not yet present",
@@ -77,7 +77,7 @@
     "identity_guessing": false,
     "openai_paid_api": false
   },
-  "resume_head_sha": "6b73a7fae2f90bc32c7501353f679163b2dd9fb8",
+  "resume_head_sha": "93119afe7459afa6e7a4b70ce029418b0001f94f",
   "downstream": {
     "windows_data": {
       "branch": "codex/msix-auto-build-identity-20261025",
@@ -95,9 +95,9 @@
       "app_real_qa": false
     }
   },
-  "last_observed_at_utc": "2026-10-27T23:06:45.392Z",
+  "last_observed_at_utc": "2026-10-28T00:06:59.339Z",
   "request_id": null,
-  "factory_head_sha": "6b73a7fae2f90bc32c7501353f679163b2dd9fb8",
+  "factory_head_sha": "1520b0f011aec61c73bb2109fcc8d51433e4d37e",
   "build_sha": null,
   "canary_research": {
     "slug": "offline-notes-canary",
@@ -122,9 +122,9 @@
     "real_e2e_pass": false,
     "ui_quality_pass": false,
     "commercial_quality_pass": false,
-    "factory_ci_run_id": 40582657157,
+    "factory_ci_run_id": 40606516026,
     "factory_ci_conclusion": "SUCCESS",
-    "factory_ci_head": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
+    "factory_ci_head": "1520b0f011aec61c73bb2109fcc8d51433e4d37e",
     "progress_ci_run_id": 40480473128,
     "progress_ci_conclusion": "SUCCESS",
     "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
@@ -138,7 +138,7 @@
       "https://github.com/usememos/memos/issues/6309"
     ],
     "candidate_code_committed": true,
-    "candidate_commit_sha": "dbec7e3bb18de76ac6d6f8069430e64a8120e107"
+    "candidate_commit_sha": "1520b0f011aec61c73bb2109fcc8d51433e4d37e"
   },
   "safety_fix_20261027": {
     "classification": "CODE_FIX",
@@ -160,15 +160,17 @@
     "real_msix_artifact": null
   },
   "quality_gates": {
-    "ci": "Factory PR14 6b73a7fa CI 40599653913 SUCCESS (test/windows-contracts PASS; windows-exe-smoke SKIPPED); Provisioner PR10 f8d03890 CI 40582849698 SUCCESS; Windows-all-auto PR14 cc4c6c58 CI 40597008603 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
+    "ci": "Factory PR14 1520b0f0 CI 40606516026 SUCCESS (test/windows-contracts PASS, windows-exe-smoke SKIPPED); Provisioner PR10 93119afe CI 40599826004 SUCCESS before progress update; Windows-all-auto PR14 cc4c6c58 CI 40597008603 SUCCESS; Windows-data PR1 664b9afc CI 40259906737 SUCCESS; Windows-checker PR2 ff315c7a CI 40453767674 FAILURE",
     "contract": "PARTIAL_NO_PRODUCT_PROMOTION",
     "real_e2e": "NOT_PASSED",
-    "ui": "PARTIAL_LINUX_XVFB_1024x768_11_GUI_INTEGRATION_CHECKS_PASS_NOT_WINDOWS_GUI_PASS",
+    "ui": "PARTIAL_LINUX_XVFB_1024x768_11_GUI_INTEGRATION_CHECKS_PASS_WINDOWS_NOT_TESTED",
     "commercial": "NOT_TESTED",
-    "app_lifecycle": "NOT_PASSED_CONTROLLER_FIX_REQUIRED",
-    "exe": "NOT_PASSED_NO_PRODUCT_EXE",
-    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_EN_SAVED_SCREENSHOT_INSPECTED_NOT_WINDOWS",
-    "e2e": "NOT_PASSED"
+    "app_lifecycle": "HOLD_RESEARCH_BUILD_STALE_PROPOSAL_AND_BUILD_MARKET_DEPENDENCY",
+    "exe": "NOT_PASSED_NO_PROMOTED_SOURCE_OR_WINDOWS_EXE",
+    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_EN_SAVED_SCREENSHOT_REVIEWED_WINDOWS_NOT_TESTED",
+    "e2e": "NOT_PASSED",
+    "pre_identity_ready": "NOT_READY_FACTORY_LIFECYCLE_AND_EXE_PENDING",
+    "post_identity_ready": "NOT_READY_IDENTITY_USER_MANAGED"
   },
   "research_promotion_gate": {
     "status": "HOLD_OWNER_ACTION_REQUIRED",
@@ -403,5 +405,32 @@
     "ui_evidence": "/mnt/data/offline_notes_canary_windows_filename_qa_20261028.zip",
     "source_sha": null,
     "request_id": null
+  },
+  "candidate_invalid_unicode_safety_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "Escaped lone UTF-16 surrogate in imported JSON passed validation and raised uncaught UnicodeEncodeError during UTF-8 save; corrupted input must fail closed and allow backup recovery",
+    "reproduction": "Local exact GitHub candidate before fix: validate_notes/read_notes accepted lone surrogate; save_notes raised UnicodeEncodeError",
+    "test_commit": "b704f3f2cfb1da848853512b3c29bc319b6df91e",
+    "fix_commit": "1520b0f011aec61c73bb2109fcc8d51433e4d37e",
+    "files": [
+      ".candidate/product/main.py",
+      ".candidate/product/tests/test_smoke.py"
+    ],
+    "verified_git_blob_shas": {
+      "main.py": "041285b45557fc6d4b49dde4873ccf99cc4287f9",
+      "tests/test_smoke.py": "942b476874cb4f35754701fa9c760318991f9c5b"
+    },
+    "local_candidate_tests": "17/17 PASS",
+    "local_python_compile": "PASS",
+    "linux_xvfb_gui": "11/11 PASS 1024x768; Windows NOT TESTED",
+    "screenshot_sha256": "42b05bffdf3c21d77e098080c3ffe3c6071692c2b448c57d0bd57e0086249401",
+    "qa_zip_sha256": "45927da0e6ad14fd048911b86fedf956a240ae5c215fa6a9ae6106005cc7bda4",
+    "factory_ci_run_id": 40606516026,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_ci_scope": "Factory core + Windows contracts only; candidate smoke not included in workflow",
+    "exe_artifact": null,
+    "source_sha": null,
+    "request_id": null,
+    "identity_required_now": false
   }
 }

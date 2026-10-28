@@ -66,5 +66,77 @@ class CurrentAppCohortDispatchTests(unittest.TestCase):
                 build_dispatch()
 
 
+    def _reject_modified_documents(self, mutations, expected_error):
+        """Mutate a single provenance field without changing the real repository."""
+        def load_mutated(path):
+            data = json.loads((ROOT / "docs" / path.name).read_text(encoding="utf-8"))
+            if path.name in mutations:
+                mutations[path.name](data)
+            return data
+
+        with patch("tools.app_cohort_dispatch.load_json", side_effect=load_mutated):
+            with self.assertRaisesRegex(RegistrationContractError, expected_error):
+                build_dispatch()
+
+    def test_stale_improvement_exe_sha_rejected(self):
+        self._reject_modified_documents({
+            "APP_COHORT_ROTATION.json":
+                lambda data: data["products"][2]["improvement_revision"].update(
+                    artifact_sha256="0" * 64),
+        }, "stale improvement EXE SHA-256")
+
+    def test_stale_improvement_exe_byte_count_rejected(self):
+        self._reject_modified_documents({
+            "APP_COHORT_ROTATION.json":
+                lambda data: data["products"][2]["improvement_revision"].update(
+                    artifact_bytes=11393467),
+        }, "stale improvement EXE byte count")
+
+    def test_mismatched_zip_hash_rejected(self):
+        self._reject_modified_documents({
+            "APP_FOCUS_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data.update(artifact_zip_sha256="0" * 64),
+        }, "stale improvement artifact ZIP SHA-256")
+
+    def test_stale_actions_artifact_url_rejected(self):
+        self._reject_modified_documents({
+            "APP_TEXT_DIFF_BACKUP_SAFETY_REGISTRATION_REQUEST.json":
+                lambda data: data.update(
+                    artifact_url="https://github.com/shihuiarenjinba-png/"
+                    "AI-App-Factory/actions/runs/1/artifacts/1"),
+        }, "stale improvement artifact URL")
+
+    def test_malformed_actions_url_rejected_even_when_both_records_match(self):
+        bad = "https://github.com/shihuiarenjinba-png/AI-App-Factory/" \
+              "actions/runs/40750841064/artifacts/12842579676/extra"
+        self._reject_modified_documents({
+            "APP_COHORT_ROTATION.json":
+                lambda data: data["products"][0]["improvement_revision"].update(
+                    artifact_url=bad),
+            "APP_NOTES_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data.update(artifact_url=bad),
+        }, "malformed Actions artifact URL")
+
+    def test_untrusted_identity_return_stage_rejected(self):
+        self._reject_modified_documents({
+            "APP_FOCUS_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data["identity_return_target"].update(
+                    stage="SKIP_ATTESTATION_AND_CAS"),
+        }, "invalid Identity return target")
+
+    def test_notes_reference_store_id_cannot_be_replaced(self):
+        self._reject_modified_documents({
+            "APP_NOTES_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data.update(store_id="9ZZZZZZZZZZZ"),
+        }, "untrusted Store ID")
+
+    def test_registration_product_title_cannot_drift_from_job(self):
+        self._reject_modified_documents({
+            "APP_IMAGE_INVENTORY_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data.update(product="Another App"),
+        }, "registration display name mismatch")
+
+
+
 if __name__ == "__main__":
     unittest.main()

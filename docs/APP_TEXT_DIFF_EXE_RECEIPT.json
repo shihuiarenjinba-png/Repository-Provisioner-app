@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "stage": "PRE_IDENTITY_WINDOWS_EXE",
+  "status": "EXE_QA_UNSIGNED",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_factory": "AI-App-Factory",
+  "source_branch": "codex/app-cohort-text-diff-20261028",
+  "source_sha": "a7d37280089893a9ea4b9ac3336020a920e73e0c",
+  "request_id": "app-offline-text-diff-desk-a7d372800898",
+  "product_type": "APP",
+  "slug": "offline-text-diff-desk",
+  "display_name": "Offline Text Diff Desk — Private Side-by-Side Comparison",
+  "executable": "offline-text-diff-desk.exe",
+  "executable_sha256": "1a0e4f61dfab52e2cac7317bc28bb4ff34b6aa477974e0430ff360d7e2b4381e",
+  "executable_bytes": 11423835,
+  "official_identity_status": "NOT_COLLECTED",
+  "store_id": null,
+  "msix_status": "NOT_BUILT"
+}

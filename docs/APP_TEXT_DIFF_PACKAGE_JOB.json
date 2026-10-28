@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "request_id": "app-offline-text-diff-desk-a7d372800898",
+  "product_type": "APP",
+  "source_factory": "AI-App-Factory",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-cohort-text-diff-20261028",
+  "source_sha": "a7d37280089893a9ea4b9ac3336020a920e73e0c",
+  "slug": "offline-text-diff-desk",
+  "display_name": "Offline Text Diff Desk — Private Side-by-Side Comparison",
+  "target_owner": "shihuiarenjinba-png",
+  "dry_run": false,
+  "requested_actions": [
+    "BUILD_WINDOWS",
+    "INSPECT_PACKAGE",
+    "LOOKUP_OFFICIAL_IDENTITY",
+    "PROPOSE_GITHUB_RETURN"
+  ]
+}

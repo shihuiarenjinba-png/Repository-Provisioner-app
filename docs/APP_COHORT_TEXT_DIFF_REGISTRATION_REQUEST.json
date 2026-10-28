@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "product": "Offline Text Diff Desk — Private Side-by-Side Comparison",
+  "slug": "offline-text-diff-desk",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-cohort-text-diff-20261028",
+  "source_sha": "a7d37280089893a9ea4b9ac3336020a920e73e0c",
+  "request_id": "app-offline-text-diff-desk-a7d372800898",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "suggested_display_name": "Offline Text Diff Desk",
+  "reserved_display_name_verified": false,
+  "identity_status": "WAITING_USER_IDENTITY",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "store_id": null,
+  "required_fields": [
+    "store_id",
+    "reserved_display_name",
+    "identity_name",
+    "publisher",
+    "publisher_display_name",
+    "pfn",
+    "package_sid"
+  ],
+  "user_id_request": "REQUEST_OFFICIAL_IDENTITY_WHEN_PARTNER_CENTER_AVAILABLE",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "1a0e4f61dfab52e2cac7317bc28bb4ff34b6aa477974e0430ff360d7e2b4381e",
+    "bytes": 11423835,
+    "receipt_only_not_binary_reverification": false
+  },
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40686212829/artifacts/12815845218",
+  "artifact_zip_sha256": "cfbbb12690915b2ac0d8be0bfa690ea347e6912f7737bf64473140f125ed937b",
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AWAIT_USER_IDENTITY",
+  "identity_return_target": {
+    "owner": "36_MIN_WINDOWS_E2E",
+    "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+    "source_sha": "a7d37280089893a9ea4b9ac3336020a920e73e0c",
+    "request_id": "app-offline-text-diff-desk-a7d372800898"
+  },
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "UNVERIFIED",
+  "priority_note": "Focus Session Desk remains the next local Partner Center new-registration test. Do not register this fourth product ahead of Focus."
+}

@@ -117,9 +117,39 @@
     },
     {
       "slot": 4,
-      "slug": null,
-      "status": "NOT_STARTED",
-      "candidate_category": "local lightweight image/visual utility (avoid existing privacy tools)"
+      "slug": "offline-text-diff-desk",
+      "status": "PRE_IDENTITY_READY_CLOUD_CONTRACT",
+      "candidate_category": "offline UTF-8 text comparison / unified diff / session recovery",
+      "overlap_review": "REPO_NAME_SCREENED; NO_EXISTING_DIFF_OR_COMPARE_REPO; CONTENT_REVIEW_PENDING",
+      "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+      "source_branch": "codex/app-cohort-text-diff-20261028",
+      "source_sha": "a7d37280089893a9ea4b9ac3336020a920e73e0c",
+      "request_id": "app-offline-text-diff-desk-a7d372800898",
+      "formal_product_path": "products/offline-text-diff-desk",
+      "product_code_committed": true,
+      "functional_tests": "19/19_PASS_HEADLESS_UBUNTU; 19/19_PASS_WINDOWS",
+      "native_lifecycle_status": "PASS_REAL_CONTROLLER_RESEARCH_BUILD_PROMOTE_AND_IMPROVE",
+      "windows_exe": "REAL_ARTIFACT_SHA256_VERIFIED",
+      "artifact_sha256": "1a0e4f61dfab52e2cac7317bc28bb4ff34b6aa477974e0430ff360d7e2b4381e",
+      "artifact_bytes": 11423835,
+      "artifact_zip_sha256": "cfbbb12690915b2ac0d8be0bfa690ea347e6912f7737bf64473140f125ed937b",
+      "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40686212829/artifacts/12815845218",
+      "packaging_family": "MSIX",
+      "partner_center_registration_type": "MSIX_OR_PWA_APP",
+      "identity_status": "WAITING_USER_IDENTITY",
+      "identity_attestation": "NOT_VERIFIED",
+      "windows_gui": "UNVERIFIED",
+      "e2e": "NOT_PASSED",
+      "source_conflicts_observed": 0,
+      "artifact_mismatch_observed": 0,
+      "schema_mismatch_observed": 1,
+      "retry_count_observed": 3,
+      "manual_intervention_count_observed_min": 3,
+      "evidence_urls": [
+        "https://github.com/TheLastRKoch/DevToolkit/issues/27",
+        "https://github.com/Blank-Enterprise/spinney/issues/70"
+      ],
+      "identity_return_target": "36_MIN_WINDOWS_E2E"
     },
     {
       "slot": 5,
@@ -129,18 +159,21 @@
     }
   ],
   "metrics": {
-    "pre_identity_ready_count": 3,
+    "pre_identity_ready_count": 4,
     "total_target": 5,
-    "observed_success_rate": "3/3 verified cloud PRE_IDENTITY_READY; cohort 3/5, not stable",
+    "observed_success_rate": "4/4 verified cloud PRE_IDENTITY_READY; cohort 4/5, not stable",
     "retries_total": null,
     "branch_conflicts_total_observed": 0,
     "artifact_mismatches_total_observed": 0,
-    "schema_mismatches_total_observed": 0,
+    "schema_mismatches_total_observed": 1,
     "manual_interventions_total": null,
     "unknown_metrics_not_zero": true,
     "focus_retry_count_observed": 2,
     "ledger_retry_count_observed": 1,
-    "ledger_manual_intervention_count_observed_min": 1
+    "ledger_manual_intervention_count_observed_min": 1,
+    "text_diff_retry_count_observed": 3,
+    "text_diff_manual_intervention_count_observed_min": 3,
+    "text_diff_metadata_mismatch_observed": 1
   },
   "owner_boundaries": {
     "app": "Factory+Provisioner",
@@ -154,6 +187,7 @@
     "Registration family MSIX_OR_PWA_APP is based on final MSIX packaging, not intermediate unsigned EXE.",
     "Slot 2 uses isolated pre-canary research ancestor 60d84c37, so its controller predates the reviewed stale-proposal cleanup. Do not claim build promotion until the owner-approved lifecycle patch is present and native tests pass.",
     "2026-10-28 slot 2: real Factory controller research/build plan-validate-promote on Actions run 40668807091; 109 Factory tests and 18 Focus tests PASS, products/focus-session-desk committed at 8b00bc4e90828c4282463826873aa8dfd2eb93f4; correlated Windows EXE independently ZIP/PE/SHA verified, Identity not yet collected, Windows GUI unverified. Two promotion workflow retries were needed (import path, ignored tracked deletion); no blind overwrite.",
-    "2026-10-28 slot 3: File Integrity Ledger original read-only hashing/snapshot GUI promoted via native research/build controller in run 40677868773. First attempt failed old regression tests assuming manual candidate cleanup; fixed with audited test blob and reran successfully. Ubuntu product 18/18 PASS, Windows regression step PASS, correlated unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. No Windows GUI/install, MSIX or Identity CAS claims."
+    "2026-10-28 slot 3: File Integrity Ledger original read-only hashing/snapshot GUI promoted via native research/build controller in run 40677868773. First attempt failed old regression tests assuming manual candidate cleanup; fixed with audited test blob and reran successfully. Ubuntu product 18/18 PASS, Windows regression step PASS, correlated unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. No Windows GUI/install, MSIX or Identity CAS claims.",
+    "2026-10-28 slot 4: Offline Text Diff Desk original bilingual text comparison app promoted via native Factory research/build and improve controller. Ubuntu 19/19 and Windows 19/19 tests PASS after CRLF normalization; initial Windows tests, ignored candidate staging, and incorrect intermediate handoff metadata required three corrections. Final run 40686212829 built source/request-bound unsigned Windows EXE and final corrected registration handoff; ZIP/PE/SHA/receipt independently verified. Source a7d37280; no GUI/install, MSIX, Identity CAS or Store PASS."
   ]
 }

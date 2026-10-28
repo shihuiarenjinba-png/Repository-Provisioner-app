@@ -39,8 +39,8 @@ class RequestBoundExeTests(unittest.TestCase):
         source = Path(root) / "source"
         source.mkdir()
         subprocess.run(["git", "init", "--quiet", str(source)], check=True)
-        (source / ".gitignore").write_text("ignored.txt\\n", encoding="utf-8")
-        (source / "builder.py").write_text("print('clean')\\n", encoding="utf-8")
+        (source / ".gitignore").write_text("ignored.txt\n", encoding="utf-8")
+        (source / "builder.py").write_text("print('clean')\n", encoding="utf-8")
         subprocess.run(["git", "add", ".gitignore", "builder.py"], cwd=source, check=True)
         subprocess.run([
             "git", "-c", "user.name=QA", "-c", "user.email=qa@example.com",
@@ -58,17 +58,22 @@ class RequestBoundExeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source, sha = self._local_git_checkout(tmp)
             cases = (
-                ("tracked modification", source / "builder.py", "print('tampered')\\n"),
-                ("untracked payload", source / "extra.py", "print('untracked')\\n"),
-                ("ignored payload", source / "ignored.txt", "unsafe\\n"),
+                ("tracked modification", source / "builder.py", "print('tampered')\n"),
+                ("untracked payload", source / "extra.py", "print('untracked')\n"),
+                ("ignored payload", source / "ignored.txt", "unsafe\n"),
             )
             for name, path, payload in cases:
                 with self.subTest(name=name):
                     path.write_text(payload, encoding="utf-8")
+                    if name == "ignored payload":
+                        self.assertEqual(subprocess.run(
+                            ["git", "check-ignore", "--quiet", "ignored.txt"],
+                            cwd=source, check=False,
+                        ).returncode, 0)
                     with self.assertRaisesRegex(ValueError, "modified, untracked or ignored"):
                         verify_clean_factory_checkout(source, sha)
                     if path.name == "builder.py":
-                        path.write_text("print('clean')\\n", encoding="utf-8")
+                        path.write_text("print('clean')\n", encoding="utf-8")
                     else:
                         path.unlink()
             verify_clean_factory_checkout(source, sha)

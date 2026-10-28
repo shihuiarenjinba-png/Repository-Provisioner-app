@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "product": "Offline Notes Canary — Searchable Scratchpad",
+  "slug": "offline-notes-canary",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-notes-backup-export-safety-20261029",
+  "source_sha": "c4431473da715e1f0cb31a04841263332e7137e5",
+  "request_id": "app-offline-notes-canary-c4431473da71",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "proposed_display_name": "Offline Notes Canary — Searchable Scratchpad",
+  "reserved_display_name_verified": false,
+  "identity_status": "REFERENCE_AVAILABLE",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "identity_binding_status": "REFERENCE_CORRELATED_NOT_ATTESTED",
+  "store_id": "9MZ8ZZTRTS17",
+  "required_fields": [],
+  "user_id_request": "NONE_ALREADY_RECEIVED",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "4febda28ba11e841eb75a8aeb6f6604fba5393f55079affc4ec6564ce5a29f7a",
+    "bytes": 11491935,
+    "receipt_only_not_binary_reverification": false
+  },
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40750841064/artifacts/12842579676",
+  "artifact_zip_sha256": "dfd8907a28cb7abfe7eae310ea66b738f5dd9612aa0fbe1a4fb742ea9e99a4bf",
+  "identity_reference_file": "docs/APP_NOTES_IMPROVEMENT_IDENTITY_REFERENCE.json",
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+  "identity_return_target": {
+    "owner": "36_MIN_WINDOWS_E2E",
+    "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+    "source_sha": "c4431473da715e1f0cb31a04841263332e7137e5",
+    "request_id": "app-offline-notes-canary-c4431473da71"
+  },
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "UNVERIFIED",
+  "priority_note": "Focus Session Desk remains first new Partner Center registration test; Offline Notes Identity already received, do not re-request."
+}

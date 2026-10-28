@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "request_id": "app-offline-notes-canary-c4431473da71",
+  "product_type": "APP",
+  "source_factory": "AI-App-Factory",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-notes-backup-export-safety-20261029",
+  "source_sha": "c4431473da715e1f0cb31a04841263332e7137e5",
+  "slug": "offline-notes-canary",
+  "display_name": "Offline Notes Canary — Searchable Scratchpad",
+  "target_owner": "shihuiarenjinba-png",
+  "dry_run": false,
+  "requested_actions": [
+    "BUILD_WINDOWS",
+    "INSPECT_PACKAGE",
+    "LOOKUP_OFFICIAL_IDENTITY",
+    "PROPOSE_GITHUB_RETURN"
+  ]
+}

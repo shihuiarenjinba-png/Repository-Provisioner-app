@@ -26,7 +26,7 @@
     "pfn",
     "package_sid"
   ],
-  "user_id_request": "REQUEST_OFFICIAL_IDENTITY_WHEN_PARTNER_CENTER_AVAILABLE",
+  "user_id_request": "REQUEST_OFFICIAL_IDENTITY",
   "pre_identity_exe": {
     "status": "EXE_QA_UNSIGNED",
     "sha256": "6cbdc5334f1e24c79c2549274ed905bd185cbb15461536564ca6b3c35e646e61",

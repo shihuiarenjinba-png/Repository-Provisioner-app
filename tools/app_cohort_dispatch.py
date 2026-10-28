@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 
 from tools.app_registration_contract import (
     RegistrationContractError, load_json, registration_request,
@@ -60,6 +61,30 @@ def build_dispatch(root: Path = ROOT) -> dict:
             require(request.get(key) == job[key], slug + " stale registration " + key)
         require(job["request_id"].endswith(job["source_sha"][:12]),
                 slug + " request/source correlation mismatch")
+        # The current improvement revision is the source of truth. Matching
+        # source SHA alone does not prove the EXE, ZIP or Actions run is current.
+        require(current.get("artifact_sha256") == receipt["executable_sha256"],
+                slug + " stale improvement EXE SHA-256")
+        require(current.get("artifact_bytes") == receipt["executable_bytes"],
+                slug + " stale improvement EXE byte count")
+        require(current.get("artifact_zip_sha256") == request.get("artifact_zip_sha256"),
+                slug + " stale improvement artifact ZIP SHA-256")
+        require(current.get("artifact_url") == request.get("artifact_url"),
+                slug + " stale improvement artifact URL")
+        require(isinstance(request.get("artifact_url"), str) and
+                re.fullmatch(
+                    r"https://github[.]com/shihuiarenjinba-png/AI-App-Factory/"
+                    r"actions/runs/[1-9][0-9]*/artifacts/[1-9][0-9]*",
+                    request["artifact_url"]) is not None,
+                slug + " malformed Actions artifact URL")
+        require(request.get("product") == job["display_name"],
+                slug + " registration display name mismatch")
+        require(request.get("identity_status") == current.get("identity_status"),
+                slug + " stale improvement Identity status")
+        require(request.get("store_id") ==
+                (reference.get("store_id") if reference else None),
+                slug + " untrusted Store ID")
+
         for key in ("slug", "repo", "source_branch", "source_sha", "request_id",
                     "product_type", "packaging_family", "partner_center_registration_type",
                     "partner_center_selection", "identity_status", "identity_attestation",
@@ -72,7 +97,8 @@ def build_dispatch(root: Path = ROOT) -> dict:
         require(isinstance(target, dict)
                 and target.get("source_sha") == job["source_sha"]
                 and target.get("request_id") == job["request_id"]
-                and target.get("owner") == "36_MIN_WINDOWS_E2E",
+                and target.get("owner") == "36_MIN_WINDOWS_E2E"
+                and target.get("stage") == "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
                 slug + " invalid Identity return target")
         exe = request.get("pre_identity_exe")
         require(isinstance(exe, dict)
@@ -112,6 +138,7 @@ def build_dispatch(root: Path = ROOT) -> dict:
             "identity_return_target": target,
             "pre_identity_exe": exe,
             "artifact_url": request["artifact_url"],
+            "artifact_zip_sha256": request["artifact_zip_sha256"],
             "registration_request_path": "docs/APP_" + prefix + "_REGISTRATION_REQUEST.json",
             "post_identity_ready": False,
             "windows_gui_pass": False,

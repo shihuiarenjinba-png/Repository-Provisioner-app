@@ -1,5 +1,17 @@
 # APP Canary — pinned pre-Identity handoff (2026-10-28 JST)
 
+## 2026-10-28 — cloud-first APP cohort registration handoff
+
+- **Partner Center selection: MSIX or PWA app** (machine code `MSIX_OR_PWA_APP`). The unsigned intermediate Windows EXE is NOT an `EXE_OR_MSI_APP` Store registration.
+- **Canary cloud PRE_IDENTITY_READY:** native Factory promotion, 18 functional tests, immutable `b83702c8948991cc3bd31745db5df64afaf6010f` and `app-offline-notes-canary-b83702c89489`, verified request-bound EXE SHA-256 `373b069b5a5f5ebdfea8785edc1c165030b6988b688739105585f34ed4501ab0`. Windows GUI/install still **UNVERIFIED**; local Windows is temporarily unavailable, so this is nonblocking for additional cloud cohort products, NOT a Windows QA PASS.
+- New APP-owned `tools/app_registration_contract.py` validates pinned job/EXE receipt and optionally binds the **user-provided** Identity reference to source/request/slug. It **never** attests Partner Center authentication, performs CAS, or modifies Identity. `docs/APP_COHORT_REGISTRATION_REQUEST.json` records `REFERENCE_AVAILABLE` and `identity_cas_allowed=false`; `docs/APP_COHORT_ROTATION.json` tracks the bounded five-product cohort (1/5 currently cloud-ready, NOT stable).
+- The user has already supplied Store ID `9MZ8ZZTRTS17` and the other reference values. **Do not ask again.** Reserved Partner Center display name was not independently verified; leave it null, not guessed.
+- **36-minute owner next:** authenticated Identity evidence review, source/request attestation, CAS only after verification, MSIX from pinned EXE, checker/E2E. **00-minute owner next:** distinct second product on `codex/app-cohort-rotation-20261028` via authorized native Factory lifecycle; frozen canary source branch unchanged. Never edit `factory/state.json` directly.
+- Provisioner CI run [40639596924](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40639596924) PASS on Windows and Ubuntu including ten new registration contract tests.
+
+---
+
+
 ## 2026-10-28 14:08 JST — clean-source guard + fresh request-bound EXE verified
 
 - **CODE FIX (APP-owned Provisioner only):** [commit 49f2ab33](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/commit/49f2ab339062350e25b55de126d9ea04f5f02133) adds `verify_clean_factory_checkout` before executing the Factory builder. An existing Git checkout can have the correct HEAD while retaining modified, untracked or ignored files; these now fail closed instead of running altered local source. The [test refinement c551d4ea](https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/commit/c551d4eaabe6f2792450a2e31558daf493536f81) verifies ignored payloads are truly ignored by Git. Three new regression tests cover clean checkout, dirty/ignored checkout and SHA mismatch.

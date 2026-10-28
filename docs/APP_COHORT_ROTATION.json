@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "lane": "APP",
+  "policy": "FIVE_PRODUCT_PRE_IDENTITY_STABILITY_COHORT",
+  "max_products": 5,
+  "max_implementation_wip": 2,
+  "new_product_generation_allowed": true,
+  "product_rotation_gate": "real code committed + functional tests PASS + source/request/slug pinned + Windows EXE or reproducible entrypoint + MSIX registration classification + machine-readable Identity state",
+  "factory_stable": false,
+  "stability_threshold": "5/5 products PRE_IDENTITY_READY with same contract",
+  "local_unavailable_mode": true,
+  "windows_gui_not_preidentity_blocker": true,
+  "products": [
+    {
+      "slot": 1,
+      "slug": "offline-notes-canary",
+      "status": "PRE_IDENTITY_READY_CLOUD_CONTRACT",
+      "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+      "source_branch": "codex/app-canary-offline-notes-20261027",
+      "source_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+      "request_id": "app-offline-notes-canary-b83702c89489",
+      "functional_tests": "18/18_PASS",
+      "windows_exe": "REAL_ARTIFACT_SHA256_VERIFIED",
+      "artifact_sha256": "373b069b5a5f5ebdfea8785edc1c165030b6988b688739105585f34ed4501ab0",
+      "artifact_url": "https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40636033797/artifacts/12793163698",
+      "packaging_family": "MSIX",
+      "partner_center_registration_type": "MSIX_OR_PWA_APP",
+      "identity_status": "REFERENCE_AVAILABLE",
+      "identity_attestation": "NOT_VERIFIED",
+      "windows_gui": "UNVERIFIED",
+      "e2e": "NOT_PASSED",
+      "source_conflicts_observed": 0,
+      "artifact_mismatch_observed": 0,
+      "schema_mismatch_observed": 0,
+      "retry_count": null,
+      "manual_intervention_count": null
+    },
+    {
+      "slot": 2,
+      "slug": null,
+      "status": "ELIGIBLE_NOT_GENERATED",
+      "candidate_category": "offline productivity/focus session timer and checklist",
+      "overlap_review": "REPO_NAME_SCREENED; CONTENT_REVIEW_PENDING"
+    },
+    {
+      "slot": 3,
+      "slug": null,
+      "status": "NOT_STARTED",
+      "candidate_category": "local structured-data/JSON utility (avoid existing CSV/privacy tools)"
+    },
+    {
+      "slot": 4,
+      "slug": null,
+      "status": "NOT_STARTED",
+      "candidate_category": "local lightweight image/visual utility (avoid existing privacy tools)"
+    },
+    {
+      "slot": 5,
+      "slug": null,
+      "status": "NOT_STARTED",
+      "candidate_category": "local file workflow utility (avoid existing folder automation/privacy tools)"
+    }
+  ],
+  "metrics": {
+    "pre_identity_ready_count": 1,
+    "total_target": 5,
+    "observed_success_rate": "1/1 (first product only; not stability proof)",
+    "retries_total": null,
+    "branch_conflicts_total_observed": 0,
+    "artifact_mismatches_total_observed": 0,
+    "schema_mismatches_total_observed": 0,
+    "manual_interventions_total": null,
+    "unknown_metrics_not_zero": true
+  },
+  "owner_boundaries": {
+    "app": "Factory+Provisioner",
+    "windows_e2e": "36_MIN",
+    "identity_cas_by_app": false,
+    "partner_center_browser_by_app": false
+  },
+  "notes": [
+    "Canary source SHA remains frozen; new products must use distinct branches/immutable SHA.",
+    "Existing Factory state is improve/revision=1 for canary; do not directly edit factory/state.json or bypass native promotion.",
+    "Product 2 must not duplicate existing repositories; no second product has been generated yet.",
+    "The 2026-10-28 user-supplied Store Identity is a reference only, not authenticated attestation.",
+    "Registration family MSIX_OR_PWA_APP is based on final MSIX packaging, not intermediate unsigned EXE."
+  ]
+}

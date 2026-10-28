@@ -203,7 +203,13 @@
     "ledger_manual_intervention_count_observed_min": 1,
     "text_diff_retry_count_observed": 3,
     "text_diff_manual_intervention_count_observed_min": 3,
-    "text_diff_metadata_mismatch_observed": 1
+    "text_diff_metadata_mismatch_observed": 1,
+    "retries_total_observed_min": 6,
+    "manual_interventions_total_observed_min": 6,
+    "unquantified_product_slots": [
+      1
+    ],
+    "stability_review": "5/5 cloud PRE_IDENTITY_READY, but 6+ known retries and 6+ known manual interventions across slots 2-5; slot 1 unknown. APP Factory stable remains false."
   },
   "owner_boundaries": {
     "app": "Factory+Provisioner",
@@ -219,6 +225,7 @@
     "2026-10-28 slot 2: real Factory controller research/build plan-validate-promote on Actions run 40668807091; 109 Factory tests and 18 Focus tests PASS, products/focus-session-desk committed at 8b00bc4e90828c4282463826873aa8dfd2eb93f4; correlated Windows EXE independently ZIP/PE/SHA verified, Identity not yet collected, Windows GUI unverified. Two promotion workflow retries were needed (import path, ignored tracked deletion); no blind overwrite.",
     "2026-10-28 slot 3: File Integrity Ledger original read-only hashing/snapshot GUI promoted via native research/build controller in run 40677868773. First attempt failed old regression tests assuming manual candidate cleanup; fixed with audited test blob and reran successfully. Ubuntu product 18/18 PASS, Windows regression step PASS, correlated unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. No Windows GUI/install, MSIX or Identity CAS claims.",
     "2026-10-28 slot 4: Offline Text Diff Desk original bilingual text comparison app promoted via native Factory research/build and improve controller. Ubuntu 19/19 and Windows 19/19 tests PASS after CRLF normalization; initial Windows tests, ignored candidate staging, and incorrect intermediate handoff metadata required three corrections. Final run 40686212829 built source/request-bound unsigned Windows EXE and final corrected registration handoff; ZIP/PE/SHA/receipt independently verified. Source a7d37280; no GUI/install, MSIX, Identity CAS or Store PASS.",
-    "2026-10-28 slot 5: Offline Image Inventory Desk original stdlib-only PNG/JPEG/GIF/BMP header inventory, CSV export and JSON recovery. Native research/build plan-validate-promote PASS in Actions 40693150965, Ubuntu and Windows 23/23 functional tests PASS, correlated Windows unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. Cloud PRE_IDENTITY_READY 5/5; no new APP without 48-minute explicit approval. GUI/install, MSIX, Identity CAS and E2E remain unverified."
+    "2026-10-28 slot 5: Offline Image Inventory Desk original stdlib-only PNG/JPEG/GIF/BMP header inventory, CSV export and JSON recovery. Native research/build plan-validate-promote PASS in Actions 40693150965, Ubuntu and Windows 23/23 functional tests PASS, correlated Windows unsigned EXE independently ZIP/MZ/PE/SHA/receipt verified. Cloud PRE_IDENTITY_READY 5/5; no new APP without 48-minute explicit approval. GUI/install, MSIX, Identity CAS and E2E remain unverified.",
+    "2026-10-28 APP quality audit: File Integrity Ledger accepts and saves 100 paths of length 2048 but previously rejected saved snapshots >128 KiB on reload. Fix is isolated in Factory Draft PR #19 (codex/app-ledger-snapshot-size-20261028); frozen source deaa9f32 and its original EXE/receipt are unchanged. Do not treat improvement as promoted or update PRE_IDENTITY identity binding until owner-approved improve lifecycle, new exact source/EXE and correlation verification."
   ]
 }

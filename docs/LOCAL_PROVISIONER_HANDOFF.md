@@ -2,6 +2,20 @@
 
 更新日: 2026-10-27 (Asia/Tokyo)
 
+## APP Identity-only batch return（2026-10-29追記）
+
+`identity_only_return.py`は、1件のGitHub PRE_IDENTITY APP jobと、ローカル
+Windowsの認証済みUI receiptを受け取る。書込みは既存
+`GitHubReturnClient`へ委譲し、別のCAS実装は持たない。
+
+Store IdentityとPackage Versionは分離する。Identity取得段階ではVersionを
+生成せず、`package_version_gate=HOLD`とする。初回CASは`APPLIED`、同じ内容の
+再開は`EXISTING_VERIFIED`。既存ファイル差異、source/queue digest drift、誤った
+return target、別製品receiptは`CONFLICT`で停止する。
+
+この入口はpackage upload、Store submission、certification、publish、pricingを
+実行しない。
+
 ## 現行判定
 
 **HOLD — オフライン実装完了／ライブ作成未確認。** APPのactive productは監督台帳上`null`。製品を新規生成せず、実MSIX、認証済みPartner Center Identity、Factory CAS書戻し、Windows-all-auto受領はいずれも未実施。Store提出は0件。

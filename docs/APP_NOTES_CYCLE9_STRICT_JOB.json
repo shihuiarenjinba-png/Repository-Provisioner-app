@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "request_id": "app-offline-notes-canary-2bc5eb249c5d",
+  "product_type": "APP",
+  "source_factory": "AI-App-Factory",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-notes-new-save-no-clobber-20261030",
+  "source_sha": "2bc5eb249c5d23ee269e75f3b27ee2a7be359791",
+  "slug": "offline-notes-canary",
+  "display_name": "Offline Notes Canary — Searchable Scratchpad",
+  "target_owner": "shihuiarenjinba-png",
+  "dry_run": true,
+  "requested_actions": [
+    "BUILD_WINDOWS"
+  ]
+}

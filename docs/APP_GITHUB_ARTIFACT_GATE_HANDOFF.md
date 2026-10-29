@@ -17,6 +17,8 @@ The script derives five artifact URLs from the current improvement revisions, no
 
 The workflow identity allowlist in `tools/app_cohort_github_gate.py` is intentionally frozen for these five current improvement artifacts. A new legitimate Factory build must update the source/request/artifact receipts **and** its reviewed workflow identity together, then rerun the gate. Never silently accept a different successful workflow on the same branch. The JSON evidence now records the producing workflow ID/path and artifact-to-run HEAD match.
 
+The authenticated gate additionally requires a parseable timezone-aware GitHub `expires_at` and at least **24 hours of remaining retention** at verification time. A soon-to-expire artifact is rejected even if GitHub currently reports `expired=false`, to avoid handing Windows a disappearing download. Each per-product API proof includes `artifact_expires_at`; 36-minute consumers should compare it with their actual retrieval time and rerun the gate if the evidence is stale. This is a retention-safety check, **not** a signed attestation or a guarantee that GitHub will retain the file.
+
 Current pinned artifacts are short-lived and expire on 2026-11-02 UTC unless regenerated. If any artifact expires, fail closed; do not silently substitute an older revision or alter the pinned SHA. Rebuild through the authorized Factory lifecycle, pin a new immutable revision and retest before dispatch.
 
 ## Downstream handoff boundary

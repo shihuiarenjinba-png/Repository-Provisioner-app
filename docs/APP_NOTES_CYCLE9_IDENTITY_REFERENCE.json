@@ -1,0 +1,13 @@
+{
+  "source_sha": "2bc5eb249c5d23ee269e75f3b27ee2a7be359791",
+  "request_id": "app-offline-notes-canary-2bc5eb249c5d",
+  "slug": "offline-notes-canary",
+  "reference_source": "USER_PROVIDED",
+  "store_id": "9MZ8ZZTRTS17",
+  "reserved_display_name": null,
+  "identity_name": "OkinawaDesktopTools.OfflineNotesCanary",
+  "publisher": "CN=46263F21-A700-41DB-8C9B-114C22FB82FC",
+  "publisher_display_name": "Okinawa Desktop Tools",
+  "pfn": "OkinawaDesktopTools.OfflineNotesCanary_j8yefg9jgfh58",
+  "package_sid": "S-1-15-2-2642756671-247194623-3930721938-1552475434-2475515228-2865765061-1607947205"
+}

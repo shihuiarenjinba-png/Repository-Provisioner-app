@@ -7,6 +7,7 @@ never used as evidence of signed attestation, Identity CAS, GUI, or MSIX.
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
@@ -57,6 +58,19 @@ def validate_metadata(row: dict, metadata: dict) -> tuple[int, int]:
     require(type(metadata.get("id")) is int and metadata["id"] == artifact_id,
             "artifact ID mismatch")
     require(metadata.get("expired") is False, "artifact expired or expiry unknown")
+    # An artifact about to disappear is not a dependable Windows handoff.
+    # Require explicit expiry metadata and a full 24-hour retrieval margin.
+    expires_at = metadata.get("expires_at")
+    require(isinstance(expires_at, str), "artifact expiry timestamp missing")
+    try:
+        expiry = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise RegistrationContractError(
+            "Actions binary gate: invalid artifact expiry timestamp"
+        ) from exc
+    require(expiry.tzinfo is not None, "artifact expiry timezone missing")
+    require(expiry > datetime.now(timezone.utc) + timedelta(hours=24),
+            "artifact expires within 24 hours; regenerate evidence")
     size = metadata.get("size_in_bytes")
     require(type(size) is int and 0 < size <= MAX_ZIP, "artifact size out of bounds")
     require(metadata.get("digest") == "sha256:" + row["artifact_zip_sha256"],
@@ -161,6 +175,7 @@ def fetch_and_verify() -> dict:
             api_proofs.append({
                 "slug": row["slug"], "actions_run_id": run_id,
                 "actions_artifact_id": artifact_id,
+                "artifact_expires_at": metadata["expires_at"],
                 "metadata_digest_matches_pinned_zip": True,
                 "workflow_branch_matches_pinned_source_branch": True,
                 "producing_workflow_run_completed_successfully": True,

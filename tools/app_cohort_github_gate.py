@@ -20,6 +20,15 @@ from tools.app_cohort_dispatch import build_dispatch, verify_binary_dispatch
 from tools.app_registration_contract import RegistrationContractError
 
 REPO = "shihuiarenjinba-png/AI-App-Factory"
+# Bind each frozen artifact to the exact product build workflow, not merely
+# any successful Actions run on the same branch.
+EXPECTED_WORKFLOWS = {
+    "offline-notes-canary": (399790722, ".github/workflows/notes-backup-export-safety.yml"),
+    "focus-session-desk": (399611393, ".github/workflows/focus-save-rollback-improve-exe.yml"),
+    "file-integrity-ledger": (399538784, ".github/workflows/ledger-snapshot-improve-exe.yml"),
+    "offline-text-diff-desk": (399727738, ".github/workflows/text-diff-backup-safety.yml"),
+    "offline-image-inventory-desk": (399668017, ".github/workflows/image-inventory-append-safety.yml"),
+}
 URL = re.compile(
     r"https://github[.]com/shihuiarenjinba-png/AI-App-Factory/"
     r"actions/runs/([1-9][0-9]*)/artifacts/([1-9][0-9]*)\Z"
@@ -77,6 +86,11 @@ def validate_workflow_run(row: dict, run: dict) -> None:
             "workflow run not successful")
     require(run.get("head_branch") == row["source_branch"],
             "workflow run source branch mismatch")
+    expected = EXPECTED_WORKFLOWS.get(row["slug"])
+    require(expected is not None and
+            type(run.get("workflow_id")) is int and run["workflow_id"] == expected[0] and
+            run.get("path") == expected[1] and run.get("event") == "push",
+            "producing workflow identity or trigger mismatch")
     repository = run.get("repository")
     require(isinstance(repository, dict) and repository.get("full_name") == REPO,
             "workflow run repository mismatch")
@@ -85,6 +99,15 @@ def validate_workflow_run(row: dict, run: dict) -> None:
     require(isinstance(run.get("head_sha"), str) and
             re.fullmatch(r"[0-9a-f]{40}", run["head_sha"]) is not None,
             "workflow run HEAD is invalid")
+
+
+def validate_artifact_run_binding(metadata: dict, run: dict) -> None:
+    """Require the artifact API and run API to identify the same source commit."""
+    workflow = metadata.get("workflow_run")
+    require(isinstance(workflow, dict) and
+            isinstance(workflow.get("head_sha"), str) and
+            workflow["head_sha"] == run.get("head_sha"),
+            "artifact workflow HEAD does not match producing run")
 
 
 def _gh_api(path: str, destination: Path | None = None) -> dict | None:
@@ -131,6 +154,7 @@ def fetch_and_verify() -> dict:
             validate_metadata(row, metadata)
             run = _gh_api(f"/repos/{REPO}/actions/runs/{run_id}")
             validate_workflow_run(row, run)
+            validate_artifact_run_binding(metadata, run)
             target = Path(temp) / (row["slug"] + ".zip")
             _gh_api(endpoint + "/zip", target)
             artifact_map[row["slug"]] = str(target)
@@ -141,6 +165,9 @@ def fetch_and_verify() -> dict:
                 "workflow_branch_matches_pinned_source_branch": True,
                 "producing_workflow_run_completed_successfully": True,
                 "producing_workflow_head_sha": run["head_sha"],
+                "producing_workflow_id": run["workflow_id"],
+                "producing_workflow_path": run["path"],
+                "artifact_workflow_head_matches_run": True,
             })
         # All five downloads must be present and verified; partial success
         # never produces a dispatch result.

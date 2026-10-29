@@ -10,6 +10,7 @@ from unittest.mock import patch
 from tools.app_cohort_dispatch import build_dispatch
 from tools.app_cohort_github_gate import (
     REPO, fetch_and_verify, parse_location, validate_metadata,
+    validate_workflow_run,
 )
 from tools.app_registration_contract import RegistrationContractError
 
@@ -26,6 +27,16 @@ def metadata_for(row):
                          "head_sha": "f" * 40},
     }
 
+def run_for(row):
+    run_id, _ = parse_location(row)
+    return {
+        "id": run_id, "status": "completed", "conclusion": "success",
+        "head_branch": row["source_branch"],
+        "head_sha": "f" * 40,
+        "repository": {"full_name": REPO},
+        "html_url": f"https://github.com/{REPO}/actions/runs/{run_id}",
+    }
+
 
 class AuthenticatedArtifactGateTests(unittest.TestCase):
     @classmethod
@@ -37,6 +48,27 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
             with self.subTest(slug=row["slug"]):
                 self.assertEqual(validate_metadata(row, metadata_for(row)),
                                  parse_location(row))
+
+
+    def test_rejects_failed_or_wrong_workflow_run(self):
+        row = self.rows[0]
+        validate_workflow_run(row, run_for(row))
+        for field, value in (
+            ("conclusion", "failure"), ("conclusion", None),
+            ("status", "in_progress"), ("id", 999),
+            ("head_branch", "other"), ("head_sha", "not-a-sha"),
+            ("html_url", "https://example.com/run"),
+        ):
+            bad = run_for(row)
+            bad[field] = value
+            with self.subTest(field=field, value=value), self.assertRaises(
+                RegistrationContractError
+            ):
+                validate_workflow_run(row, bad)
+        bad = run_for(row)
+        bad["repository"] = {"full_name": "another/repo"}
+        with self.assertRaisesRegex(RegistrationContractError, "repository mismatch"):
+            validate_workflow_run(row, bad)
 
     def test_rejects_metadata_digest_mismatch(self):
         row = self.rows[0]
@@ -76,6 +108,12 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
                 Path(destination).write_bytes(b"mock ZIP bytes")
                 calls.append(("download", endpoint))
                 return None
+            if "/actions/runs/" in endpoint:
+                run_id = int(endpoint.rsplit("/", 1)[-1])
+                row = next(row for row in self.rows
+                           if parse_location(row)[0] == run_id)
+                calls.append(("run", endpoint))
+                return run_for(row)
             artifact_id = int(endpoint.rsplit("/", 1)[-1])
             row = next(row for row in self.rows
                        if parse_location(row)[1] == artifact_id)
@@ -95,7 +133,12 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
              patch("tools.app_cohort_github_gate.verify_binary_dispatch",
                    side_effect=fake_verify):
             result = fetch_and_verify()
-        self.assertEqual(len(calls), 10)
+        self.assertEqual(len(calls), 15)
+        self.assertEqual(sum(kind == "run" for kind, _ in calls), 5)
+        self.assertTrue(all(
+            proof["producing_workflow_run_completed_successfully"]
+            for proof in result["actions_artifact_metadata_checks"]
+        ))
         self.assertEqual(result["binary_verified_count"], 5)
         self.assertIn("NO_SIGNED_ATTESTATION", result["verification_scope"])
         self.assertFalse(result["identity_cas_allowed"])

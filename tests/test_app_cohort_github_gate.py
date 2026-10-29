@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+from datetime import datetime, timedelta, timezone
 import os
 from pathlib import Path
 import unittest
@@ -20,6 +21,8 @@ def metadata_for(row):
     api = f"https://api.github.com/repos/{REPO}/actions/artifacts/{artifact_id}"
     return {
         "id": artifact_id, "expired": False, "size_in_bytes": 10000,
+        "expires_at": (datetime.now(timezone.utc) + timedelta(days=4))
+            .isoformat().replace("+00:00", "Z"),
         "digest": "sha256:" + row["artifact_zip_sha256"],
         "url": api, "archive_download_url": api + "/zip",
         "workflow_run": {"id": run_id, "head_branch": row["source_branch"],
@@ -85,6 +88,19 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
         metadata["workflow_run"].pop("head_sha")
         with self.assertRaisesRegex(RegistrationContractError, "HEAD does not match"):
             validate_artifact_run_binding(metadata, run)
+
+    def test_rejects_missing_malformed_or_imminent_artifact_expiry(self):
+        row = self.rows[0]
+        soon = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+        for value in (None, "", "not-a-date", "2099-01-01T00:00:00", soon):
+            bad = metadata_for(row)
+            bad["expires_at"] = value
+            with self.subTest(expiry=value), self.assertRaises(
+                RegistrationContractError
+            ):
+                validate_metadata(row, bad)
+        valid = metadata_for(row)
+        self.assertEqual(validate_metadata(row, valid), parse_location(row))
 
     def test_rejects_metadata_digest_mismatch(self):
         row = self.rows[0]
@@ -158,6 +174,10 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
             for proof in result["actions_artifact_metadata_checks"]
         ))
         self.assertEqual(result["binary_verified_count"], 5)
+        self.assertTrue(all(
+            isinstance(proof["artifact_expires_at"], str)
+            for proof in result["actions_artifact_metadata_checks"]
+        ))
         self.assertIn("NO_SIGNED_ATTESTATION", result["verification_scope"])
         self.assertFalse(result["identity_cas_allowed"])
         self.assertFalse(result["factory_stable"])

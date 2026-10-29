@@ -19,7 +19,7 @@ The workflow identity allowlist in `tools/app_cohort_github_gate.py` is intentio
 
 The authenticated gate additionally requires a parseable timezone-aware GitHub `expires_at` and at least **24 hours of remaining retention** at verification time. A soon-to-expire artifact is rejected even if GitHub currently reports `expired=false`, to avoid handing Windows a disappearing download. Each per-product API proof includes `artifact_expires_at`; 36-minute consumers should compare it with their actual retrieval time and rerun the gate if the evidence is stale. This is a retention-safety check, **not** a signed attestation or a guarantee that GitHub will retain the file.
 
-Current pinned artifacts are short-lived and expire on 2026-11-02 UTC unless regenerated. If any artifact expires, fail closed; do not silently substitute an older revision or alter the pinned SHA. Rebuild through the authorized Factory lifecycle, pin a new immutable revision and retest before dispatch.
+Offline Notes revision 3 is pinned to Actions run 40846554513, artifact 12884838541 (expires 2026-11-03 09:04:13 UTC); other artifacts retain individual expiry times. If any artifact expires, fail closed; do not silently substitute an older revision or alter the pinned SHA. Rebuild through the authorized Factory lifecycle, pin a new immutable revision and retest before dispatch.
 
 ## Downstream handoff boundary
 

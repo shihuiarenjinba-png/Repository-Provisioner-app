@@ -24,7 +24,7 @@ REPO = "shihuiarenjinba-png/AI-App-Factory"
 # Bind each frozen artifact to the exact product build workflow, not merely
 # any successful Actions run on the same branch.
 EXPECTED_WORKFLOWS = {
-    "offline-notes-canary": (399790722, ".github/workflows/notes-backup-export-safety.yml"),
+    "offline-notes-canary": (400400065, ".github/workflows/notes-existing-file-save-guard.yml"),
     "focus-session-desk": (399611393, ".github/workflows/focus-save-rollback-improve-exe.yml"),
     "file-integrity-ledger": (399538784, ".github/workflows/ledger-snapshot-improve-exe.yml"),
     "offline-text-diff-desk": (399727738, ".github/workflows/text-diff-backup-safety.yml"),

@@ -1,0 +1,543 @@
+{
+  "schema_version": 1,
+  "lane": "APP",
+  "active_product": "offline-notes-canary",
+  "phase": "CANARY_PRE_IDENTITY_CLOUD_CONTRACT_READY__FIVE_PRODUCT_COHORT_1_OF_5",
+  "last_completed_step": "Canary source/request/real Windows EXE independently verified; APP registration routing module and 10 targeted local tests added. Final MSIX registration type MSIX_OR_PWA_APP; user-provided Identity reference bound to source/request without attestation/CAS. Five-product bounded cohort initiated; no second product generated yet.",
+  "next_action": "APP 00-minute: begin distinct second APP through authorized native Factory lifecycle without changing pinned canary source or direct factory/state edits; 36-minute owner separately handles authenticated Identity evidence, CAS, MSIX, Windows checker and E2E. Local Windows GUI unavailable: nonblocking for cloud PRE_IDENTITY rotation.",
+  "resume_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "resume_branch": "codex/app-canary-offline-notes-20261027",
+  "resume_head_before_progress_commit": "0a306ac170b1563c7e6286375efaa83213578456",
+  "source_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+  "blocked_by": [
+    "WINDOWS_GUI_QA: Linux Xvfb 1024x768 PASS only; Windows GUI/install/restart QA unverified",
+    "IDENTITY_ATTESTATION: user supplied official Store Identity reference (Windows-all-auto stacked PR19) but authenticated evidence and CAS have not been verified/applied",
+    "MSIX_AND_E2E: request-bound EXE -> official Identity -> MSIX -> Windows-checker -> E2E not run",
+    "WINDOWS_CHECKER_CI_FAILURE: downstream checker previously failed",
+    "FACTORY_PR12_PR13_DIVERGENCE: separate stacked Factory MSIX source_sha/packaging HEAD contracts need downstream reconciliation"
+  ],
+  "new_product_allowed": true,
+  "factory_review": {
+    "repository": "shihuiarenjinba-png/AI-App-Factory",
+    "branch": "codex/app-msix-prebuilt-exe-20261027-1300",
+    "head_observed": "e8e3ca613a114cd0e919cf2f3a4454fa8149510a",
+    "draft_pr": 13,
+    "diverged_pr": 12,
+    "diverged_head": "aff29e5e768f044cfa7cc2531d5af66023ff13fe",
+    "merge_base": "58553ee3948b5ea5d8749803ff55384f05428dca",
+    "review_id": 5663348986,
+    "review_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/13",
+    "ci_run_id": 40447411667,
+    "ci_conclusion": "SUCCESS",
+    "owner_review_required": true
+  },
+  "provisioner_integration": {
+    "draft_pr": 10,
+    "branch": "codex/e2e-belt-connection-20261027",
+    "implementation_commits": [
+      "e987c6c053f0c846e587f16572421dcbd2cfaf69",
+      "c15207fa77b6347eaa46c4547727f495a87e95c3",
+      "9861e91f6ea1f064066c92c9f400da8c710f4fe3"
+    ],
+    "same_exe_retry_without_rebuild": true,
+    "cas_expected_head": "job.source_sha",
+    "exe_identity_not_msix": true,
+    "head_observed": "4b10ecf5978ffe3d6091ebc7890f7de32cfce88b",
+    "ci_run_id": 40486044695,
+    "ci_conclusion": "SUCCESS",
+    "duplicate_json_safety_commit": "7f9319af1af4638e1c1d595a7bf1fab5bc5afd33"
+  },
+  "transport": {
+    "repository": "shihuiarenjinba-png/Windows-all-auto",
+    "branch": "codex/e2e-belt-connection-20261027",
+    "head_observed": "9750c43276ab1d7c31d1b5f1694ddbaeae213be9",
+    "draft_pr": 14,
+    "ci_run_id": 40543152141,
+    "ci_conclusion": "SUCCESS",
+    "stacked_backlog_pr": 15,
+    "stacked_backlog_branch": "codex/github-backlog-local-queue-20261027",
+    "stacked_backlog_head": "e175c7bed4dc8845e2be16f18009839cb8ae0b18",
+    "stacked_backlog_ci_run_id": 40464274411,
+    "stacked_backlog_ci_conclusion": "SUCCESS"
+  },
+  "real_app_exe_artifact": {
+    "repository": "shihuiarenjinba-png/AI-App-Factory",
+    "source_branch": "codex/app-canary-offline-notes-20261027",
+    "source_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+    "slug": "offline-notes-canary",
+    "run_id": 40623989309,
+    "run_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40623989309",
+    "artifact_id": 12789160163,
+    "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40623989309/artifacts/12789160163",
+    "artifact_name": "factory-preidentity-exe-offline-notes-canary-b83702c8948991cc3bd31745db5df64afaf6010f",
+    "exe_name": "offline-notes-canary.exe",
+    "exe_sha256": "8056bc40df17c8a57714e599e788a6146dec0c59fd02c7283dc854cfffca2429",
+    "exe_bytes": 11491304,
+    "zip_sha256": "1ea86fecf4987f92a6ae189abfddddb3f4386da0cbff6d05d666ef6af568f8d3",
+    "receipt_request_id": null,
+    "status": "EXE_QA_UNSIGNED",
+    "retention_expires_utc": "2026-11-02T02:59:32Z",
+    "verified_downloaded_zip": true,
+    "verified_pe_signature": true,
+    "verified_exe_receipt_sha256": true,
+    "request_bound_msix_ready": false
+  },
+  "real_app_msix_artifact": null,
+  "app_e2e_pass": false,
+  "policy": {
+    "main_release_changes": false,
+    "merges": false,
+    "store_submission": false,
+    "identity_guessing": false,
+    "openai_paid_api": false
+  },
+  "resume_head_sha": "0a306ac170b1563c7e6286375efaa83213578456",
+  "downstream": {
+    "windows_data": {
+      "branch": "codex/msix-auto-build-identity-20261025",
+      "head": "664b9afcbed63539b89f594892d831d97b9d4118",
+      "ci_run_id": 40259906737,
+      "ci_conclusion": "SUCCESS",
+      "artifact": "MSIXAutoBuildIdentity-Windows-QA",
+      "artifact_kind": "WINDOWS_DATA_UTILITY_QA_NOT_APP_PRODUCT_MSIX"
+    },
+    "windows_checker": {
+      "branch": "codex/e2e-belt-connection-20261027",
+      "head": "ff315c7a42bb2d70ff4350ab2f146fd80511116a",
+      "ci_run_id": 40453767674,
+      "ci_conclusion": "FAILURE",
+      "app_real_qa": false
+    }
+  },
+  "last_observed_at_utc": "2026-10-28T04:04:54Z",
+  "request_id": "app-offline-notes-canary-b83702c89489",
+  "factory_head_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+  "build_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+  "canary_research": {
+    "slug": "offline-notes-canary",
+    "status": "NATIVE_BUILD_PROMOTED_WINDOWS_EXE_QA_BUILT",
+    "title": "Offline Notes Canary — Searchable Scratchpad",
+    "factory_branch": "codex/app-canary-offline-notes-20261027",
+    "proposal_commit_sha": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
+    "draft_pr": 14,
+    "base_pr": 13,
+    "proposal_path": ".candidate/proposal.json",
+    "evidence_urls": [
+      "https://github.com/Zettlr/Zettlr/issues/6519",
+      "https://github.com/usememos/memos/issues/6309"
+    ],
+    "factory_stage": "improve",
+    "product_code_committed": true,
+    "windows_exe_built": true,
+    "source_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+    "request_id": "app-offline-notes-canary-b83702c89489",
+    "ui_evidence": "PARTIAL_LINUX_XVFB_1024x768_13_POST_PROMOTE_CHECKS_PASS_NOT_WINDOWS",
+    "contract_pass": true,
+    "real_e2e_pass": false,
+    "ui_quality_pass": false,
+    "commercial_quality_pass": false,
+    "factory_ci_run_id": 40623993334,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_ci_head": "b83702c8948991cc3bd31745db5df64afaf6010f",
+    "progress_ci_run_id": 40480473128,
+    "progress_ci_conclusion": "SUCCESS",
+    "progress_ci_head": "02f48f1868ec2af595ed19457844acdb63e8237b",
+    "note": "Factory native lifecycle and request-bound Windows EXE evidence PASS. Windows GUI, official Identity attestation, MSIX, E2E and commercial quality remain unverified.",
+    "owner_handoff_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6440323634",
+    "market_signal_validation": "CURRENT_MARKET_SAMPLE_EXCLUDES_BOTH_CITED_URLS",
+    "research_promote_commit": "fb417440e207b7a967cdb1ea56fc8b82447e0138",
+    "research_promote_method": "TRUSTED_CONTROLLER_EQUIVALENT_NOT_NATIVE_FACTORY_CLI",
+    "authentic_evidence_urls": [
+      "https://github.com/Zettlr/Zettlr/issues/6519",
+      "https://github.com/usememos/memos/issues/6309"
+    ],
+    "candidate_code_committed": true,
+    "candidate_commit_sha": "3841337ecab10261daf56f3bb7fb7c0ef93bd0db"
+  },
+  "safety_fix_20261027": {
+    "classification": "CODE_FIX",
+    "defect": "Ambiguous duplicate JSON object keys were accepted in local official Identity evidence, EXE receipt and existing approved-identity replay",
+    "reproduction": "json.loads accepted {\"request_id\":\"forged\",\"request_id\":\"req-0001\"} as req-0001; targeted regressions added",
+    "tests_commit": "ee9d5ba635328a51e17b200a50cbc106f76d2675",
+    "fix_commit": "7f9319af1af4638e1c1d595a7bf1fab5bc5afd33",
+    "files": [
+      "package_identity_provisioner.py",
+      "tests/test_package_identity_pipeline.py"
+    ],
+    "ci_run_id": 40485869857,
+    "ci_url": "https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40485869857",
+    "ci_conclusion": "SUCCESS",
+    "windows_unittest": "PASS",
+    "ubuntu_unittest": "PASS",
+    "py_compile": "PASS",
+    "real_exe_artifact": null,
+    "real_msix_artifact": null
+  },
+  "quality_gates": {
+    "ci": "PASS: Factory source b83702c8 core CI 40623993334 SUCCESS; Provisioner head 7d4a9da7 CI 40630203771 Windows+Ubuntu SUCCESS; request-bound Windows EXE workflow 40630198770 SUCCESS.",
+    "contract": "PASS: immutable Factory source branch/SHA and Provisioner request_id bound in real Windows EXE receipt; independent ZIP and EXE hashes match.",
+    "real_e2e": "NOT_PASSED",
+    "ui": "PARTIAL_LINUX_XVFB_1024x768_13_CHECKS_PASS_WINDOWS_GUI_UNTESTED",
+    "commercial": "NOT_TESTED",
+    "app_lifecycle": "PASS_NATIVE_PLAN_18_TESTS_VALIDATE_PROMOTE_AND_COMMITTED_PRODUCT",
+    "exe": "PASS: real request-bound Windows unsigned EXE, 11,490,228 bytes, SHA256 a3bcec9bc181d7fa5f755ec3fb61bcbe140f23671430595dc87fbde9479df0e5, Artifact 12791411541.",
+    "ui_evidence": "PARTIAL: first run, save, unsaved search, EN toggle, restart/reopen, malformed JSON error handling on Linux Xvfb; no Windows screenshot/install evidence",
+    "e2e": "NOT_PASSED",
+    "pre_identity_ready": "PASS_CLOUD_CONTRACT: source/request pinned, functional tests 18/18, real request-bound EXE SHA verified, registration type MSIX_OR_PWA_APP, Identity reference machine-readable; Windows GUI not verified",
+    "post_identity_ready": "HOLD: authenticated Identity attestation/CAS and MSIX not yet completed"
+  },
+  "research_promotion_gate": {
+    "status": "ARCHIVED_RESEARCH_BUILD_PROMOTED",
+    "factory_state": "improve",
+    "factory_slug": "offline-notes-canary",
+    "proposal_branch": "codex/app-canary-offline-notes-20261027",
+    "proposal_head": "60d84c37ab73d6efb6a8fe3d382b1bf500949921",
+    "evidence_issue_urls_verified_exist": true,
+    "current_market_signal_count": 16,
+    "proposal_evidence_urls_present_in_current_market_sample": 0,
+    "market_sample_is_time_sensitive": true,
+    "native_workflow_requires_openai_api_key": true,
+    "native_workflow_requires_factory_enabled": true,
+    "forbidden_direct_state_or_workflow_edit": true,
+    "owner_handoff_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6440323634",
+    "real_gui": false,
+    "real_exe": false
+  },
+  "local_candidate_preview": {
+    "product": "offline-notes-canary",
+    "location": "ChatGPT run local sandbox only; NOT GitHub source or Actions Artifact",
+    "files": [
+      "main.py",
+      "manifest.json",
+      "README.md",
+      "tests/test_smoke.py"
+    ],
+    "headless_unittest": "12 PASS",
+    "python_compile": "PASS",
+    "virtual_display": "Linux Xvfb 1024x768: Japanese first-run and English saved-state screenshots inspected; save/readback PASS",
+    "windows_exe": null,
+    "official_identity": null,
+    "msix": null
+  },
+  "candidate_filename_safety": {
+    "classification": "CODE_FIX",
+    "reproduced": "Windows reserved basename CON.txt/COM1.notes passed through TXT export filename sanitizer",
+    "test_commit": "bae567b3ef6b85f245cfbd9c734e9cb957b839d3",
+    "fix_commit": "66cabebcb0baf48ebf3ced30ea64b40aad924c85",
+    "test_path": ".candidate/product/tests/test_smoke.py",
+    "code_path": ".candidate/product/main.py",
+    "focused_local_regression": "2 PASS (function-equivalent reproduction, not full exact candidate test suite)",
+    "factory_ci_run_id": 40527659871,
+    "factory_ci_status": "IN_PROGRESS",
+    "windows_exe_artifact": null,
+    "real_gui_qa": null
+  },
+  "provisioner": {
+    "head_observed": "7bdc61baaef2b977bf4d6f32b75abda2509c55fc",
+    "ci_run_id": 40556681352,
+    "ci_conclusion": "SUCCESS"
+  },
+  "ui_export_status_fix_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "Export TXT status incorrectly said Saved while notes database remained dirty, potentially misleading users about persistence",
+    "reproduction": "Function-equivalent local test: dirty=True but status=Saved; fixed equivalent shows TXT exported without clearing dirty",
+    "test_commit": "b4da3ed7ad389aaafa85efffbebcc06715a98db0",
+    "fix_commit": "d4d0fce311d5bfa20388741a7101d87ab23c7aa5",
+    "files": [
+      ".candidate/product/tests/test_smoke.py",
+      ".candidate/product/main.py"
+    ],
+    "factory_ci_run_id": 40536969326,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_ci_scope": "Factory core and Windows contracts only; exact candidate regression NOT executed by workflow",
+    "exact_candidate_full_tests": "PENDING",
+    "windows_gui": "PENDING",
+    "real_exe_artifact": null
+  },
+  "ui_export_overwrite_localization_fix_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "TXT export existing-file overwrite confirmation was hardcoded English even in Japanese UI",
+    "reproduction": "Actual Factory PR14 main.py had messagebox.askyesno(self.t(0), 'Overwrite?') irrespective of app.lang; regression asserts Japanese and English prompts, declines overwrite, and preserves dirty state",
+    "test_commit": "45873ccd4b1049086e1cfeb58711c8cdc74fcb3e",
+    "fix_commit": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
+    "changed_files": [
+      ".candidate/product/tests/test_smoke.py",
+      ".candidate/product/main.py"
+    ],
+    "ci_run_id": 40546599736,
+    "ci_conclusion": "SUCCESS",
+    "ci_scope": "Factory core test + Windows contract jobs; candidate regression not executed by workflow",
+    "exact_candidate_test_execution": "PENDING",
+    "windows_gui": "PENDING",
+    "real_exe_artifact": null
+  },
+  "factory_lifecycle_test_gap_20261028": {
+    "status": "RESOLVED_CONTROLLER_FIX_AND_NATIVE_BUILD_PROMOTE",
+    "factory_pr": 14,
+    "factory_head_sha": "1c07612a5b8a46185e8a504a80ce8136f62c7a86",
+    "owner_comment_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/14#issuecomment-6449741912",
+    "masked_by": [
+      "tests/test_factory.py::test_full_cycle manual .candidate/proposal.json unlink",
+      "tests/test_factory.py::_prototype_for_validation manual .candidate/proposal.json unlink"
+    ],
+    "secondary_issue": "factory.py::plan unconditionally loads .runtime/market.json before stage branch",
+    "fix_owner": "Factory controller/test maintainer, not APP candidate agent",
+    "source_product_sha": null,
+    "request_id": null,
+    "real_exe_artifact": null,
+    "exact_candidate_runtime_tests": "NOT_EXECUTED",
+    "gui_evidence": "NOT_VERIFIED"
+  },
+  "candidate_exact_validation_20261028": {
+    "factory_pr": 14,
+    "factory_branch": "codex/app-canary-offline-notes-20261027",
+    "factory_head_sha": "90b178e1099bfd1e4943b56d0a58ea7bee7317e5",
+    "exact_git_blob_shas": {
+      "main.py": "5ed77d27fa9f6003b01b7fceb7e127ebecd3581b",
+      "tests/test_smoke.py": "a09a46c7c124f8bed1d88cb1ae8e7325b43adff7",
+      "manifest.json": "fe9cb308d6e8ba26e2a98add1baf38e9cc89d490",
+      "README.md": "867e027216755d8af7c33136048ba1428a63d1ed"
+    },
+    "candidate_headless_tests": "13_PASS_LOCAL_LINUX_EXACT_BLOB",
+    "candidate_compile": "PASS_LOCAL_LINUX",
+    "gui_environment": "Linux Xvfb 1024x768, NOT Windows installation",
+    "gui_checks": [
+      "JP empty-state visually inspected",
+      "EN saved-note screenshot visually inspected",
+      "Create/save/search/restart/load functional checks passed",
+      "Malformed JSON error localized status screenshot visually inspected",
+      "6 toolbar controls within 1024px viewport"
+    ],
+    "screenshots": [
+      {
+        "name": "gui_exact_ja_empty_1024x768.png",
+        "sha256": "594e3e9198d3e7b007acda3ed953e122ddcdd814cd8cc492ace0b5673123f038"
+      },
+      {
+        "name": "gui_exact_en_saved_1024x768.png",
+        "sha256": "04920caa5828548bdd35794959e503cebb0e476e7faf6e469d2afc775ded9a86"
+      },
+      {
+        "name": "gui_exact_ja_error_1024x768.png",
+        "sha256": "66246196db3f3cb084a8b55840dcbde232aa6ff932f69980ceab31364ccb1fab"
+      }
+    ],
+    "local_evidence_archive": "offline_notes_canary_exact_gui_qa_20261028.zip (conversation sandbox only, not GitHub Artifact)",
+    "local_evidence_sha256": "0962ddb754a7c3b2e9d82d232432ba3b0f133d291220b6d86734d97e3761f3c4",
+    "factory_ci_run_id": 40556513390,
+    "factory_ci_conclusion": "SUCCESS_CORE_ONLY",
+    "factory_ci_jobs": [
+      "test SUCCESS",
+      "windows-contracts SUCCESS",
+      "windows-exe-smoke SKIPPED"
+    ],
+    "real_windows_exe_artifact": null,
+    "source_sha": null,
+    "request_id": null,
+    "identity_receipt": null,
+    "msix_receipt": null
+  },
+  "candidate_unsaved_search_fix_20261028": {
+    "factory_pr": 14,
+    "branch": "codex/app-canary-offline-notes-20261027",
+    "head_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
+    "commit_sha": "e24ad9b3f21da7f7438b1523809ab36a071245d8",
+    "repro": "Linux Xvfb Tkinter: new note title 'Budget Meeting' unsaved, search 'Budget' returned 0 results before patch; 1 after patch",
+    "fix": "Search uses unsaved current-editor snapshot without mutating persisted notes; refreshes filtered list on edits",
+    "git_blobs": {
+      "main.py": "d5c1dcd3a049e06fd700fc5c7ef140c9b55fad94",
+      "tests/test_smoke.py": "5e0aed0ffde575633050c18495e7f2ac81cd1217"
+    },
+    "local_candidate_tests": "14_PASS_LINUX_EXACT_GITHUB_BLOBS",
+    "compile": "PASS_LOCAL_LINUX",
+    "gui_environment": "Linux Xvfb 1024x768 NOT Windows",
+    "gui_checks": [
+      "JA unsaved title search shows one result",
+      "Unsaved editor content not committed by search",
+      "Nonmatching search shows zero results",
+      "Save then readback succeeds",
+      "EN saved state screenshot visually inspected",
+      "1024x768 major controls visible"
+    ],
+    "screenshots": [
+      {
+        "name": "gui_ja_unsaved_search_1024x768.png",
+        "sha256": "e2a362c4ef55c4afa331603f50c03d637d2e92be4dcd69c8d75c1b305bd615f4"
+      },
+      {
+        "name": "gui_en_saved_search_1024x768.png",
+        "sha256": "0351563af4030e726b3db701c4e802ae09092938e3e6cd450605f94ef90c7f17"
+      }
+    ],
+    "local_evidence_archive": "offline_notes_canary_search_gui_qa_20261028.zip (conversation sandbox only; not GitHub Artifact)",
+    "local_evidence_sha256": "f06ec063d0c29a5fcb123a8cc060c91171960b75c8ae172e2db57f763ab42fd9",
+    "factory_ci_run_id": 40573882452,
+    "factory_ci_conclusion": "SUCCESS_CORE_ONLY",
+    "factory_ci_jobs": [
+      "test SUCCESS",
+      "windows-contracts SUCCESS",
+      "windows-exe-smoke SKIPPED"
+    ],
+    "real_exe_artifact": null,
+    "source_sha": null,
+    "request_id": null
+  },
+  "candidate_duplicate_json_safety_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "Ambiguous duplicate JSON object keys could silently replace a nonempty notes array with an empty one during read_notes",
+    "reproduction": "{\"schema\":1,\"notes\":[<valid-note>],\"notes\":[]} returned zero notes",
+    "fix_commit": "dbec7e3bb18de76ac6d6f8069430e64a8120e107",
+    "changed_files": [
+      ".candidate/product/main.py",
+      ".candidate/product/tests/test_smoke.py"
+    ],
+    "git_blobs": {
+      "main": "50a7afd2d6dc5bcf432474482611d6cad088530e",
+      "tests": "e23d8d7dc7fc8813fb584c4d23832326f8129da2"
+    },
+    "local_unittest": "15/15 PASS",
+    "local_compile": "PASS",
+    "gui_evidence": "Linux Xvfb 1024x768 Japanese duplicate JSON error visually inspected; not Windows",
+    "factory_ci_run_id": 40582657157,
+    "factory_ci_conclusion": "SUCCESS",
+    "windows_exe_artifact": null
+  },
+  "candidate_windows_reserved_superscripts_20261028": {
+    "factory_commit": "6b73a7fae2f90bc32c7501353f679163b2dd9fb8",
+    "main_blob_sha": "feb5ec8f9b9134b38084ea5a9e9de17fca0a9cd7",
+    "test_blob_sha": "acb9fecd70dca83bccb1311f35ad8652d76d9d39",
+    "reproduced_before": "COM¹/COM²/LPT³ filenames not prefixed; Windows reserved device names",
+    "fixed_after": "COM¹/²/³ and LPT¹/²/³ names prefixed note_",
+    "local_headless": "16_PASS",
+    "local_compile": "PASS",
+    "local_linux_gui": "11_CHECKS_PASS_1024x768_SCREEN_NOT_WINDOWS",
+    "factory_ci_run_id": 40599653913,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_exe_smoke": "SKIPPED",
+    "lifecycle": "HOLD",
+    "exe_artifact": null,
+    "ui_evidence": "/mnt/data/offline_notes_canary_windows_filename_qa_20261028.zip",
+    "source_sha": null,
+    "request_id": null
+  },
+  "candidate_invalid_unicode_safety_20261028": {
+    "classification": "CODE_FIX",
+    "defect": "Escaped lone UTF-16 surrogate in imported JSON passed validation and raised uncaught UnicodeEncodeError during UTF-8 save; corrupted input must fail closed and allow backup recovery",
+    "reproduction": "Local exact GitHub candidate before fix: validate_notes/read_notes accepted lone surrogate; save_notes raised UnicodeEncodeError",
+    "test_commit": "b704f3f2cfb1da848853512b3c29bc319b6df91e",
+    "fix_commit": "1520b0f011aec61c73bb2109fcc8d51433e4d37e",
+    "files": [
+      ".candidate/product/main.py",
+      ".candidate/product/tests/test_smoke.py"
+    ],
+    "verified_git_blob_shas": {
+      "main.py": "041285b45557fc6d4b49dde4873ccf99cc4287f9",
+      "tests/test_smoke.py": "942b476874cb4f35754701fa9c760318991f9c5b"
+    },
+    "local_candidate_tests": "17/17 PASS",
+    "local_python_compile": "PASS",
+    "linux_xvfb_gui": "11/11 PASS 1024x768; Windows NOT TESTED",
+    "screenshot_sha256": "42b05bffdf3c21d77e098080c3ffe3c6071692c2b448c57d0bd57e0086249401",
+    "qa_zip_sha256": "45927da0e6ad14fd048911b86fedf956a240ae5c215fa6a9ae6106005cc7bda4",
+    "factory_ci_run_id": 40606516026,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_ci_scope": "Factory core + Windows contracts only; candidate smoke not included in workflow",
+    "exe_artifact": null,
+    "source_sha": null,
+    "request_id": null,
+    "identity_required_now": false
+  },
+  "candidate_deep_json_fix_20261028": {
+    "factory_commit_sha": "3841337ecab10261daf56f3bb7fb7c0ef93bd0db",
+    "classification": "CODE_FIX",
+    "regression": "JSON depth 10000 caused unhandled RecursionError in read_notes; now fail closed and recover backup",
+    "main_blob_sha": "25284096a843ee82e73d30bd5ab97dd320fc5e53",
+    "test_blob_sha": "9f1f26e5826b4e846114280663d7bb2957a2f76f",
+    "headless_tests": "18/18 PASS",
+    "python_compile": "PASS",
+    "linux_gui": "1024x768 first run, save, restart, EN switch, deep JSON error handled; NOT Windows",
+    "ci_run_id": 40612472804,
+    "ci_conclusion": "SUCCESS",
+    "real_exe_artifact": null
+  },
+  "factory_lifecycle_fix_20261028": {
+    "classification": "OWNER_CONTROLLER_CODE_FIX",
+    "factory_pr": 14,
+    "commit_sha": "197df5bc925bb2483760888e63bfc1f786f4e82a",
+    "changed_files": [
+      "factory.py",
+      "tests/test_factory.py",
+      ".candidate/proposal.json (removed only after verified byte-identical archived proposal)"
+    ],
+    "fixes": [
+      "research promote now removes archived research candidate",
+      "build plan no longer depends on transient market.json",
+      "core tests exercise natural transition without manual unlink",
+      "validation still rejects unexpected stale research file"
+    ],
+    "factory_ci_run_id": 40618104304,
+    "factory_ci_conclusion": "SUCCESS",
+    "factory_ci_jobs": {
+      "linux_core": "SUCCESS",
+      "windows_contracts": "SUCCESS",
+      "windows_exe_smoke": "SKIPPED"
+    },
+    "actual_build_promote": "PASS_NATIVE_FACTORY_CLI_LOCAL_EXACT_GIT_BLOBS_AND_COMMITTED_PROMOTED_TREE",
+    "candidate_tests": "18/18 PASS local exact blob",
+    "real_exe": "ARTIFACT_12789160163_SHA256_VERIFIED_REQUEST_ID_NULL"
+  },
+  "identity_reference_20261028": {
+    "status": "REFERENCE_AVAILABLE",
+    "source": "USER_PROVIDED_PARTNER_CENTER_VALUES",
+    "store_id": "9MZ8ZZTRTS17",
+    "review_reference": "Windows-all-auto stacked PR #19 user_provided_store_identities.json",
+    "authenticated_local_attestation": "NOT_VERIFIED",
+    "cas_status": "NOT_APPLIED",
+    "do_not_request_again": true
+  },
+  "pre_identity_package_job": {
+    "path": "docs/APP_CANARY_PACKAGE_JOB.json",
+    "request_id": "app-offline-notes-canary-b83702c89489",
+    "source_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+    "source_branch": "codex/app-canary-offline-notes-20261027",
+    "slug": "offline-notes-canary",
+    "job_status": "PINNED_NOT_EXECUTED",
+    "dry_run": false,
+    "apply_performed": false
+  },
+  "request_bound_exe_artifact": {
+    "repository": "shihuiarenjinba-png/Repository-Provisioner-app",
+    "provisioner_head_sha": "7d4a9da745bf6ae399b0b7d5a738b20a5f94fcff",
+    "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+    "source_branch": "codex/app-canary-offline-notes-20261027",
+    "source_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+    "request_id": "app-offline-notes-canary-b83702c89489",
+    "slug": "offline-notes-canary",
+    "run_id": 40630198770,
+    "run_url": "https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40630198770",
+    "artifact_id": 12791411541,
+    "artifact_url": "https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/actions/runs/40630198770/artifacts/12791411541",
+    "exe_sha256": "a3bcec9bc181d7fa5f755ec3fb61bcbe140f23671430595dc87fbde9479df0e5",
+    "exe_bytes": 11490228,
+    "zip_sha256": "1c0f0718f1eb39e372c22f0f1c7934e6ea676ac95cd53f641f3c3f2ab33a7ec7",
+    "receipt_request_id": "app-offline-notes-canary-b83702c89489",
+    "status": "EXE_QA_UNSIGNED",
+    "store_id": null,
+    "msix_status": "NOT_BUILT",
+    "expires_at": "2026-11-02T04:04:52Z",
+    "independent_zip_hash_verified": true,
+    "independent_exe_receipt_verified": true,
+    "windows_gui_verified": false
+  },
+  "cohort_policy": {
+    "max_products": 5,
+    "max_implementation_wip": 2,
+    "generated_products": 1,
+    "pre_identity_ready_cloud": 1,
+    "stable": false,
+    "local_unavailable_mode": true,
+    "windows_gui_blocking_preidentity": false,
+    "rotation_record": "docs/APP_COHORT_ROTATION.json",
+    "registration_record": "docs/APP_COHORT_REGISTRATION_REQUEST.json"
+  }
+}

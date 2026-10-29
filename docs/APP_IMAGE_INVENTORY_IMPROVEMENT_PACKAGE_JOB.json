@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "request_id": "app-offline-image-inventory-desk-28fd060c2400",
+  "product_type": "APP",
+  "source_factory": "AI-App-Factory",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-image-inventory-append-safety-20261029",
+  "source_sha": "28fd060c2400bd9382cd1a5a14cd70b63b724de3",
+  "slug": "offline-image-inventory-desk",
+  "display_name": "Offline Image Inventory Desk — Local Image Header Catalog",
+  "target_owner": "shihuiarenjinba-png",
+  "dry_run": false,
+  "requested_actions": [
+    "BUILD_WINDOWS",
+    "INSPECT_PACKAGE",
+    "LOOKUP_OFFICIAL_IDENTITY",
+    "PROPOSE_GITHUB_RETURN"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "stage": "PRE_IDENTITY_WINDOWS_EXE",
+  "status": "EXE_QA_UNSIGNED",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_factory": "AI-App-Factory",
+  "source_branch": "codex/app-notes-search-highlight-promote-20261029",
+  "source_sha": "e854b60bd0b701e6939bf1776e079d0e5bcb7354",
+  "request_id": "app-offline-notes-canary-e854b60bd0b7",
+  "product_type": "APP",
+  "slug": "offline-notes-canary",
+  "display_name": "Offline Notes Canary — Searchable Scratchpad",
+  "executable": "offline-notes-canary.exe",
+  "executable_sha256": "360eb9083915d90dedd7bca49da2b1c8065a680de0f4b1540259062a3c81c266",
+  "executable_bytes": 11496201,
+  "official_identity_status": "NOT_COLLECTED",
+  "store_id": null,
+  "msix_status": "NOT_BUILT"
+}

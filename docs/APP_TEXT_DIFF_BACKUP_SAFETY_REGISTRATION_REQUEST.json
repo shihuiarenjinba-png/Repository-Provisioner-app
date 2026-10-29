@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "product": "Offline Text Diff Desk — Private Side-by-Side Comparison",
+  "slug": "offline-text-diff-desk",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-text-diff-backup-safety-20261029",
+  "source_sha": "b97cb768bdb323dfd91591c777d8972de8dd4e5d",
+  "request_id": "app-offline-text-diff-desk-b97cb768bdb3",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "suggested_display_name": "Offline Text Diff Desk — Private Side-by-Side Comparison",
+  "reserved_display_name_verified": false,
+  "identity_status": "WAITING_USER_IDENTITY",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "store_id": null,
+  "required_fields": [
+    "store_id",
+    "reserved_display_name",
+    "identity_name",
+    "publisher",
+    "publisher_display_name",
+    "pfn",
+    "package_sid"
+  ],
+  "user_id_request": "REQUEST_OFFICIAL_IDENTITY",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "a6ea78ef8ae3174848c71061f9f76afd00ea436287d300615c09d393c46fb0df",
+    "bytes": 11422950,
+    "receipt_only_not_binary_reverification": false
+  },
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40741038173/artifacts/12840300145",
+  "artifact_zip_sha256": "04ab3a1ddda41155cd59405ec4bd0bd81af2287d08eb336368f7c1a7d118b951",
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AWAIT_USER_IDENTITY",
+  "identity_return_target": {
+    "owner": "36_MIN_WINDOWS_E2E",
+    "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+    "source_sha": "b97cb768bdb323dfd91591c777d8972de8dd4e5d",
+    "request_id": "app-offline-text-diff-desk-b97cb768bdb3"
+  },
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "UNVERIFIED",
+  "priority_note": "Focus Session Desk is the next Partner Center registration test; do not register Text Diff ahead of Focus."
+}

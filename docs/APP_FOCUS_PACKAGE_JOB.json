@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "request_id": "app-focus-session-desk-8b00bc4e9082",
+  "product_type": "APP",
+  "source_factory": "AI-App-Factory",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-cohort-focus-controller-20261028",
+  "source_sha": "8b00bc4e90828c4282463826873aa8dfd2eb93f4",
+  "slug": "focus-session-desk",
+  "display_name": "Focus Session Desk — Offline Timer and Task Checklist",
+  "target_owner": "shihuiarenjinba-png",
+  "dry_run": false,
+  "requested_actions": [
+    "BUILD_WINDOWS",
+    "INSPECT_PACKAGE",
+    "LOOKUP_OFFICIAL_IDENTITY",
+    "PROPOSE_GITHUB_RETURN"
+  ]
+}

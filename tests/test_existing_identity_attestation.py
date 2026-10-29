@@ -31,16 +31,32 @@ def official_record():
     return {
         "store_id": "9N1234567890", "name": "Sample.Product",
         "publisher": "CN=Test Publisher", "version": "1.2.3.4",
+        "package_family_name": "Sample.Product_abcdefghijklm",
+        "package_sid": "S-1-15-2-1-2-3-4-5-6-7",
         "authenticated_account": "verified-operator",
         "official_evidence_url": "https://partner.microsoft.com/dashboard/products/123",
     }
+
+
+def package_record():
+    official = official_record()
+    return {"sha256": "d" * 64, "signature_status": "NOTSIGNED",
+            "package_family_name": official["package_family_name"],
+            "package_sid": official["package_sid"]}
 
 
 def approved_record():
     official = official_record()
     return {
         "reviewed": True, "source": "partner_center",
-        **{key: official[key] for key in ("store_id", "name", "publisher", "version")},
+        **{key: official[key] for key in ("store_id", "name", "publisher", "version",
+                                          "package_family_name", "package_sid")},
+        "request_id": sample_job().request_id, "product_type": sample_job().product_type,
+        "source_factory": sample_job().source_factory, "source_repository": sample_job().source_repository,
+        "source_branch": sample_job().source_branch, "source_sha": sample_job().source_sha,
+        "verified_source_sha": sample_job().source_sha,
+        "package_sha256": package_record()["sha256"],
+        "signature_status": package_record()["signature_status"],
         "verified_by": official["authenticated_account"],
         "evidence_url": official["official_evidence_url"],
     }
@@ -63,7 +79,7 @@ class ExistingIdentityAttestationTests(unittest.TestCase):
 
     def test_complete_matching_attestation_is_verified_without_new_commit(self):
         result = self.client(approved_record()).return_identity(
-            sample_job(), CONFIG, official_record(), apply=True)
+            sample_job(), CONFIG, official_record(), package_record(), apply=True)
         self.assertEqual(result["status"], "EXISTING_VERIFIED")
         # GitHub Contents API sha is a *blob*, not a commit SHA.
         self.assertEqual(result["commit_sha"], SHA)
@@ -73,25 +89,25 @@ class ExistingIdentityAttestationTests(unittest.TestCase):
         record = approved_record()
         record["reviewed"] = False
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), package_record(), True)
 
     def test_wrong_partner_center_evidence_is_conflict(self):
         record = approved_record()
         record["evidence_url"] = "https://partner.microsoft.com/dashboard/products/other"
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), package_record(), True)
 
     def test_different_operator_is_conflict(self):
         record = approved_record()
         record["verified_by"] = "different-operator"
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), package_record(), True)
 
     def test_missing_source_is_conflict(self):
         record = approved_record()
         record.pop("source")
         with self.assertRaises(ConflictError):
-            self.client(record).return_identity(sample_job(), CONFIG, official_record(), True)
+            self.client(record).return_identity(sample_job(), CONFIG, official_record(), package_record(), True)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "product": "Offline Notes Canary — Searchable Scratchpad",
+  "slug": "offline-notes-canary",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-canary-offline-notes-20261027",
+  "source_sha": "b83702c8948991cc3bd31745db5df64afaf6010f",
+  "request_id": "app-offline-notes-canary-b83702c89489",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "identity_status": "REFERENCE_AVAILABLE",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "store_id": "9MZ8ZZTRTS17",
+  "required_fields": [],
+  "user_id_request": "NONE_ALREADY_RECEIVED",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "373b069b5a5f5ebdfea8785edc1c165030b6988b688739105585f34ed4501ab0",
+    "bytes": 11491423,
+    "receipt_only_not_binary_reverification": true
+  },
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "UNVERIFIED"
+}

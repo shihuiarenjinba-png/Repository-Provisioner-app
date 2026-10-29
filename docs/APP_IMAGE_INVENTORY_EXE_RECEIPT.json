@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "stage": "PRE_IDENTITY_WINDOWS_EXE",
+  "status": "EXE_QA_UNSIGNED",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_factory": "AI-App-Factory",
+  "source_branch": "codex/app-cohort-image-inventory-20261028",
+  "source_sha": "16b6a772952ca0988f2ae2f8b5f4db2e59ec5877",
+  "request_id": "app-offline-image-inventory-desk-16b6a772952c",
+  "product_type": "APP",
+  "slug": "offline-image-inventory-desk",
+  "display_name": "Offline Image Inventory Desk — Local Image Header Catalog",
+  "executable": "offline-image-inventory-desk.exe",
+  "executable_sha256": "0e023bcd74f6035a2a3e1cf4cd785f83033c69785723a5c01f7f69d2c5d7b980",
+  "executable_bytes": 11391021,
+  "official_identity_status": "NOT_COLLECTED",
+  "store_id": null,
+  "msix_status": "NOT_BUILT"
+}

@@ -17,10 +17,10 @@ python provisioner.py --input job.json --output result.json `
   --official-identity C:\secure\partner-center-evidence.json --apply
 ```
 
-返却先は設定で固定されています。
+返却先リポジトリは製品系統ごとに固定し、返却ブランチは入力されたFactory作業ブランチを検証して使用します。`codex/*` 以外、`main`、`release`、不正なブランチ名は拒否します。
 
 - repository: `shihuiarenjinba-png/AI-App-Factory`
-- branch: `codex/factory-autoloop-20261026`
+- branch: 入力 `source_branch` と同じ安全な `codex/*` 作業ブランチ
 - path: `products/<slug>/store/approved-identity.json`
 
 入力・出力契約は `schemas/`、運用とHOLD項目は `docs/LOCAL_PROVISIONER_HANDOFF.md` を参照してください。ローカル状態と生成物は `.provisioner-state/` と `.provisioner-work/` に製品タイプ別で保存され、Gitには追加されません。
@@ -42,7 +42,7 @@ round-trip still require the authenticated local operator.
 Companion Factory implementation: 
 https://github.com/shihuiarenjinba-png/AI-App-Factory/pull/11
 
-The current `config.json` still pins `codex/factory-autoloop-20261026`.
-That branch must contain a real committed product and the reviewed builder
-before the live pipeline can run. This Draft branch does not change that
-allowlisted source branch.
+`config.json` keeps the lane's default branch for examples, while each job's
+safe `codex/*` `source_branch` is preserved through checkout, HEAD validation,
+and atomic Identity return. A live branch must contain a real committed product
+and the reviewed builder before the pipeline can run.

@@ -34,9 +34,21 @@ REQUEST_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{3,127}$")
 VERSION = re.compile(r"^\d{1,5}(?:\.\d{1,5}){3}$")
 STORE_ID = re.compile(r"^[A-Za-z0-9]{8,32}$")
 IDENTITY_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9._-]{2,49}$")
+PACKAGE_FAMILY_NAME = re.compile(r"^[A-Za-z0-9._-]+_[a-z0-9]{13}$")
+PACKAGE_SID = re.compile(r"^S-1-15-2(?:-\d+){7}$")
 ALLOWED_ACTIONS = {"BUILD_WINDOWS", "INSPECT_PACKAGE", "LOOKUP_OFFICIAL_IDENTITY", "PROPOSE_GITHUB_RETURN"}
 FINAL_STATUSES = {"COMPLETED", "DRY_RUN", "CONFLICT"}
 TRANSIENT_HTTP = {429, 500, 502, 503, 504}
+
+
+def valid_work_branch(value: Any) -> bool:
+    if not isinstance(value, str) or not 7 <= len(value) <= 240 or not value.startswith("codex/"):
+        return False
+    if not re.fullmatch(r"codex/[A-Za-z0-9._/-]+", value):
+        return False
+    if ".." in value or "//" in value or "@{" in value or value.endswith(("/", ".")):
+        return False
+    return all(part and not part.startswith(".") and not part.endswith(".lock") for part in value.split("/"))
 
 
 class ProvisionerError(Exception):
@@ -76,14 +88,25 @@ def redact(text: str) -> str:
     return result[:4000]
 
 
+def reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    """Reject ambiguous provenance and official Identity JSON at every depth."""
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError("duplicate JSON key: " + key)
+        value[key] = item
+    return value
+
+
 def load_json(path: Path, max_bytes: int = 65_536) -> dict[str, Any]:
     if not path.is_file():
         raise HoldError(f"JSON file not found: {path}")
     if path.stat().st_size > max_bytes:
         raise HoldError(f"JSON file exceeds {max_bytes} bytes")
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        value = json.loads(path.read_text(encoding="utf-8"),
+                           object_pairs_hook=reject_duplicate_json_keys)
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
         raise HoldError(f"Invalid JSON: {exc}") from exc
     if not isinstance(value, dict):
         raise HoldError("JSON root must be an object")
@@ -146,10 +169,12 @@ class Job:
         if raw["product_type"] != config.product_type:
             raise HoldError("Product type belongs to a different Provisioner")
         exact = {"source_factory": config.source_factory, "source_repository": config.source_repository,
-                 "source_branch": config.source_branch, "target_owner": config.target_owner}
+                 "target_owner": config.target_owner}
         for field, expected in exact.items():
             if raw[field] != expected:
                 raise HoldError(f"{field} is not the configured allowlisted value")
+        if not valid_work_branch(raw["source_branch"]):
+            raise HoldError("source_branch must be a safe codex/* work branch")
         if not isinstance(raw["source_sha"], str) or not SHA40.fullmatch(raw["source_sha"]) or set(raw["source_sha"]) == {"0"}:
             raise HoldError("source_sha must be an exact non-placeholder lowercase Git SHA")
         if not isinstance(raw["slug"], str) or not SLUG.fullmatch(raw["slug"]):
@@ -361,7 +386,8 @@ class PackageBuilder:
             path = source / relative
             if not path.is_file():
                 continue
-            command = (["powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", str(path)]
+            powershell = shutil.which("pwsh") or shutil.which("powershell") or "powershell"
+            command = ([powershell, "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", str(path)]
                        if path.suffix.lower() == ".ps1" else ["cmd", "/d", "/c", str(path)])
             self._run(command, source, 1800)
             return
@@ -443,7 +469,8 @@ def signature_status(path: Path) -> str:
     if os.name != "nt":
         return "UNAVAILABLE_NON_WINDOWS"
     escaped = str(path).replace("'", "''")
-    command = ["powershell", "-NoProfile", "-NonInteractive", "-Command",
+    powershell = shutil.which("pwsh") or shutil.which("powershell") or "powershell"
+    command = [powershell, "-NoProfile", "-NonInteractive", "-Command",
                f"(Get-AuthenticodeSignature -LiteralPath '{escaped}').Status.ToString()"]
     try:
         result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", timeout=30, check=False)
@@ -528,7 +555,8 @@ class OfficialIdentityProvider:
             raise HoldError("No authenticated Partner Center identity evidence was supplied")
         raw = load_json(self.evidence_path, 32_768)
         required = {"request_id", "product_type", "slug", "source_sha", "authenticated_account", "verified_at",
-                    "official_evidence_url", "store_id", "name", "publisher", "version"}
+                    "official_evidence_url", "store_id", "name", "publisher", "version",
+                    "package_family_name", "package_sid"}
         if set(raw) != required:
             raise HoldError("Official identity evidence has missing or unknown fields")
         exact = {"request_id": job.request_id, "product_type": job.product_type, "slug": job.slug, "source_sha": job.source_sha}
@@ -547,24 +575,72 @@ class OfficialIdentityProvider:
             raise HoldError("Invalid official Publisher")
         if not isinstance(raw["version"], str) or not VERSION.fullmatch(raw["version"]):
             raise HoldError("Invalid official version")
+        if not isinstance(raw["package_family_name"], str) or not PACKAGE_FAMILY_NAME.fullmatch(raw["package_family_name"]):
+            raise HoldError("Invalid official Package Family Name")
+        if not isinstance(raw["package_sid"], str) or not PACKAGE_SID.fullmatch(raw["package_sid"]):
+            raise HoldError("Invalid official Package SID")
         return raw
 
 
 def compare_package_identity(package: dict[str, Any], official: dict[str, Any]) -> None:
     if package.get("kind") not in {"msix", "appx"}:
         raise HoldError("Official Identity cannot be approved from an EXE-only candidate")
-    checks = (("package_identity", "name"), ("publisher", "publisher"), ("version", "version"))
+    checks = [("package_identity", "name"), ("publisher", "publisher"), ("version", "version")]
+    if os.name == "nt" and (not package.get("package_family_name") or not package.get("package_sid")):
+        raise HoldError("Windows package PFN or Package SID could not be collected")
+    if package.get("package_family_name") or package.get("package_sid"):
+        checks.extend((("package_family_name", "package_family_name"), ("package_sid", "package_sid")))
     mismatches = [f"{left}!={right}" for left, right in checks if package.get(left) != official.get(right)]
     if mismatches:
         raise ConflictError("Package and official Identity mismatch: " + ", ".join(mismatches))
 
 
-def windows_all_auto_record(job: Job, official: dict[str, Any]) -> dict[str, Any]:
+def verify_exe_receipt(job: Job, package: dict[str, Any]) -> None:
+    """Bind a locally inspected EXE to the exact Factory job before Identity CAS.
+
+    An arbitrary MZ file or an EXE rebuilt during an Identity retry is not
+    sufficient evidence for the pre-Identity -> same-EXE MSIX contract.
+    """
+    path = Path(package["path"])
+    receipt_path = path.with_name("exe-receipt.json")
+    if (path.is_symlink() or not path.is_file() or path.name != job.slug + ".exe"
+            or receipt_path.is_symlink() or not receipt_path.is_file()):
+        raise HoldError("Pinned APP EXE and its Factory receipt are required")
+    receipt = load_json(receipt_path, 32_768)
+    required = {
+        "schema_version": 1, "stage": "PRE_IDENTITY_WINDOWS_EXE",
+        "status": "EXE_QA_UNSIGNED", "request_id": job.request_id,
+        "product_type": job.product_type, "source_factory": job.source_factory,
+        "source_repository": job.source_repository,
+        "source_branch": job.source_branch, "source_sha": job.source_sha,
+        "slug": job.slug, "display_name": job.display_name,
+        "executable": path.name, "official_identity_status": "NOT_COLLECTED",
+        "store_id": None, "msix_status": "NOT_BUILT",
+        "executable_sha256": package["sha256"],
+        "executable_bytes": package["size_bytes"],
+    }
+    if (package["kind"] != "exe" or package["size_bytes"] <= 1024
+            or package["size_bytes"] > 300 * 1024 * 1024
+            or any(type(receipt.get(key)) is not type(value)
+                   or receipt.get(key) != value for key, value in required.items())):
+        raise ConflictError("EXE bytes or immutable Factory receipt mismatch")
+    with path.open("rb") as stream:
+        if stream.read(2) != b"MZ":
+            raise HoldError("Factory EXE has no PE signature")
+
+
+def windows_all_auto_record(job: Job, official: dict[str, Any], package: dict[str, Any]) -> dict[str, Any]:
     return {"schema_version": 1, "type": {"APP": "app", "GAME": "game", "GAME_3D": "3d-game"}[job.product_type],
+            "request_id": job.request_id, "product_type": job.product_type,
+            "source_factory": job.source_factory, "source_repository": job.source_repository,
+            "source_branch": job.source_branch, "source_sha": job.source_sha,
             "slug": job.slug, "expected_head_sha": job.source_sha,
+            "package_sha256": package["sha256"], "package_family_name": package["package_family_name"],
+            "package_sid": package["package_sid"], "signature_status": package["signature_status"],
             "official_evidence_url": official["official_evidence_url"], "operator_verified": True,
             "verified_by": official["authenticated_account"],
-            "identity": {key: official[key] for key in ("store_id", "name", "publisher", "version")}}
+            "identity": {key: official[key] for key in
+                         ("store_id", "name", "publisher", "version", "package_family_name", "package_sid")}}
 
 
 class GitHubReturnClient:
@@ -573,30 +649,44 @@ class GitHubReturnClient:
     def __init__(self, api: Callable[..., Any] | None = None):
         self.api = api or self._gh_api
 
-    def return_identity(self, job: Job, config: ProductConfig, official: dict[str, Any], apply: bool) -> dict[str, Any]:
+    def return_identity(self, job: Job, config: ProductConfig, official: dict[str, Any],
+                        package: dict[str, Any], apply: bool) -> dict[str, Any]:
         target_path = f"products/{job.slug}/store/approved-identity.json"
         base = f"repos/{config.source_repository}/"
-        proposal = {"status": "NOT_APPLIED", "repository": config.source_repository, "branch": config.source_branch,
+        proposal = {"status": "NOT_APPLIED", "repository": config.source_repository, "branch": job.source_branch,
                     "path": target_path, "commit_sha": None, "commit_url": None}
         if not apply:
             return proposal
-        ref = self.api(base + "git/ref/heads/" + config.source_branch)
+        ref = self.api(base + "git/ref/heads/" + job.source_branch)
         if not isinstance(ref, dict) or ref.get("object", {}).get("sha") != job.source_sha:
             raise ConflictError("Factory HEAD changed before identity return")
         self._verify_product(base, job, config)
-        existing = self.api(base + "contents/" + target_path + "?ref=" + quote(config.source_branch, safe=""), allow_missing=True)
+        existing = self.api(base + "contents/" + target_path + "?ref=" + quote(job.source_branch, safe=""), allow_missing=True)
         if existing is not None:
-            if self._existing_matches(existing, official):
+            if self._existing_matches(existing, official, job, package):
                 return {**proposal, "status": "EXISTING_VERIFIED",
                         "commit_sha": job.source_sha,
                         "commit_url": f"https://github.com/{config.source_repository}/commit/{job.source_sha}"}
             raise ConflictError("approved-identity.json already exists and will not be overwritten")
-        approved = {"reviewed": True, "source": "partner_center", "store_id": official["store_id"],
+        approved = {"schema_version": SCHEMA_VERSION, "reviewed": True, "source": "partner_center",
+                    "request_id": job.request_id, "product_type": job.product_type,
+                    "source_factory": job.source_factory, "source_repository": job.source_repository,
+                    "source_branch": job.source_branch, "source_sha": job.source_sha,
+                    "verified_source_sha": job.source_sha, "package_sha256": package["sha256"],
+                    "package_family_name": official["package_family_name"], "package_sid": official["package_sid"],
+                    "signature_status": package["signature_status"], "store_id": official["store_id"],
                     "name": official["name"], "publisher": official["publisher"], "version": official["version"],
                     "verified_by": official["authenticated_account"], "evidence_url": official["official_evidence_url"]}
+        if package.get("kind") == "exe":
+            approved.update({
+                "expected_head_sha": job.source_sha,
+                "display_name": job.display_name,
+                "package_kind": "exe",
+                "package_bytes": package["size_bytes"],
+            })
         content = json.dumps(approved, ensure_ascii=False, indent=2) + "\n"
         body = {"query": self.MUTATION, "variables": {"input": {
-            "branch": {"repositoryNameWithOwner": config.source_repository, "branchName": config.source_branch},
+            "branch": {"repositoryNameWithOwner": config.source_repository, "branchName": job.source_branch},
             "message": {"headline": "store: return verified Partner Center identity for " + job.slug},
             "expectedHeadOid": job.source_sha,
             "fileChanges": {"additions": [{"path": target_path,
@@ -610,7 +700,7 @@ class GitHubReturnClient:
         return {**proposal, "status": "APPLIED", "commit_sha": commit["oid"], "commit_url": commit.get("url")}
 
     def _verify_product(self, base: str, job: Job, config: ProductConfig) -> None:
-        branch = quote(config.source_branch, safe="")
+        branch = quote(job.source_branch, safe="")
         if config.product_type == "GAME_3D":
             item = self.api(base + f"contents/products/{job.slug}/project.godot?ref=" + branch)
             if b"run/main_scene" not in self._decode_content(item, 128_000):
@@ -638,7 +728,8 @@ class GitHubReturnClient:
         return raw
 
     @staticmethod
-    def _existing_matches(existing: dict[str, Any], official: dict[str, Any]) -> bool:
+    def _existing_matches(existing: dict[str, Any], official: dict[str, Any],
+                          job: Job, package: dict[str, Any]) -> bool:
         """Replay is safe only for the *same attested* Partner Center record.
 
         Matching the four MSIX fields alone is insufficient: an unreviewed or
@@ -650,7 +741,7 @@ class GitHubReturnClient:
             raw = base64.b64decode(existing["content"], validate=True)
             if len(raw) > 32_768:
                 return False
-            content = json.loads(raw)
+            content = json.loads(raw, object_pairs_hook=reject_duplicate_json_keys)
         except (ValueError, TypeError, KeyError, UnicodeDecodeError):
             return False
         if not isinstance(content, dict):
@@ -664,7 +755,25 @@ class GitHubReturnClient:
             "version": official["version"],
             "verified_by": official["authenticated_account"],
             "evidence_url": official["official_evidence_url"],
+            "request_id": job.request_id,
+            "product_type": job.product_type,
+            "source_factory": job.source_factory,
+            "source_repository": job.source_repository,
+            "source_branch": job.source_branch,
+            "source_sha": job.source_sha,
+            "verified_source_sha": job.source_sha,
+            "package_sha256": package["sha256"],
+            "package_family_name": official["package_family_name"],
+            "package_sid": official["package_sid"],
+            "signature_status": package["signature_status"],
         }
+        if package.get("kind") == "exe":
+            required.update({
+                "expected_head_sha": job.source_sha,
+                "display_name": job.display_name,
+                "package_kind": "exe",
+                "package_bytes": package["size_bytes"],
+            })
         return all(type(content.get(key)) is type(value) and content.get(key) == value
                    for key, value in required.items())
 
@@ -730,29 +839,67 @@ class Provisioner:
                 try:
                     root = self.work_dir / hashlib.sha256(job.request_id.encode()).hexdigest()[:16]
                     source_dir = self.source.acquire(job, root / "source")
-                    package = inspect_package(self.builder.build(job, source_dir, root / "artifacts", self.config))
+                    prior = (previous or {}).get("checkpoint", {})
+                    if prior.get("stage") in {"PRE_IDENTITY_EXE_BUILT", "EXE_IDENTITY_VERIFIED_NOT_APPLIED"}:
+                        # Reuse the original on-disk EXE. Rebuilding here would
+                        # silently change the bytes after Partner Center review.
+                        saved = (previous or {}).get("response", {}).get("package", {})
+                        saved_path = Path(saved.get("path") or "")
+                        artifact_root = (root / "artifacts").resolve()
+                        if (saved_path.is_symlink() or not saved_path.is_file()
+                                or not saved_path.resolve().is_relative_to(artifact_root)):
+                            raise HoldError("Pinned EXE evidence is missing; do not rebuild during Identity retry")
+                        package = inspect_package(saved_path)
+                        if (package["kind"] != "exe" or package["sha256"] != prior.get("package_sha256")
+                                or package["sha256"] != saved.get("sha256")
+                                or package["size_bytes"] != saved.get("size_bytes")):
+                            raise ConflictError("Pinned EXE changed between Identity attempts")
+                    else:
+                        package = inspect_package(self.builder.build(job, source_dir, root / "artifacts", self.config))
                     if package.get("kind") == "exe":
-                        # A real executable is useful evidence before Partner
-                        # Center registration, but has no MSIX Identity. Keep
-                        # its SHA/path instead of losing it to a generic HOLD.
-                        response = self._base_response(job, "HOLD", started)
-                        response.update(
-                            package=package,
-                            next_stage="OBTAIN_OFFICIAL_IDENTITY_AND_BUILD_MSIX",
-                            errors=["Windows EXE built and hashed; official Partner Center Identity and MSIX are not yet verified"],
-                        )
-                        self._save(job, response, {"stage": "PRE_IDENTITY_EXE_BUILT",
-                                                   "package_sha256": package["sha256"]})
+                        verify_exe_receipt(job, package)
+                        try:
+                            official = self.identity.lookup(job)
+                        except HoldError as exc:
+                            response = self._base_response(job, "HOLD", started)
+                            response.update(package=package,
+                                next_stage="OBTAIN_AUTHENTICATED_OFFICIAL_IDENTITY",
+                                errors=[redact(str(exc))])
+                            self._save(job, response, {"stage": "PRE_IDENTITY_EXE_BUILT",
+                                                       "package_sha256": package["sha256"]})
+                            return response
+                        # An EXE has no embedded MSIX Identity. Verify the
+                        # authenticated Partner Center export and exact EXE
+                        # receipt, then CAS-return Identity; never claim MSIX.
+                        returned = self.github.return_identity(
+                            job, self.config, official, package, apply=apply)
+                        status = "COMPLETED" if returned["status"] in {"APPLIED", "EXISTING_VERIFIED"} else "HOLD"
+                        response = self._base_response(job, status, started)
+                        response.update(package=package, official_identity={
+                            "status": "VERIFIED_OPERATOR_EXPORT",
+                            **{key: official[key] for key in
+                               ("store_id", "name", "publisher", "version", "package_family_name",
+                                "package_sid", "official_evidence_url", "verified_at")}},
+                            github_return=returned, windows_all_auto_record=None,
+                            next_stage=("BUILD_MSIX_FROM_PINNED_EXE" if status == "COMPLETED"
+                                        else "APPLY_VERIFIED_GITHUB_RETURN"))
+                        if status == "HOLD":
+                            response["errors"] = ["Authenticated Identity verified; CAS not applied"]
+                        self._save(job, response, {
+                            "stage": (returned["status"] if status == "COMPLETED"
+                                      else "EXE_IDENTITY_VERIFIED_NOT_APPLIED"),
+                            "package_sha256": package["sha256"]})
                         return response
                     official = self.identity.lookup(job)
                     compare_package_identity(package, official)
-                    contract = windows_all_auto_record(job, official)
-                    returned = self.github.return_identity(job, self.config, official, apply=apply)
+                    contract = windows_all_auto_record(job, official, package)
+                    returned = self.github.return_identity(job, self.config, official, package, apply=apply)
                     status = "COMPLETED" if returned["status"] in {"APPLIED", "EXISTING_VERIFIED"} else "HOLD"
                     response = self._base_response(job, status, started)
                     response.update(package=package, official_identity={
                         "status": "VERIFIED_OPERATOR_EXPORT", **{k: official[k] for k in
-                        ("store_id", "name", "publisher", "version", "official_evidence_url", "verified_at")}},
+                        ("store_id", "name", "publisher", "version", "package_family_name", "package_sid",
+                         "official_evidence_url", "verified_at")}},
                         windows_all_auto_record=contract, github_return=returned,
                         next_stage="GITHUB_REBUILD_MSIX" if status == "COMPLETED" else "APPLY_VERIFIED_GITHUB_RETURN")
                     if status == "HOLD":
@@ -768,16 +915,18 @@ class Provisioner:
 
     def _base_response(self, job: Job, status: str, started: str) -> dict[str, Any]:
         return {"schema_version": SCHEMA_VERSION, "request_id": job.request_id, "product_type": job.product_type,
-                "status": status, "source_repository": job.source_repository, "source_branch": job.source_branch,
+                "status": status, "source_factory": job.source_factory,
+                "source_repository": job.source_repository, "source_branch": job.source_branch,
                 "source_sha": job.source_sha, "slug": job.slug, "started_at": started, "finished_at": utc_now(),
                 "idempotent_replay": False,
                 "package": {"status": "NOT_BUILT", "sha256": None, "path": None, "package_identity": None,
                             "publisher": None, "version": None, "package_family_name": None, "package_sid": None,
                             "signature_status": None},
                 "official_identity": {"status": "UNVERIFIED", "store_id": None, "name": None, "publisher": None,
-                                      "version": None, "official_evidence_url": None},
+                                      "version": None, "package_family_name": None, "package_sid": None,
+                                      "official_evidence_url": None},
                 "github_return": {"status": "NOT_APPLIED", "repository": self.config.source_repository,
-                                  "branch": self.config.source_branch,
+                                  "branch": job.source_branch,
                                   "path": f"products/{job.slug}/store/approved-identity.json", "commit_sha": None},
                 "windows_all_auto_record": None, "errors": [], "next_stage": None}
 
@@ -785,7 +934,9 @@ class Provisioner:
         return {"schema_version": SCHEMA_VERSION,
                 "request_id": raw.get("request_id") if isinstance(raw.get("request_id"), str) else None,
                 "product_type": raw.get("product_type") if isinstance(raw.get("product_type"), str) else self.config.product_type,
-                "status": exc.status, "source_repository": raw.get("source_repository"), "source_sha": raw.get("source_sha"),
+                "status": exc.status, "source_factory": raw.get("source_factory"),
+                "source_repository": raw.get("source_repository"), "source_branch": raw.get("source_branch"),
+                "source_sha": raw.get("source_sha"), "slug": raw.get("slug"),
                 "package": {"status": "NOT_BUILT", "sha256": None},
                 "official_identity": {"status": "UNVERIFIED", "store_id": None},
                 "github_return": {"status": "NOT_APPLIED", "commit_sha": None},

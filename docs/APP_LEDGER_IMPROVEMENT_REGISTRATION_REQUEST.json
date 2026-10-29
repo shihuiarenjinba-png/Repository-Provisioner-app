@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "product": "File Integrity Ledger — Offline Checksum Snapshot",
+  "slug": "file-integrity-ledger",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-ledger-snapshot-size-20261028",
+  "source_sha": "d1108d12f7d1697af30400f97c7db39cba5e6791",
+  "request_id": "app-file-integrity-ledger-d1108d12f7d1",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "suggested_display_name": "File Integrity Ledger",
+  "reserved_display_name_verified": false,
+  "identity_status": "WAITING_USER_IDENTITY",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "store_id": null,
+  "required_fields": [
+    "store_id",
+    "reserved_display_name",
+    "identity_name",
+    "publisher",
+    "publisher_display_name",
+    "pfn",
+    "package_sid"
+  ],
+  "user_id_request": "REQUEST_OFFICIAL_IDENTITY",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "9100bbcfba20ed2768e5d2dffcb39c987466377d26a34af1e03cc166071e02ca",
+    "bytes": 11393466,
+    "receipt_only_not_binary_reverification": false
+  },
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40711443897/artifacts/12826068537",
+  "artifact_zip_sha256": "c4c1f299318cf182d3d04773284990e55e270c25de28f4b8eb3baf7895548b88",
+  "artifact_external_download_verified": true,
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AWAIT_USER_IDENTITY",
+  "identity_return_target": {
+    "owner": "36_MIN_WINDOWS_E2E",
+    "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+    "source_sha": "d1108d12f7d1697af30400f97c7db39cba5e6791",
+    "request_id": "app-file-integrity-ledger-d1108d12f7d1"
+  },
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "UNVERIFIED",
+  "priority_note": "Focus Session Desk remains first local Partner Center new-registration test; do not register Ledger first."
+}

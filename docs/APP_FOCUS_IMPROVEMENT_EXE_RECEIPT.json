@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "stage": "PRE_IDENTITY_WINDOWS_EXE",
+  "status": "EXE_QA_UNSIGNED",
+  "source_repository": "shihuiarenjinba-png/AI-App-Factory",
+  "source_factory": "AI-App-Factory",
+  "source_branch": "codex/app-focus-save-rollback-20261029",
+  "source_sha": "fda3f2fce807d667594313592bb5e1e7f7839511",
+  "request_id": "app-focus-session-desk-fda3f2fce807",
+  "product_type": "APP",
+  "slug": "focus-session-desk",
+  "display_name": "Focus Session Desk — Offline Timer and Task Checklist",
+  "executable": "focus-session-desk.exe",
+  "executable_sha256": "031ffc7e62dd265ff989581b67c165b451eab7127f061cf15ee537e5115e000b",
+  "executable_bytes": 11474457,
+  "official_identity_status": "NOT_COLLECTED",
+  "store_id": null,
+  "msix_status": "NOT_BUILT"
+}

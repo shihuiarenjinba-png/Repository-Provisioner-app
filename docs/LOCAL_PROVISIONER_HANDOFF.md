@@ -1,4 +1,37 @@
-## 既存リモート実装の履歴（830f643時点・下記の現行実装により一部解消済み）
+# LOCAL_PROVISIONER_HANDOFF — APP（現行統合記録）
+
+更新日: 2026-10-27 (Asia/Tokyo)
+
+## 現行判定
+
+**HOLD — オフライン実装完了／ライブ作成未確認。** APPのactive productは監督台帳上`null`。製品を新規生成せず、実MSIX、認証済みPartner Center Identity、Factory CAS書戻し、Windows-all-auto受領はいずれも未実施。Store提出は0件。
+
+## 現行Git/GitHub基準
+
+- Repository: https://github.com/shihuiarenjinba-png/Repository-Provisioner-app
+- 統合元: `codex/app-exe-request-provenance-20261027-1300` / `cdf355e928e86ad8032cec40e3ca9567f68b8cae`
+- ローカル作業ブランチ: `codex/e2e-belt-connection-20261027`
+- 現行Draft PR: https://github.com/shihuiarenjinba-png/Repository-Provisioner-app/pull/10
+- 作業HEAD: 本資料を含む最新`git rev-parse HEAD`を正とする（最終報告とDraft PRに記録）
+- 変更概要: Factory jobの動的で安全な`codex/*` branch、7項目相関、SHA固定取得、実EXE/MSIX検査、PFN/Package SID/署名/SHA-256、既存Identity完全照合、GraphQL CAS、秘密情報伏字、PowerShell 7優先。
+- main/release変更、Identity上書き、Store提出: なし。
+
+## 現行テスト・契約
+
+- 自動テスト: **78件 / PASS 77 / FAIL 0 / SKIP 1**（Windows symlink権限制約）
+- DRY_RUN: mockで副作用0を確認。実APP jobはactiveでないため実行していない。
+- 共通Schema正規化SHA-256: job `0fbdaf38d25563bf60f756fbf2dd03468517584fb7b05b1bf5f942bf27c1d599` / result `1264f0285283c77aceb2956d687ff3898657578b82ba37ff475a8565f8709310`
+- 起動: `python provisioner.py --input job.json --output result.json`。公式証拠を明示する場合のみ`--official-identity <secure-local-path>`、レビュー後のCAS返却のみ`--apply`。
+- 必要権限: Factory metadata/read・contents/read、指定作業ブランチcontents/write、対象製品を閲覧できるPartner Center認証。token/PFX/cookieはGitに置かない。
+- 返却先: 入力で検証済みのFactory作業ブランチ上`products/<slug>/store/approved-identity.json`。`main`/`release`は拒否。
+
+## 次の一手
+
+APP active productが正式に指定された後、そのrequest_id・Factory branch・source SHAを再照合し、DRY_RUN→Windows実ビルド→認証済みIdentity照合→CAS返却の順で再開する。active product不在の間はHOLDを維持する。
+
+---
+
+## 既存リモート実装の履歴（以下は履歴。上記の現行統合記録が優先）
 
 # APP Provisioner — local package/Identity handoff (2026-10-26)
 

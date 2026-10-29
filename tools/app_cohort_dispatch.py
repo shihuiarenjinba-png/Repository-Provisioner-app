@@ -156,6 +156,9 @@ def build_dispatch(root: Path = ROOT) -> dict:
         "source": "FIVE_PRODUCT_CURRENT_IMPROVEMENT_REVISIONS",
         "product_count": len(result),
         "pre_identity_cloud_ready_count": len(result),
+        "binary_verified_count": 0,
+        "downstream_binary_gate_pass": False,
+        "verification_scope": "CONTRACT_ONLY_NO_LOCAL_BINARY_CHECK",
         "factory_stable": False,
         "next_partner_center_new_product": "focus-session-desk",
         "next_owner": "36_MIN_WINDOWS_E2E",
@@ -164,8 +167,72 @@ def build_dispatch(root: Path = ROOT) -> dict:
     }
 
 
+
+def verify_binary_dispatch(dispatch: dict, artifact_paths: dict, root: Path = ROOT) -> dict:
+    """Require all five pinned ZIPs before claiming a binary-verified handoff.
+
+    An explicit slug-to-local-ZIP map avoids guessing artifact names. These
+    checks establish local byte integrity, NOT a fresh GitHub attestation,
+    Windows GUI success, MSIX completion or official Identity authorization.
+    """
+    from tools.app_artifact_binary_verify import ArtifactVerificationError, verify
+
+    expected = {row["slug"] for row in dispatch["products"]}
+    require(isinstance(artifact_paths, dict) and set(artifact_paths) == expected,
+            "binary gate requires exactly five explicitly mapped product ZIPs")
+    results = []
+    for row in dispatch["products"]:
+        slug = row["slug"]
+        prefix = next(prefix for name, prefix, _ in FILES if name == slug)
+        job = load_json(root / "docs" / ("APP_" + prefix + "_PACKAGE_JOB.json"))
+        location = artifact_paths[slug]
+        require(isinstance(location, str) and bool(location.strip()),
+                slug + " missing ZIP path")
+        try:
+            proof = verify(Path(location), job, row["artifact_zip_sha256"])
+        except (ArtifactVerificationError, OSError, ValueError) as exc:
+            raise RegistrationContractError(
+                "cohort dispatch: " + slug + " binary gate failed: " + str(exc)
+            ) from exc
+        exe = row["pre_identity_exe"]
+        require(proof.get("status") == "BINARY_VERIFIED"
+                and proof.get("slug") == slug
+                and proof.get("source_sha") == row["source_sha"]
+                and proof.get("request_id") == row["request_id"]
+                and proof.get("zip_sha256") == row["artifact_zip_sha256"]
+                and proof.get("exe_sha256") == exe["sha256"]
+                and proof.get("exe_bytes") == exe["bytes"]
+                and proof.get("identity_cas_allowed") is False
+                and proof.get("msix_status") == "NOT_BUILT"
+                and proof.get("windows_gui_status") == "UNVERIFIED",
+                slug + " binary proof inconsistent with current handoff")
+        results.append(proof)
+    dispatch["binary_verified_count"] = len(results)
+    dispatch["downstream_binary_gate_pass"] = True
+    dispatch["verification_scope"] = "LOCAL_PINNED_ZIP_BYTES_NOT_LIVE_ACTIONS_ATTESTATION"
+    for row, proof in zip(dispatch["products"], results):
+        row["binary_verification"] = proof
+    return dispatch
+
+
 def main() -> None:
-    print(json.dumps(build_dispatch(), ensure_ascii=False, indent=2))
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--artifact-map", type=Path,
+                        help="JSON object mapping each of the five slugs to a local ZIP path")
+    parser.add_argument("--require-binary", action="store_true",
+                        help="Fail unless all five real ZIP files are byte-verified")
+    args = parser.parse_args()
+    dispatch = build_dispatch()
+    if args.require_binary and args.artifact_map is None:
+        parser.error("--require-binary requires --artifact-map")
+    if args.artifact_map is not None:
+        try:
+            artifact_paths = load_json(args.artifact_map)
+            dispatch = verify_binary_dispatch(dispatch, artifact_paths)
+        except (RegistrationContractError, OSError, ValueError) as exc:
+            parser.error(str(exc))
+    print(json.dumps(dispatch, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

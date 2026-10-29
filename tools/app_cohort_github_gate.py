@@ -63,6 +63,29 @@ def validate_metadata(row: dict, metadata: dict) -> tuple[int, int]:
             "Actions workflow run/branch mismatch")
     return run_id, artifact_id
 
+def validate_workflow_run(row: dict, run: dict) -> None:
+    """Require a successful, completed Factory Actions run for each artifact.
+
+    Artifact bytes and digest alone do not establish the producing run's
+    outcome. The workflow HEAD can legitimately differ from promoted source.
+    """
+    run_id, _ = parse_location(row)
+    require(isinstance(run, dict), "workflow run is not an object")
+    require(type(run.get("id")) is int and run["id"] == run_id,
+            "workflow run ID mismatch")
+    require(run.get("status") == "completed" and run.get("conclusion") == "success",
+            "workflow run not successful")
+    require(run.get("head_branch") == row["source_branch"],
+            "workflow run source branch mismatch")
+    repository = run.get("repository")
+    require(isinstance(repository, dict) and repository.get("full_name") == REPO,
+            "workflow run repository mismatch")
+    require(run.get("html_url") == f"https://github.com/{REPO}/actions/runs/{run_id}",
+            "workflow run URL mismatch")
+    require(isinstance(run.get("head_sha"), str) and
+            re.fullmatch(r"[0-9a-f]{40}", run["head_sha"]) is not None,
+            "workflow run HEAD is invalid")
+
 
 def _gh_api(path: str, destination: Path | None = None) -> dict | None:
     command = ["gh", "api", "--method", "GET", path]
@@ -106,6 +129,8 @@ def fetch_and_verify() -> dict:
             endpoint = f"/repos/{REPO}/actions/artifacts/{artifact_id}"
             metadata = _gh_api(endpoint)
             validate_metadata(row, metadata)
+            run = _gh_api(f"/repos/{REPO}/actions/runs/{run_id}")
+            validate_workflow_run(row, run)
             target = Path(temp) / (row["slug"] + ".zip")
             _gh_api(endpoint + "/zip", target)
             artifact_map[row["slug"]] = str(target)
@@ -114,6 +139,8 @@ def fetch_and_verify() -> dict:
                 "actions_artifact_id": artifact_id,
                 "metadata_digest_matches_pinned_zip": True,
                 "workflow_branch_matches_pinned_source_branch": True,
+                "producing_workflow_run_completed_successfully": True,
+                "producing_workflow_head_sha": run["head_sha"],
             })
         # All five downloads must be present and verified; partial success
         # never produces a dispatch result.

@@ -35,17 +35,17 @@
       "retry_count": null,
       "manual_intervention_count": null,
       "improvement_revision": {
-        "source_branch": "codex/app-notes-commercial-restore-20261029",
-        "source_sha": "0b3a6698ca117e678f257dad3e68bfbf212190fa",
-        "request_id": "app-offline-notes-canary-0b3a6698ca11",
-        "factory_lifecycle": "PASS_REAL_OWNER_PLAN_CANDIDATE_TESTS_VALIDATE_PROMOTE_COMMERCIAL_RESTORE",
-        "functional_tests": "29/29_PASS_UBUNTU_AND_WINDOWS",
-        "factory_core_tests": "PASS_OWNER_WINDOWS_JOB_COUNT_NOT_RECHECKED",
+        "source_branch": "codex/app-notes-search-highlight-promote-20261029",
+        "source_sha": "e854b60bd0b701e6939bf1776e079d0e5bcb7354",
+        "request_id": "app-offline-notes-canary-e854b60bd0b7",
+        "factory_lifecycle": "PASS_REAL_OWNER_PLAN_CANDIDATE_39_TESTS_VALIDATE_PROMOTE_SEARCH_HIGHLIGHT",
+        "functional_tests": "39/39_PASS_UBUNTU_AND_WINDOWS",
+        "factory_core_tests": "108/108_PASS_OWNER_AND_WINDOWS",
         "windows_exe": "REAL_UNSIGNED_EXE_SHA256_VERIFIED_IN_ACTIONS_AND_INDEPENDENT_ZIP",
-        "artifact_sha256": "6ae7d8ec3180e8f88cde963e8ae742cbf8a617cf6196d95fdba3e2408e7962af",
-        "artifact_bytes": 11492431,
-        "artifact_zip_sha256": "2a0228c713ea76bca0a3d1ccbc8598a8b64755cc25e51c3e01d7c23a554a455f",
-        "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40862129632/artifacts/12891174971",
+        "artifact_sha256": "360eb9083915d90dedd7bca49da2b1c8065a680de0f4b1540259062a3c81c266",
+        "artifact_bytes": 11496201,
+        "artifact_zip_sha256": "06ef21748fec75eaaf8217e7eeef2eeb8e093a0c785000b81a1bc034f43b33fc",
+        "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40878375984/artifacts/12899451487",
         "provisioner_handoff": "docs/APP_NOTES_IMPROVEMENT_PRE_IDENTITY_HANDOFF.md",
         "identity_status": "REFERENCE_AVAILABLE",
         "identity_attestation": "NOT_VERIFIED",
@@ -60,7 +60,10 @@
         "commercial_features_verified_headless": [
           "backup restore to unused JSON",
           "reject overwrite of existing destination",
-          "reject damaged backup"
+          "reject damaged backup",
+          "tags and favorites persistence",
+          "recent-first navigation",
+          "bounded visible search highlights"
         ]
       },
       "commercial_quality_status": "HOLD"

@@ -56,7 +56,7 @@ class CohortBinaryDispatchTests(unittest.TestCase):
         def checked_verify(path, job, zip_sha):
             row = by_slug[job["slug"]]
             self.assertEqual(zip_sha, row["artifact_zip_sha256"])
-            self.assertEqual(str(path), self.paths[job["slug"]])
+            self.assertEqual(path, Path(self.paths[job["slug"]]))
             return {
                 "status": "BINARY_VERIFIED", "slug": job["slug"],
                 "source_sha": row["source_sha"], "request_id": row["request_id"],

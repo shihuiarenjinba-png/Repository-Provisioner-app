@@ -98,6 +98,33 @@ class CurrentAppCohortDispatchTests(unittest.TestCase):
                 lambda data: data.update(artifact_zip_sha256="0" * 64),
         }, "stale improvement artifact ZIP SHA-256")
 
+    def test_both_records_missing_zip_digest_rejected(self):
+        self._reject_modified_documents({
+            "APP_COHORT_ROTATION.json":
+                lambda data: data["products"][0]["improvement_revision"].update(
+                    artifact_zip_sha256=None),
+            "APP_NOTES_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data.update(artifact_zip_sha256=None),
+        }, "invalid improvement artifact ZIP SHA-256")
+
+    def test_both_records_zero_zip_digest_rejected(self):
+        self._reject_modified_documents({
+            "APP_COHORT_ROTATION.json":
+                lambda data: data["products"][1]["improvement_revision"].update(
+                    artifact_zip_sha256="0" * 64),
+            "APP_FOCUS_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data.update(artifact_zip_sha256="0" * 64),
+        }, "invalid improvement artifact ZIP SHA-256")
+
+    def test_both_records_nonhex_zip_digest_rejected(self):
+        self._reject_modified_documents({
+            "APP_COHORT_ROTATION.json":
+                lambda data: data["products"][2]["improvement_revision"].update(
+                    artifact_zip_sha256="z" * 64),
+            "APP_LEDGER_IMPROVEMENT_REGISTRATION_REQUEST.json":
+                lambda data: data.update(artifact_zip_sha256="z" * 64),
+        }, "invalid improvement artifact ZIP SHA-256")
+
     def test_stale_actions_artifact_url_rejected(self):
         self._reject_modified_documents({
             "APP_TEXT_DIFF_BACKUP_SAFETY_REGISTRATION_REQUEST.json":

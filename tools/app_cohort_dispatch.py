@@ -67,7 +67,13 @@ def build_dispatch(root: Path = ROOT) -> dict:
                 slug + " stale improvement EXE SHA-256")
         require(current.get("artifact_bytes") == receipt["executable_bytes"],
                 slug + " stale improvement EXE byte count")
-        require(current.get("artifact_zip_sha256") == request.get("artifact_zip_sha256"),
+        # Two matching absent or malformed digests are not evidence of an artifact.
+        zip_digest = current.get("artifact_zip_sha256")
+        require(isinstance(zip_digest, str) and
+                re.fullmatch(r"[0-9a-f]{64}", zip_digest) is not None and
+                zip_digest != "0" * 64,
+                slug + " invalid improvement artifact ZIP SHA-256")
+        require(zip_digest == request.get("artifact_zip_sha256"),
                 slug + " stale improvement artifact ZIP SHA-256")
         require(current.get("artifact_url") == request.get("artifact_url"),
                 slug + " stale improvement artifact URL")

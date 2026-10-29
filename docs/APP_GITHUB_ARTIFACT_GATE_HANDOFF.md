@@ -19,7 +19,7 @@ The workflow identity allowlist in `tools/app_cohort_github_gate.py` is intentio
 
 The authenticated gate additionally requires a parseable timezone-aware GitHub `expires_at` and at least **24 hours of remaining retention** at verification time. A soon-to-expire artifact is rejected even if GitHub currently reports `expired=false`, to avoid handing Windows a disappearing download. Each per-product API proof includes `artifact_expires_at`; 36-minute consumers should compare it with their actual retrieval time and rerun the gate if the evidence is stale. This is a retention-safety check, **not** a signed attestation or a guarantee that GitHub will retain the file.
 
-Offline Notes revision 3 is pinned to Actions run 40846554513, artifact 12884838541 (expires 2026-11-03 09:04:13 UTC); other artifacts retain individual expiry times. If any artifact expires, fail closed; do not silently substitute an older revision or alter the pinned SHA. Rebuild through the authorized Factory lifecycle, pin a new immutable revision and retest before dispatch.
+Offline Notes commercial restore revision is pinned to Actions run 40862129632, artifact 12891174971 (expires 2026-11-03 11:02:51 UTC); other artifacts retain individual expiry times. If any artifact expires, fail closed; do not silently substitute an older revision or alter the pinned SHA. Rebuild through the authorized Factory lifecycle, pin a new immutable revision and retest before dispatch.
 
 ## Downstream handoff boundary
 
@@ -28,3 +28,7 @@ The 36-minute Windows/E2E owner may consume `app-cohort-github-gate.json` as **a
 Partner Center selection: **MSIX or PWA app** (`MSIX_OR_PWA_APP`), never EXE/MSI merely because the intermediate artifact is EXE. Offline Notes Canary's user-provided Store Identity remains `REFERENCE_AVAILABLE` and must not be re-requested. Focus Session Desk remains the next *new* Partner Center registration test when authorized.
 
 No external product API, SaaS, login, telemetry, certificate-store change, security-policy change, merge, or Store submission is performed.
+
+## Commercial Store product gate (2026-10-29)
+
+All five APPs are intended Microsoft Store products. Cloud PRE_IDENTITY_READY and byte verification are not commercial quality approval. Each product must add consumer-valuable functions, test them, complete 1024x768 bilingual Windows GUI/first-run/restart/error QA, verify Identity against the correct revision, build MSIX, and pass Windows Checker/install QA before Store submission. No sixth APP.

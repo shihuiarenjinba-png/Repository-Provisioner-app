@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "product": "Offline Notes Canary — Searchable Scratchpad",
+  "slug": "offline-notes-canary",
+  "repo": "shihuiarenjinba-png/AI-App-Factory",
+  "source_branch": "codex/app-notes-new-save-no-clobber-20261030",
+  "source_sha": "2bc5eb249c5d23ee269e75f3b27ee2a7be359791",
+  "request_id": "app-offline-notes-canary-2bc5eb249c5d",
+  "product_type": "APP",
+  "packaging_family": "MSIX",
+  "partner_center_registration_type": "MSIX_OR_PWA_APP",
+  "partner_center_selection": "MSIX or PWA app",
+  "partner_center_display_name": null,
+  "reserved_display_name_verified": false,
+  "identity_status": "REFERENCE_AVAILABLE",
+  "identity_attestation": "NOT_VERIFIED",
+  "identity_cas_allowed": false,
+  "store_id": "9MZ8ZZTRTS17",
+  "required_fields": [],
+  "unverified_fields": [
+    "reserved_display_name"
+  ],
+  "user_id_request": "NONE_ALREADY_RECEIVED",
+  "pre_identity_exe": {
+    "status": "EXE_QA_UNSIGNED",
+    "sha256": "f2e99c6c65f688cedc1da0bbe7486bb7f8e9c1268987bea65dcea906309c2475",
+    "bytes": 11496095,
+    "receipt_only_not_binary_reverification": false
+  },
+  "next_owner": "36_MIN_WINDOWS_E2E",
+  "next_stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+  "identity_return_target": {
+    "owner": "36_MIN_WINDOWS_E2E",
+    "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
+    "source_sha": "2bc5eb249c5d23ee269e75f3b27ee2a7be359791",
+    "request_id": "app-offline-notes-canary-2bc5eb249c5d"
+  },
+  "msix_status": "NOT_BUILT",
+  "windows_gui_status": "PRIOR_FACTORY_REPORT_PASS_NOT_RECHECKED",
+  "commercial_quality_status": "HOLD",
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40936743336/artifacts/12925116983"
+}

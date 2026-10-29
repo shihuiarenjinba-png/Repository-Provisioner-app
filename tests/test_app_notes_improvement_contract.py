@@ -1,4 +1,4 @@
-"""Exact Offline Notes commercial restore receipt, identity-reference and handoff tests."""
+"""Exact Offline Notes commercial search-highlight receipt, identity-reference and handoff tests."""
 import json
 from pathlib import Path
 import unittest
@@ -44,7 +44,7 @@ class OfflineNotesImprovementContractTests(unittest.TestCase):
         self.assertEqual(self.receipt["msix_status"], "NOT_BUILT")
         self.assertEqual(self.request["windows_gui_status"], "UNVERIFIED")
         self.assertEqual(self.request["artifact_zip_sha256"],
-                         "2a0228c713ea76bca0a3d1ccbc8598a8b64755cc25e51c3e01d7c23a554a455f")
+                         "06ef21748fec75eaaf8217e7eeef2eeb8e093a0c785000b81a1bc034f43b33fc")
 
     def test_wrong_source_request_and_reference_fail_closed(self):
         for field, wrong in (("source_sha", "f" * 40), ("request_id", "wrong-request")):

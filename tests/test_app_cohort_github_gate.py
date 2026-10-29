@@ -48,14 +48,14 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
     def setUpClass(cls):
         cls.rows = build_dispatch()["products"]
 
-    def test_notes_commercial_restore_revision_pinned(self):
+    def test_notes_search_highlight_revision_pinned(self):
         notes = self.rows[0]
-        self.assertEqual(notes["source_sha"], "0b3a6698ca117e678f257dad3e68bfbf212190fa")
-        self.assertEqual(notes["request_id"], "app-offline-notes-canary-0b3a6698ca11")
-        self.assertEqual(notes["artifact_url"], "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40862129632/artifacts/12891174971")
-        self.assertEqual(notes["pre_identity_exe"]["sha256"], "6ae7d8ec3180e8f88cde963e8ae742cbf8a617cf6196d95fdba3e2408e7962af")
+        self.assertEqual(notes["source_sha"], "e854b60bd0b701e6939bf1776e079d0e5bcb7354")
+        self.assertEqual(notes["request_id"], "app-offline-notes-canary-e854b60bd0b7")
+        self.assertEqual(notes["artifact_url"], "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40878375984/artifacts/12899451487")
+        self.assertEqual(notes["pre_identity_exe"]["sha256"], "360eb9083915d90dedd7bca49da2b1c8065a680de0f4b1540259062a3c81c266")
         self.assertEqual(EXPECTED_WORKFLOWS[notes["slug"]],
-                         (400504889, ".github/workflows/notes-commercial-restore.yml"))
+                         (400618017, ".github/workflows/notes-search-highlight-promote.yml"))
 
     def test_all_five_pinned_metadata_contracts(self):
         for row in self.rows:

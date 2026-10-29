@@ -9,8 +9,8 @@ from unittest.mock import patch
 
 from tools.app_cohort_dispatch import build_dispatch
 from tools.app_cohort_github_gate import (
-    REPO, fetch_and_verify, parse_location, validate_metadata,
-    validate_workflow_run,
+    REPO, EXPECTED_WORKFLOWS, fetch_and_verify, parse_location, validate_metadata,
+    validate_workflow_run, validate_artifact_run_binding,
 )
 from tools.app_registration_contract import RegistrationContractError
 
@@ -29,8 +29,10 @@ def metadata_for(row):
 
 def run_for(row):
     run_id, _ = parse_location(row)
+    workflow_id, workflow_path = EXPECTED_WORKFLOWS[row["slug"]]
     return {
         "id": run_id, "status": "completed", "conclusion": "success",
+        "workflow_id": workflow_id, "path": workflow_path, "event": "push",
         "head_branch": row["source_branch"],
         "head_sha": "f" * 40,
         "repository": {"full_name": REPO},
@@ -57,6 +59,8 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
             ("conclusion", "failure"), ("conclusion", None),
             ("status", "in_progress"), ("id", 999),
             ("head_branch", "other"), ("head_sha", "not-a-sha"),
+            ("workflow_id", 1), ("path", ".github/workflows/unrelated.yml"),
+            ("event", "workflow_dispatch"),
             ("html_url", "https://example.com/run"),
         ):
             bad = run_for(row)
@@ -69,6 +73,18 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
         bad["repository"] = {"full_name": "another/repo"}
         with self.assertRaisesRegex(RegistrationContractError, "repository mismatch"):
             validate_workflow_run(row, bad)
+
+    def test_artifact_head_must_match_successful_producing_run(self):
+        row = self.rows[0]
+        metadata = metadata_for(row)
+        run = run_for(row)
+        validate_artifact_run_binding(metadata, run)
+        metadata["workflow_run"]["head_sha"] = "a" * 40
+        with self.assertRaisesRegex(RegistrationContractError, "HEAD does not match"):
+            validate_artifact_run_binding(metadata, run)
+        metadata["workflow_run"].pop("head_sha")
+        with self.assertRaisesRegex(RegistrationContractError, "HEAD does not match"):
+            validate_artifact_run_binding(metadata, run)
 
     def test_rejects_metadata_digest_mismatch(self):
         row = self.rows[0]
@@ -136,7 +152,9 @@ class AuthenticatedArtifactGateTests(unittest.TestCase):
         self.assertEqual(len(calls), 15)
         self.assertEqual(sum(kind == "run" for kind, _ in calls), 5)
         self.assertTrue(all(
-            proof["producing_workflow_run_completed_successfully"]
+            proof["producing_workflow_run_completed_successfully"] and
+            proof["artifact_workflow_head_matches_run"] and
+            proof["producing_workflow_path"] == EXPECTED_WORKFLOWS[proof["slug"]][1]
             for proof in result["actions_artifact_metadata_checks"]
         ))
         self.assertEqual(result["binary_verified_count"], 5)

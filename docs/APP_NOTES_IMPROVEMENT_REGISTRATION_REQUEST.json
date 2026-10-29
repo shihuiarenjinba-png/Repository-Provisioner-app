@@ -3,9 +3,9 @@
   "product": "Offline Notes Canary — Searchable Scratchpad",
   "slug": "offline-notes-canary",
   "repo": "shihuiarenjinba-png/AI-App-Factory",
-  "source_branch": "codex/app-notes-backup-export-safety-20261029",
-  "source_sha": "59803b98d6f0c4556ade7f9bf29ea1b8290b7477",
-  "request_id": "app-offline-notes-canary-59803b98d6f0",
+  "source_branch": "codex/app-notes-commercial-restore-20261029",
+  "source_sha": "0b3a6698ca117e678f257dad3e68bfbf212190fa",
+  "request_id": "app-offline-notes-canary-0b3a6698ca11",
   "product_type": "APP",
   "packaging_family": "MSIX",
   "partner_center_registration_type": "MSIX_OR_PWA_APP",
@@ -22,22 +22,24 @@
   "user_id_request": "NONE_ALREADY_RECEIVED",
   "pre_identity_exe": {
     "status": "EXE_QA_UNSIGNED",
-    "sha256": "87ad261db719610b46ed01bc0d7090deee4bed90861fd9c6581b8204255d4869",
-    "bytes": 11492067,
+    "sha256": "6ae7d8ec3180e8f88cde963e8ae742cbf8a617cf6196d95fdba3e2408e7962af",
+    "bytes": 11492431,
     "receipt_only_not_binary_reverification": false
   },
-  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40846554513/artifacts/12884838541",
-  "artifact_zip_sha256": "6e30c14a4b9b78d1bf7c83bc3998a4250d187b4f2baaf63558aa79bd2538e62c",
+  "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40862129632/artifacts/12891174971",
+  "artifact_zip_sha256": "2a0228c713ea76bca0a3d1ccbc8598a8b64755cc25e51c3e01d7c23a554a455f",
   "identity_reference_file": "docs/APP_NOTES_IMPROVEMENT_IDENTITY_REFERENCE.json",
   "next_owner": "36_MIN_WINDOWS_E2E",
   "next_stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
   "identity_return_target": {
     "owner": "36_MIN_WINDOWS_E2E",
     "stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS",
-    "source_sha": "59803b98d6f0c4556ade7f9bf29ea1b8290b7477",
-    "request_id": "app-offline-notes-canary-59803b98d6f0"
+    "source_sha": "0b3a6698ca117e678f257dad3e68bfbf212190fa",
+    "request_id": "app-offline-notes-canary-0b3a6698ca11"
   },
   "msix_status": "NOT_BUILT",
   "windows_gui_status": "UNVERIFIED",
-  "priority_note": "Focus Session Desk remains first new Partner Center registration test; Offline Notes Identity already received, do not re-request."
+  "priority_note": "Focus Session Desk remains first new Partner Center registration test; Offline Notes Identity already received, do not re-request.",
+  "commercial_quality_status": "HOLD",
+  "commercial_feature_evidence": "EXPLICIT_BACKUP_RESTORE_HEADLESS_TESTED"
 }

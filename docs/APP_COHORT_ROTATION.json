@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "lane": "APP",
-  "policy": "FIVE_PRODUCT_PRE_IDENTITY_STABILITY_COHORT",
+  "policy": "FIVE_STORE_PRODUCTS_COMMERCIAL_QUALITY_GATE",
   "max_products": 5,
   "max_implementation_wip": 2,
   "new_product_generation_allowed": false,
@@ -35,17 +35,17 @@
       "retry_count": null,
       "manual_intervention_count": null,
       "improvement_revision": {
-        "source_branch": "codex/app-notes-backup-export-safety-20261029",
-        "source_sha": "59803b98d6f0c4556ade7f9bf29ea1b8290b7477",
-        "request_id": "app-offline-notes-canary-59803b98d6f0",
-        "factory_lifecycle": "PASS_REAL_IMPROVE_PLAN_VALIDATE_PROMOTE_REVISION_3",
-        "functional_tests": "26/26_PASS_UBUNTU_AND_WINDOWS",
-        "factory_core_tests": "108/108_PASS_OWNER_WINDOWS_JOB",
-        "windows_exe": "REAL_UNSIGNED_EXE_SHA256_VERIFIED_IN_WINDOWS_ACTIONS",
-        "artifact_sha256": "87ad261db719610b46ed01bc0d7090deee4bed90861fd9c6581b8204255d4869",
-        "artifact_bytes": 11492067,
-        "artifact_zip_sha256": "6e30c14a4b9b78d1bf7c83bc3998a4250d187b4f2baaf63558aa79bd2538e62c",
-        "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40846554513/artifacts/12884838541",
+        "source_branch": "codex/app-notes-commercial-restore-20261029",
+        "source_sha": "0b3a6698ca117e678f257dad3e68bfbf212190fa",
+        "request_id": "app-offline-notes-canary-0b3a6698ca11",
+        "factory_lifecycle": "PASS_REAL_OWNER_PLAN_CANDIDATE_TESTS_VALIDATE_PROMOTE_COMMERCIAL_RESTORE",
+        "functional_tests": "29/29_PASS_UBUNTU_AND_WINDOWS",
+        "factory_core_tests": "PASS_OWNER_WINDOWS_JOB_COUNT_NOT_RECHECKED",
+        "windows_exe": "REAL_UNSIGNED_EXE_SHA256_VERIFIED_IN_ACTIONS_AND_INDEPENDENT_ZIP",
+        "artifact_sha256": "6ae7d8ec3180e8f88cde963e8ae742cbf8a617cf6196d95fdba3e2408e7962af",
+        "artifact_bytes": 11492431,
+        "artifact_zip_sha256": "2a0228c713ea76bca0a3d1ccbc8598a8b64755cc25e51c3e01d7c23a554a455f",
+        "artifact_url": "https://github.com/shihuiarenjinba-png/AI-App-Factory/actions/runs/40862129632/artifacts/12891174971",
         "provisioner_handoff": "docs/APP_NOTES_IMPROVEMENT_PRE_IDENTITY_HANDOFF.md",
         "identity_status": "REFERENCE_AVAILABLE",
         "identity_attestation": "NOT_VERIFIED",
@@ -55,8 +55,15 @@
         "e2e": "NOT_PASSED",
         "retry_count_observed": 2,
         "manual_intervention_count_observed_min": 2,
-        "previous_frozen_source_preserved": true
-      }
+        "previous_frozen_source_preserved": true,
+        "commercial_quality_status": "HOLD",
+        "commercial_features_verified_headless": [
+          "backup restore to unused JSON",
+          "reject overwrite of existing destination",
+          "reject damaged backup"
+        ]
+      },
+      "commercial_quality_status": "HOLD"
     },
     {
       "slot": 2,
@@ -348,5 +355,7 @@
     "2026-10-29 Image Inventory revision 2: old image rows were silently lost on Add if original files moved or disappeared. Fixed by appending new inspection results without rescanning prior snapshots; 26/26 Ubuntu/Windows functional tests, genuine improve controller promotion, exact-source Windows unsigned EXE and ZIP/MZ/PE/SHA/receipt independently verified. Prior source 16b6a772 remains frozen. Partner Center Focus priority unchanged; Identity CAS, GUI, MSIX, E2E HOLD.",
     "2026-10-29 APP quality audit: Text Diff write_atomic formerly allowed output `report.diff` to overwrite protected input `report.diff.bak` through implicit backup, including hardlink aliases. Audited owner-controlled revision on branch codex/app-text-diff-backup-safety-20261029 source b97cb768bdb323dfd91591c777d8972de8dd4e5d ran 22/22 product and 108/108 Factory tests on Ubuntu/Windows; independent ZIP/PE/SHA verification of EXE a6ea78ef8ae3174848c71061f9f76afd00ea436287d300615c09d393c46fb0df in Actions run 40741038173. Original revision source/request preserved; Factory cycle 2 research reset does not authorize a sixth product. No GUI/MSIX/Identity CAS/Store PASS.",
     "2026-10-29 Offline Notes revision 2: backup write failure now aborts primary save; TXT export rejects active database, backup path and hardlink aliases. Factory owner plan/22 tests/validate/promote PASS, 108 core tests Ubuntu/Windows, exact source/request unsigned Windows EXE ZIP/MZ/PE/SHA independently verified. Original source/request frozen. User-provided Store Identity correlated as UNATTESTED reference only; CAS/GUI/MSIX/E2E HOLD."
-  ]
+  ],
+  "store_submission_allowed": false,
+  "commercial_quality_required": true
 }

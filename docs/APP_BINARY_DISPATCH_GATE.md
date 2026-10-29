@@ -52,10 +52,12 @@ An intermediate unsigned EXE must never switch the registration family to
 36-minute lane authenticated evidence. Focus Session Desk is the next new
 Partner Center registration trial; its reserved display name is not yet verified.
 
-The previous local byte-verification report was based on saved ZIP copies;
-the 00-minute lane currently does not have a mounted ledger ZIP. Therefore a
-fresh five-of-five binary dispatch run must not be claimed without supplying
-the missing pinned file and running the command above.
+The 00-minute lane has now downloaded the pinned File Integrity Ledger
+artifact (GitHub artifact #12826068537) and independently rechecked all five
+ZIP/EXE pairs against the recorded SHA-256 and source/request metadata.
+This does not replace a successful run of the integrated dispatcher CLI with
+all five explicit paths, nor does it constitute a fresh attestation for the
+four previously saved ZIP copies.
 
 This is a verification contract, not an unattended artifact downloader. The
 36-minute Windows/E2E lane owns automated download/consumption and the central

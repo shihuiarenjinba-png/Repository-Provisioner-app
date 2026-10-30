@@ -70,6 +70,10 @@ class ArtifactIntakeTests(unittest.TestCase):
             self.assertEqual(proof["source_head_verification"], "NOT_CHECKED")
             self.assertEqual(proof["partner_center_registration_type"], "MSIX_OR_PWA_APP")
             self.assertFalse(proof["identity_cas_allowed"])
+            self.assertEqual(proof["identity_status"], "IDENTITY_REFERENCE_NOT_ATTACHED")
+            self.assertEqual(proof["user_id_request"], "NONE_AUTOMATIC_INTAKE")
+            self.assertEqual(proof["identity_return_target"]["expected_source_sha"], SHA)
+            self.assertFalse(proof["identity_return_target"]["write_authorized"])
             self.assertEqual(proof["commercial_quality_status"], "HOLD")
 
     def test_authenticated_head_gate_is_separate(self):

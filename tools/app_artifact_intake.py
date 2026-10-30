@@ -13,8 +13,8 @@ import sys
 from package_job import validate_job, verify_github_head
 from tools.app_preidentity_strict_handoff import verify_exe
 from tools.app_registration_contract import (
-    RegistrationContractError, load_json, registration_request,
-    validate_job_receipt,
+    RegistrationContractError, REQUIRED_IDENTITY_FIELDS, load_json,
+    registration_request, validate_job_receipt,
 )
 
 
@@ -49,15 +49,29 @@ def verify_artifact(job: dict, receipt: dict, exe: Path, *,
         "packaging_family": "MSIX",
         "partner_center_registration_type": "MSIX_OR_PWA_APP",
         "partner_center_selection": "MSIX or PWA app",
+        "factory_display_name": job["display_name"],
         "partner_center_display_name": routing["partner_center_display_name"],
-        "identity_status": routing["identity_status"],
+        "reserved_display_name_verified": False,
+        "identity_status": (routing["identity_status"] if identity_reference
+                            else "IDENTITY_REFERENCE_NOT_ATTACHED"),
+        "required_identity_fields": list(REQUIRED_IDENTITY_FIELDS),
+        "user_id_request": "NONE_AUTOMATIC_INTAKE",
         "identity_attestation": "NOT_VERIFIED",
         "identity_cas_allowed": False,
         "msix_status": "NOT_BUILT",
         "commercial_quality_status": "HOLD",
         "next_owner": "36_MIN_WINDOWS_E2E",
-        "next_stage": "AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS"
-                      if identity_reference else "AWAIT_USER_IDENTITY",
+        "identity_return_target": {
+            "repository": job["source_repository"],
+            "branch": job["source_branch"],
+            "path": "products/" + job["slug"] + "/store/approved-identity.json",
+            "expected_source_sha": job["source_sha"],
+            "request_id": job["request_id"],
+            "write_authorized": False,
+        },
+        "next_stage": ("AUTHENTICATED_IDENTITY_EVIDENCE_AND_CAS"
+                       if identity_reference
+                       else "RESOLVE_EXISTING_IDENTITY_LEDGER_OR_REGISTRATION"),
         "note": ("Read-only artifact proof. HEAD may change after verification. "
                  "Recheck immediately before any mutation; no Store or Identity write."),
     }

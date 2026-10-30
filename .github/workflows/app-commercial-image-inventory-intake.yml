@@ -1,0 +1,137 @@
+name: APP latest Image Inventory completion fix to Provisioner real-byte intake
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/app-commercial-image-inventory-intake.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-commercial-image-inventory-intake-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: false
+
+jobs:
+  promoted-focus-source-intake:
+    if: startsWith(github.head_ref, 'codex/')
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      SOURCE_BRANCH: codex/app-image-inventory-append-safety-20261029
+      SOURCE_SHA: 28fd060c2400bd9382cd1a5a14cd70b63b724de3
+      REQUEST_ID: app-offline-image-inventory-desk-28fd060c2400
+      BUILDER_BRANCH: codex/app-preidentity-strict-job-20261030
+      BUILDER_SHA: dd94bd2cd52a84653623f6ccdf727a6cf7903b98
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout Provisioner Draft PR
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout immutable promoted commercial Image Inventory source
+        uses: actions/checkout@v4
+        with:
+          repository: shihuiarenjinba-png/AI-App-Factory
+          ref: 28fd060c2400bd9382cd1a5a14cd70b63b724de3
+          path: factory-source
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Checkout independently pinned strict-job builder
+        uses: actions/checkout@v4
+        with:
+          repository: shihuiarenjinba-png/AI-App-Factory
+          ref: dd94bd2cd52a84653623f6ccdf727a6cf7903b98
+          path: factory-tooling
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Authenticate both exact source and tooling refs
+        shell: pwsh
+        run: |
+          $source = (git -C factory-source rev-parse HEAD).Trim()
+          $builder = (git -C factory-tooling rev-parse HEAD).Trim()
+          if ($source -ne $env:SOURCE_SHA -or $builder -ne $env:BUILDER_SHA) {
+            throw "Pinned source or tooling checkout mismatch"
+          }
+          $sourceRemote = git -C factory-source ls-remote origin "refs/heads/$env:SOURCE_BRANCH"
+          if ($LASTEXITCODE -ne 0 -or -not $sourceRemote) { throw "Commercial source branch missing" }
+          $sourceHead = ($sourceRemote | Select-Object -First 1).Split("`t")[0]
+          if ($sourceHead -ne $env:SOURCE_SHA) { throw "Commercial source branch moved; HOLD" }
+          $builderRemote = git -C factory-tooling ls-remote origin "refs/heads/$env:BUILDER_BRANCH"
+          if ($LASTEXITCODE -ne 0 -or -not $builderRemote) { throw "Strict builder branch missing" }
+          $builderHead = ($builderRemote | Select-Object -First 1).Split("`t")[0]
+          if ($builderHead -ne $env:BUILDER_SHA) { throw "Strict builder branch moved; HOLD" }
+          git -C factory-source checkout -B $env:SOURCE_BRANCH $env:SOURCE_SHA
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (git -C factory-source status --porcelain -- factory/config.json proposals/offline-image-inventory-desk.json products/offline-image-inventory-desk) {
+            throw "Promoted product checkout is dirty"
+          }
+      - name: Confirm promoted product manifest and immutable entrypoint
+        shell: pwsh
+        run: |
+          @'
+          import json
+          from pathlib import Path
+          root = Path("factory-source/products/offline-image-inventory-desk")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          assert manifest["slug"] == "offline-image-inventory-desk"
+          assert manifest["kind"] == "app"
+          assert manifest["entry"] == "main.py"
+          assert (root / manifest["entry"]).is_file()
+          '@ | python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test exact commercial product functions
+        run: python -m unittest discover -s factory-source/products/offline-image-inventory-desk/tests -v
+      - name: Install pinned unsigned Windows EXE builder
+        run: python -m pip install --disable-pip-version-check "pyinstaller==6.16.0"
+      - name: Build commercial product without changing immutable source
+        shell: pwsh
+        run: |
+          python factory-tooling/tools/build_windows_exe.py --root factory-source --slug offline-image-inventory-desk --expected-sha "$env:SOURCE_SHA" --source-branch "$env:SOURCE_BRANCH" --request-id "$env:REQUEST_ID" --output proof/commercial
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (git -C factory-source status --porcelain -- factory/config.json proposals/offline-image-inventory-desk.json products/offline-image-inventory-desk) {
+            throw "Build changed immutable commercial source"
+          }
+      - name: Run real-byte Provisioner intake with authenticated HEAD
+        shell: pwsh
+        run: |
+          python -m tools.app_artifact_intake --job proof/commercial-provisioner-job.json --receipt proof/commercial/exe-receipt.json --exe proof/commercial/offline-image-inventory-desk.exe --verify-head --output proof/commercial-intake.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          @'
+          import json, os
+          from pathlib import Path
+          proof = json.loads(Path("proof/commercial-intake.json").read_text(encoding="utf-8"))
+          receipt = json.loads(Path("proof/commercial/exe-receipt.json").read_text(encoding="utf-8"))
+          job = json.loads(Path("proof/commercial-provisioner-job.json").read_text(encoding="utf-8"))
+          assert proof["status"] == "PRE_IDENTITY_READY"
+          assert proof["source_head_verification"] == "VERIFIED_AT_CHECK_TIME"
+          assert proof["source_head_sha"] == os.environ["SOURCE_SHA"]
+          assert proof["source_sha"] == receipt["source_sha"] == job["source_sha"] == os.environ["SOURCE_SHA"]
+          assert proof["request_id"] == receipt["request_id"] == job["request_id"] == os.environ["REQUEST_ID"]
+          assert proof["source_branch"] == job["source_branch"] == os.environ["SOURCE_BRANCH"]
+          assert proof["slug"] == "offline-image-inventory-desk"
+          assert proof["artifact_bytes_verified"] is True
+          assert proof["partner_center_registration_type"] == "MSIX_OR_PWA_APP"
+          assert proof["partner_center_selection"] == "MSIX or PWA app"
+          assert proof["identity_cas_allowed"] is False
+          assert proof["identity_attestation"] == "NOT_VERIFIED"
+          assert proof["commercial_quality_status"] == "HOLD"
+          assert proof["msix_status"] == "NOT_BUILT"
+          assert proof["identity_return_target"]["write_authorized"] is False
+          assert job["dry_run"] is True and job["requested_actions"] == ["BUILD_WINDOWS"]
+          assert set(p.name for p in Path("proof/commercial").iterdir()) == {"offline-image-inventory-desk.exe", "exe-receipt.json"}
+          '@ | python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Preserve source-bound receipt, strict job and read-only intake
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-inventory-source-preidentity-${{ github.event.pull_request.head.sha }}
+          path: |
+            proof/commercial-intake.json
+            proof/commercial/exe-receipt.json
+            proof/commercial-provisioner-job.json
+          if-no-files-found: error
+          retention-days: 5

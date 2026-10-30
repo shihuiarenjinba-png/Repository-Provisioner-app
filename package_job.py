@@ -19,7 +19,7 @@ SCHEMA_VERSION = "1.0"
 OWNER = "shihuiarenjinba-png"
 FACTORY = "AI-App-Factory"
 REPOSITORY = OWNER + "/" + FACTORY
-BRANCH = "codex/factory-autoloop-20261026"
+BRANCH_RE = re.compile(r"^codex/[A-Za-z0-9._/-]+$")
 ACTIONS = (
     "BUILD_WINDOWS",
     "INSPECT_PACKAGE",
@@ -32,7 +32,7 @@ FIELDS = frozenset({
     "display_name", "target_owner", "dry_run", "requested_actions",
 })
 SLUG = re.compile(r"^[a-z][a-z0-9-]{3,39}$")
-REQUEST = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
+REQUEST = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{3,127}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -43,6 +43,17 @@ def _reject_duplicates(pairs):
             raise ValueError("duplicate JSON field")
         result[key] = value
     return result
+
+
+def valid_work_branch(value: object) -> bool:
+    """Accept reviewed codex/* work refs, never traversal or protected refs."""
+    if (not isinstance(value, str) or not 7 <= len(value) <= 240
+            or BRANCH_RE.fullmatch(value) is None
+            or ".." in value or "//" in value or "@{" in value
+            or value.endswith(("/", "."))):
+        return False
+    return all(part and not part.startswith(".") and not part.endswith(".lock")
+               for part in value.split("/"))
 
 
 def validate_job(record: dict) -> dict:
@@ -57,8 +68,8 @@ def validate_job(record: dict) -> dict:
         raise ValueError("wrong source_factory for APP lane")
     if record["source_repository"] != REPOSITORY:
         raise ValueError("untrusted source_repository")
-    if record["source_branch"] != BRANCH:
-        raise ValueError("unapproved source_branch")
+    if not valid_work_branch(record["source_branch"]):
+        raise ValueError("unsafe source_branch")
     if record["target_owner"] != OWNER:
         raise ValueError("unapproved target_owner")
     if record["dry_run"] is not True:
@@ -78,9 +89,9 @@ def validate_job(record: dict) -> dict:
             or any(ord(c) < 32 or ord(c) == 127 for c in display)):
         raise ValueError("invalid display_name")
     actions = record["requested_actions"]
-    if (not isinstance(actions, list) or len(actions) != len(ACTIONS)
-            or set(map(str, actions)) != set(ACTIONS)
-            or any(not isinstance(x, str) for x in actions)):
+    if (not isinstance(actions, list) or not actions
+            or any(not isinstance(x, str) or x not in ACTIONS for x in actions)
+            or len(set(actions)) != len(actions)):
         raise ValueError("unsupported requested_actions")
     # Bind the future idempotency key to the *entire* validated request.
     # A changed display name or action set must never reuse a prior job.
@@ -96,7 +107,7 @@ def validate_job(record: dict) -> dict:
         "status": "DRY_RUN",
         "idempotency_key": key,
         "source_repository": REPOSITORY,
-        "source_branch": BRANCH,
+        "source_branch": record["source_branch"],
         "source_sha": sha,
         "expected_head_sha": None,
         "source_head_verification": "NOT_CHECKED",
@@ -110,7 +121,7 @@ def validate_job(record: dict) -> dict:
         },
         "github_return": {
             "status": "NOT_APPLIED",
-            "repository": REPOSITORY, "branch": BRANCH,
+            "repository": REPOSITORY, "branch": record["source_branch"],
             "path": "products/" + slug + "/store/approved-identity.json",
             "commit_sha": None,
         },
@@ -139,7 +150,7 @@ def verify_github_head(record: dict, *, token=None, opener=None) -> str:
     mutating step must check HEAD again immediately before its own operation.
     """
     if (record.get("source_repository") != REPOSITORY
-            or record.get("source_branch") != BRANCH
+            or not valid_work_branch(record.get("source_branch"))
             or not isinstance(record.get("source_sha"), str)
             or not SHA40.fullmatch(record["source_sha"])):
         raise ValueError("untrusted source for GitHub HEAD verification")
@@ -149,7 +160,7 @@ def verify_github_head(record: dict, *, token=None, opener=None) -> str:
             or "\r" in token or "\n" in token):
         raise ValueError("authenticated GitHub token required")
     url = ("https://api.github.com/repos/" + REPOSITORY
-           + "/branches/" + quote(BRANCH, safe=""))
+           + "/branches/" + quote(record["source_branch"], safe=""))
     req = Request(url, headers={
         "Accept": "application/vnd.github+json",
         "Authorization": "Bearer " + token,
@@ -202,7 +213,8 @@ def main(argv=None) -> int:
         if args.output:
             if args.output.is_symlink():
                 raise ValueError("symlink output forbidden")
-            args.output.write_text(encoded, encoding="utf-8")
+            with args.output.open("x", encoding="utf-8") as stream:
+                stream.write(encoded)
         else:
             print(encoded, end="")
         return 0

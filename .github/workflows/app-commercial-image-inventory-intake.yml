@@ -1,4 +1,4 @@
-name: APP latest Image Inventory completion fix to Provisioner real-byte intake
+name: APP promoted Image Inventory source to Provisioner real-byte intake
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  promoted-focus-source-intake:
+  promoted-image-inventory-source-intake:
     if: startsWith(github.head_ref, 'codex/')
     runs-on: windows-latest
     timeout-minutes: 45

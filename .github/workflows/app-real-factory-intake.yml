@@ -1,0 +1,96 @@
+name: APP real Factory to Provisioner Windows intake
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/app-real-factory-intake.yml"
+      - "tools/app_artifact_intake.py"
+      - "tools/app_registration_contract.py"
+      - "tools/app_preidentity_strict_handoff.py"
+      - "package_job.py"
+      - "tests/test_app_artifact_intake.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-real-intake-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: false
+
+jobs:
+  exact-source-real-exe-intake:
+    if: startsWith(github.head_ref, 'codex/')
+    runs-on: windows-latest
+    timeout-minutes: 40
+    env:
+      SOURCE_BRANCH: codex/app-preidentity-strict-job-20261030
+      SOURCE_SHA: dd94bd2cd52a84653623f6ccdf727a6cf7903b98
+      REQUEST_ID: app-focus-strict-dd94bd2cd52a
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout Provisioner PR (never protected branches)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout immutable Factory source
+        uses: actions/checkout@v4
+        with:
+          repository: shihuiarenjinba-png/AI-App-Factory
+          ref: dd94bd2cd52a84653623f6ccdf727a6cf7903b98
+          path: factory
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify Factory branch live HEAD before build
+        shell: pwsh
+        run: |
+          $actual = (git -C factory rev-parse HEAD).Trim()
+          if ($actual -ne $env:SOURCE_SHA) { throw "Factory checkout differs from pinned SHA" }
+          $remote = git -C factory ls-remote origin "refs/heads/$env:SOURCE_BRANCH"
+          if ($LASTEXITCODE -ne 0 -or -not $remote) { throw "Factory branch not found" }
+          $head = ($remote | Select-Object -First 1).Split("`t")[0]
+          if ($head -ne $env:SOURCE_SHA) { throw "Factory remote HEAD moved; HOLD" }
+          git -C factory checkout -B $env:SOURCE_BRANCH $env:SOURCE_SHA
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install pinned Windows EXE builder
+        run: python -m pip install --disable-pip-version-check "pyinstaller==6.16.0"
+      - name: Build real EXE with strict request-bound job
+        shell: pwsh
+        run: |
+          python factory/tools/build_windows_exe.py --root factory --slug focus-session-desk --expected-sha "$env:SOURCE_SHA" --source-branch "$env:SOURCE_BRANCH" --request-id "$env:REQUEST_ID" --output proof/preidentity
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run actual Provisioner intake with authenticated HEAD check
+        shell: pwsh
+        run: |
+          python -m tools.app_artifact_intake --job proof/preidentity-provisioner-job.json --receipt proof/preidentity/exe-receipt.json --exe proof/preidentity/focus-session-desk.exe --verify-head --output proof/intake.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          @'
+          import json, os
+          from pathlib import Path
+          p = json.loads(Path("proof/intake.json").read_text(encoding="utf-8"))
+          assert p["status"] == "PRE_IDENTITY_READY"
+          assert p["source_head_verification"] == "VERIFIED_AT_CHECK_TIME"
+          assert p["source_head_sha"] == os.environ["SOURCE_SHA"]
+          assert p["source_sha"] == os.environ["SOURCE_SHA"]
+          assert p["request_id"] == os.environ["REQUEST_ID"]
+          assert p["slug"] == "focus-session-desk"
+          assert p["artifact_bytes_verified"] is True
+          assert p["partner_center_registration_type"] == "MSIX_OR_PWA_APP"
+          assert p["identity_cas_allowed"] is False
+          assert p["identity_attestation"] == "NOT_VERIFIED"
+          assert p["commercial_quality_status"] == "HOLD"
+          assert p["msix_status"] == "NOT_BUILT"
+          '@ | python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Preserve real-byte intake proof without Store writes
+        uses: actions/upload-artifact@v4
+        with:
+          name: focus-real-factory-provisioner-intake-${{ github.event.pull_request.head.sha }}
+          path: |
+            proof/intake.json
+            proof/preidentity/exe-receipt.json
+            proof/preidentity-provisioner-job.json
+          if-no-files-found: error
+          retention-days: 5
